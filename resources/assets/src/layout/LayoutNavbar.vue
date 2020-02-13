@@ -16,8 +16,10 @@
 
     <b-collapse is-nav id="app-layout-navbar">
       <b-navbar-nav class="align-items-lg-center">
+        <!--
         <b-nav-item href="#">Link 1</b-nav-item>
         <b-nav-item href="#">Link 2</b-nav-item>
+        -->
       </b-navbar-nav>
             <b-navbar-nav class="align-items-lg-center ml-auto">
         <b-nav-item-dropdown no-caret v-if="$auth.check()" class="demo-navbar-notifications mr-lg-3">

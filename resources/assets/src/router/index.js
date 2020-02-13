@@ -42,8 +42,38 @@ const router = new Router({
       meta: { auth: true }
     },
     {
-      path: 'users',
+      path: 'adm/users',
       component: () => import('@/components/users/Users'),
+      meta: { auth: true }
+    },
+    {
+      path: 'adm/dpps',
+      name: 'dpps',
+      component: () => import('@/components/dpps/Dpps'),
+      meta: { auth: true }
+    },
+    {
+      path: 'adm/dpps/:dpp/config',
+      name: 'dpp_config',
+      component: () => import('@/components/dpps/DppConfig.vue'),
+      meta: { auth: true }
+    },
+    {
+      path: 'my_dpps',
+      name: 'my_dpps',
+      component: () => import('@/components/dpps/MyDpps'),
+      meta: { auth: true }
+    },
+    {
+      path: 'my_dpps/:dpp/overview/:role',
+      name: 'dpp_overview',
+      component: () => import('@/components/dpps/DppOverview'),
+      meta: { auth: true }
+    },
+    {
+      path: 'my_dpps/:dpp/stages/:stage/work',
+      name: 'dpp_stage_work',
+      component: () => import('@/components/dpps/DppStageWork'),
       meta: { auth: true }
     },
   ]

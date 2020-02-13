@@ -2,8 +2,8 @@
     <div>
         <b-card title="Регистрация">
             <b-alert show variant="success"  v-if="success">Регистрация прошла успешно! Теперь Вы можете <router-link :to="'/login'">войти</router-link> в систему</b-alert>
-            <b-alert show variant="info">Заполните поля формы и нажмите кнопку «Зарегистрироваться»</b-alert>
             <form autocomplete="off" @submit.prevent="register" v-if="!success" method="post">
+                <b-alert show variant="info">Заполните поля формы и нажмите кнопку «Зарегистрироваться»</b-alert>
                 <div class="form-group" v-bind:class="{ 'has-error': error && errors.lastname }">
                     <label for="lastname">Фамилия</label>
                     <input type="text" id="lastname" class="form-control" v-model="lastname" required>
@@ -24,6 +24,11 @@
                     <input type="email" id="email" class="form-control" placeholder="user@example.com" v-model="email" required>
                     <span class="help-block" v-if="error && errors.email">{{ errors.email }}</span>
                 </div>
+                <div class="form-group" v-bind:class="{ 'has-error': error && errors.phone }">
+                    <label for="phone">Телефон</label>
+                    <input type="text" id="phone" class="form-control" placeholder="+7(ХХХ)ХХХХХХХ" v-model="phone" required>
+                    <span class="help-block" v-if="error && errors.phone">{{ errors.phone }}</span>
+                </div>
                 <div class="form-group" v-bind:class="{ 'has-error': error && errors.password }">
                     <label for="password">Пароль</label>
                     <input type="password" id="password" class="form-control" v-model="password" required>
@@ -42,11 +47,12 @@
     export default {
         data(){
             return {
-                lastname: '11',
-                firstname: '22',
-                middlename: '33',
-                email: 'navydragon@inbox.ru',
-                password: '111111',
+                lastname: '',
+                firstname: '',
+                middlename: '',
+                email: '',
+                phone: '',
+                password: '',
                 error: false,
                 errors: {},
                 success: false
@@ -61,6 +67,7 @@
                         lastname: app.lastname,
                         middlename: app.middlename,
                         email: app.email,
+                        phone: app.phone,
                         password: app.password
                     }, 
                     success: function () {

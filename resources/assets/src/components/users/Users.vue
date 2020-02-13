@@ -2,10 +2,22 @@
     <div>
         <b-card title="Управление пользователями">
             <b-card-text>
-            Ниже отображается табоица всех зарегистрированных в системе пользователей
+            Ниже отображается таблица всех зарегистрированных в системе пользователей
             </b-card-text>
-            <b-table bordered hover :table-variant="'light'"  :head-variant="'light'" :items="items" :fields="fields"></b-table>
-            {{this.info}}
+            <b-table :busy="isBusy" bordered hover :table-variant="'light'"  :head-variant="'light'" :items="items" :fields="fields">
+                 <template v-slot:table-busy>
+                    <div class="text-center text-info my-2">
+                    <b-spinner class="align-middle"></b-spinner>
+                    <strong>Загрузка...</strong>
+                    </div>
+                </template>
+                <template v-slot:cell(modify)="data">
+                  <b-button @click="delete_user(data.item,data.item.id)" variant="outline-danger">
+                           <i class="ion ion-md-close" style="font-size:20px;"></i>
+                  </b-button>
+                </template>
+            </b-table>
+            
         </b-card>
     </div>
 </template>
@@ -31,26 +43,34 @@
               sortable: true
           },
           {
+              key: 'phone',
+              label: 'Телефон',
+              sortable: true
+          },
+          {
             key: 'registered_at',
             label: 'Дата регистрации',
             sortable: true
           },
           {
-            key: 'age',
+            key: 'modify',
             label: 'Управление',
             sortable: false,
           }
         ],
         items: [
-          {  fullname: 'Macdonald' },
+          {  },
         ],
-        info: ""
+        info: "",
+        isBusy: true
       }
     },
+    
     mounted() {
       axios
         .get('/users')
-        .then(response => (this.items = response.data));
+        .then(response => (this.items = response.data))
+        .finally(() => (this.isBusy = false));
     }
   }
 </script>

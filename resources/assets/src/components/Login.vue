@@ -44,7 +44,7 @@
                 this.error = true
             },
             rememberMe: true,
-            redirect: '/dashboard',
+            redirect: '/',
             fetchUser: true,
         });       
       },
