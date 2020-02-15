@@ -76,6 +76,12 @@ const router = new Router({
       component: () => import('@/components/dpps/DppStageWork'),
       meta: { auth: true }
     },
+    {
+      path: 'my_dpps/:dpp/stages/:stage/work_ish',
+      name: 'dpp_stage_work_ish',
+      component: () => import('@/components/dpps/DppStageWorkIsh'),
+      meta: { auth: true }
+    },
   ]
   }, {
     // 404 Not Found page

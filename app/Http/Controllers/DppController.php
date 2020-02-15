@@ -12,6 +12,7 @@ use App\StageType;
 use App\DppStage;
 use App\DppUserRole;
 use App\ZunVersion;
+use App\IshVersion;
 use Auth;
 class DppController extends Controller
 {
@@ -44,6 +45,32 @@ class DppController extends Controller
         $dpp->dpp_type_id = $request->type;
         $dpp->author_id = Auth::user()->id;
         $dpp->save();
+
+        $go = true;
+        $st = StageType::where('is_first',true)->get()->first();
+        while ($go == true)
+        {
+            $ds = new DppStage;
+            $ds->dpp_id = $dpp->id;
+            $ds->stage_type_id = $st->id;
+            if ($st->is_first == true){
+                $ds->stage_status_id = 1;  
+            }else{
+                $ds->stage_status_id = 2;
+            }
+            $ds->save();
+            if ($st->is_first == true){
+                $dpp->current_stage_id = $ds->id;
+                $dpp->save();
+            }
+            if ($st->next_stage == null)
+            {
+                $go = false;
+            }else{
+                $st = StageType::find($st->next_stage);
+            }
+        }
+        /*        
         $stage_types = StageType::all();
         foreach ($stage_types as $st) {
             $ds = new DppStage;
@@ -61,6 +88,7 @@ class DppController extends Controller
                 $dpp->save();
             }
         }
+        */
         $dpp->type_name = $dpp->type->name;
         $dpp->participants = $dpp->participants;
         return $dpp;
@@ -164,6 +192,18 @@ class DppController extends Controller
                 $zv->author_id = Auth::user()->id;
                 $zv->save();
                 $dpp->zun_version_id = $zv->id;
+                $dpp->save();
+            }
+        }
+
+        if ($ds->stage_type_id == 6) {
+            if ($dpp->ish_versions->count() == 0)
+            {
+                $iv = new IshVersion;
+                $iv->dpp_id = $dpp->id;
+                $iv->author_id = Auth::user()->id;
+                $iv->save();
+                $dpp->ish_version_id = $iv->id;
                 $dpp->save();
             }
         }

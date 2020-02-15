@@ -1,8 +1,5 @@
 <template>
-  <span>
-    <b-button v-b-modal.modal-addabil variant="success">Добавить умение</b-button>
-        <!-- Модальное окно создания навыка -->
-    <b-modal @ok="handle_ok_skil" id="modal-addabil" ok-title="Добавить умение" cancel-title="Закрыть" size="xl" title="Создание нового умения">
+    <b-modal @ok="handle_ok_skil" id="modal-edititem" ok-title="Отредактировать" cancel-title="Закрыть" size="xl" title="Редактирование компонента">
         <b-alert v-if="!new_skil.show_edit" show variant="info">Выберите компонент на диаграмме для редактирования</b-alert>
         <div v-for="elem in this.new_skil.skilData" :key="elem.id" class="row">
         <div class="col-md-12">
@@ -20,6 +17,41 @@
             v-if="new_skil.show_edit"
             border-variant="secondary"
             >
+            <!-- Редактирование skill -->
+            <b-form v-if="new_skil.editingItem.type==='skil'" @submit="nc_onSubmit" @reset="nc_onReset">
+                <b-alert show  v-if="!new_skil.editingItem.valid">Заполните параметры компонента</b-alert>
+                <b-form-row>
+                <b-form-group label-size="lg" label-cols-lg="2" label="Ключевое слово" class="col">
+                    <b-form-input disabled v-model="new_skil.editingItem.keyword" required placeholder="Владеть" value="Владеть" />
+                </b-form-group>
+                </b-form-row>
+                <b-form-row>
+                <b-form-group label-size="lg" label-cols-lg="2" label="Чем?" class="col">
+                    <b-input v-model="new_skil.editingItem.what" required placeholder="Чем?" />
+                </b-form-group>
+                </b-form-row>
+                <b-form-row>
+                <b-form-group label-size="lg" label-cols-lg="2" label="При помощи чего?" class="col">
+                    <b-input v-model="new_skil.editingItem.with" required placeholder="При помощи чего?" />
+                </b-form-group>
+                </b-form-row>
+                <b-form-row>
+                <b-form-group label-size="lg" label-cols-lg="2" label="При каких условиях?" class="col">
+                    <b-input v-model="new_skil.editingItem.where" required placeholder="При каких условиях?" />
+                </b-form-group>
+                </b-form-row>
+                <b-form-row>
+                <b-form-group label-size="lg" label-cols-lg="2" label="Итоговое название" class="col">
+                    <b-form-input disabled  :value="ei_fulltext" />
+                </b-form-group>
+                </b-form-row>
+                <b-form-row>
+                <b-button type="submit" variant="primary">Сохранить</b-button>&nbsp;
+                <b-button :disabled="ei_add_disable" v-if="new_skil.editingItem.valid" @click="nc_add_abil_to_skil" variant="success">Добавить умение</b-button>
+                &nbsp;
+                </b-form-row>
+            </b-form>
+            <!-- Редактирование abil -->
             <b-form v-if="new_skil.editingItem.type==='abil'" @submit="nc_onSubmit" @reset="nc_onReset">
                 <b-alert show  v-if="!new_skil.editingItem.valid">Заполните параметры компонента</b-alert>
                 <b-form-row>
@@ -50,7 +82,9 @@
                 <b-button type="submit" variant="primary">Сохранить</b-button>
                 <b-button :disabled="ei_add_disable" v-if="new_skil.editingItem.valid" @click="nc_add_know_to_abil" variant="warning">Добавить знание</b-button>
                 &nbsp;
+                <b-button :disabled="!is_deletable(new_skil.skilData[0], new_skil.editingItem,false)" @click="delete_el(new_skil.skilData[0].children, new_skil.editingItem)" variant="danger">Удалить компонент</b-button>
             </b-form>
+            <!-- Редактирование know -->
             <b-form v-if="new_skil.editingItem.type==='know'" @submit="nc_onSubmit" @reset="nc_onReset">
                 <b-alert show  v-if="!new_skil.editingItem.valid">Заполните параметры компонента</b-alert>
                 <b-form-row>
@@ -90,7 +124,6 @@
         </div>
         </div>
     </b-modal>
-  </span>
 </template>
 
 <script>
@@ -98,39 +131,16 @@ import VJstree from 'vue-jstree'
 import OrganizationChart from 'vue-organization-chart'
 import 'vue-organization-chart/dist/orgchart.css'
 export default {
-  name: "new-ability",
+  name: "edit-item",
   metaInfo: {
-  title: "Добавить новое умение"
+  title: "Редактирование компонента"
   },
   components: {
     VJstree, OrganizationChart
   },
-  data () {
-    return {
-      new_skil: {
-      text: '',
-      show_edit: false,
-      show_errors: false,
-      editingItem: {},
-      editingNode: null,
-      skilData: [{
-        // 'id': this.generate_id(),
-        'text': 'Новое умение',
-        'opened': true,
-        'type': 'abil',
-        'color': 'btn-success',
-        'icon': 'ion ion-ios-radio-button-on text-success',
-        'valid': false,
-        'keyword': 'Уметь',
-        'what': '',
-        'with': '',
-        'where': '',
-        'children': []
-      }],
-      errors: []
-    }
-    }
-  },
+  props: {
+  new_skil: Object
+  },  
   computed: {
     ei_fulltext () {
       return this.combine_text(this.new_skil.editingItem)
@@ -143,33 +153,17 @@ export default {
     },
   },
   methods: {
-    handle_ok_skil (bvModalEvt) {
-      bvModalEvt.preventDefault()
-      this.new_skil.errors = []
-      if (this.check_skil(this.new_skil.skilData) > 0) {
-        this.new_skil.show_errors = true
-      } else {
-        this.new_skil.show_errors = false
-        this.$emit('add_abil', this.new_skil.skilData[0]);
-       // this.treeData[0].children.push(this.new_skil.skilData[0])
-        this.new_skil.skilData = [{
-          'id': this.generate_id(),
-          'text': 'Новое умение',
-          'opened': true,
-          'type': 'abil',
-          'color': 'btn-success',
-          'icon': 'ion ion-ios-radio-button-on text-success',
-          'valid': false,
-          'children': [],
-          'keyword': 'Уметь',
-          'what': '',
-          'with': '',
-          'where': ''
-        }]
-        this.$nextTick(() => {
-          this.$bvModal.hide('modal-addabil')
-        })
-      }
+      handle_ok_skil (bvModalEvt) {
+        bvModalEvt.preventDefault()
+        this.new_skil.errors = []
+        if (this.check_skil(this.new_skil.skilData) > 0) {
+            this.new_skil.show_errors = true
+        } else {
+            this.new_skil.show_errors = false
+            this.$emit('update_item', this.new_skil.skilData[0]);
+        // this.treeData[0].children.push(this.new_skil.skilData[0])
+            this.new_skil.skilData = []
+        }
     },
     kek (node) {
       console.log(node)
@@ -304,12 +298,13 @@ export default {
     {
        for (var i = 0; i < data.children.length; i++)
        {
+          // console.log('a');
            if (data.children[i].id == el.id)
            {
-              //console.log('found '+data.children[i].text+' in '+data.text+'('+data.children.length+')')
+             // console.log('found '+data.children[i].text+' in '+data.text+'('+data.children.length+')')
               if (data.children.length > 2)
               {
-              // console.log('can_be_deleted')
+               console.log('can_be_deleted')
                found = true
               }
            }

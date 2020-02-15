@@ -35,10 +35,24 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/dpps/stages/start','DppController@start_stage');
   Route::get('/my_dpps','DppController@get_all_my_dpps');
 
+  Route::post('/zuns/know/delete','ZunVersionController@delete_knowledge');
+  Route::post('/zuns/abil/delete','ZunVersionController@delete_ability');
+  Route::post('/zuns/skil/delete','ZunVersionController@delete_skill');
+  Route::post('/zuns/comp/delete','ZunVersionController@delete_competence');
+
   Route::post('/dpps/{dpp}/{zv}/add_skill','ZunVersionController@add_skill');
   Route::post('/dpps/{dpp}/{zv}/add_ability','ZunVersionController@add_ability');
-  Route::get('/dpps/{dpp}/get_zun_version_data/{zv}','ZunVersionController@get_zun_version_data');
+  Route::post('/dpps/{dpp}/{zv}/add_competence','ZunVersionController@add_competence');
+  Route::post('/dpps/{dpp}/{zv}/update_elem','ZunVersionController@update_elem');
+  
+  Route::get('/dpps/{dpp}/get_zun_version_data/{zv}/unattached','ZunVersionController@get_zun_version_data_unattached');
+  Route::get('/dpps/{dpp}/get_zun_version_data/{zv}/attached','ZunVersionController@get_zun_version_data_attached');
+  Route::get('/dpps/{dpp}/get_ish_version_data/{iv}','IshVersionController@get_ish_version_data');
+  Route::post('/dpps/{dpp}/update_ish_version_data/{iv}','IshVersionController@update_ish_version_data');
   Route::get('/dpps/{dpp}/get_stage_data/{stage}','DppStageController@get_stage_data');
+  Route::post('/dpps/{dpp}/{stage}/go_next','DppStageController@force_next_stage');
+  
+
 
   Route::get('/dpps/{dpp}/config','DppController@get_dpp_to_config');
   Route::get('/stage_types','DppController@get_all_stage_types');

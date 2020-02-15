@@ -22,6 +22,7 @@
         -->
       </b-navbar-nav>
             <b-navbar-nav class="align-items-lg-center ml-auto">
+        <!--
         <b-nav-item-dropdown no-caret v-if="$auth.check()" class="demo-navbar-notifications mr-lg-3">
           <template slot="button-content">
             <i class="ion ion-md-notifications-outline navbar-icon align-middle"></i>
@@ -91,6 +92,7 @@
           <div class="bg-primary text-center text-white font-weight-bold p-3">
             4 New Messages
           </div>
+          
           <b-list-group flush>
             <b-list-group-item href="javascript:void(0)" class="media d-flex align-items-center">
               <img :src="`${publicUrl}img/avatars/6-small.png`" class="d-block ui-w-40 rounded-circle" alt>
@@ -135,7 +137,7 @@
 
           <a href="javascript:void(0)" class="d-block text-center text-light small p-2 my-1">Show all messages</a>
         </b-nav-item-dropdown>
-
+        -->
         <!-- Divider -->
         <div class="nav-item d-none d-lg-block text-big font-weight-light line-height-1 opacity-25 mr-3 ml-1">|</div>
 

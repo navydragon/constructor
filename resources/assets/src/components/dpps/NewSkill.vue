@@ -326,6 +326,8 @@ export default {
            if (data[i].id == el.id)
            {
                data.splice(data.indexOf(el),1)
+               this.new_skil.editingItem = {}
+               this.new_skil.show_edit = false
                return true
            }
            if (data[i].children.length > 0)
