@@ -113,6 +113,91 @@ class ZunVersionController extends Controller
         }
     }
 
+    public function create_competence(Dpp $dpp,ZunVersion $zv, Request $request)
+    {
+        $data = $request->competence;
+        $competence = new Competence;
+        $competence->dpp_id = $dpp->id;
+        $competence->zun_version_id = $zv->id;
+        $competence->name = $data["text"];
+        $competence->keyword = $data["keyword"];
+        $competence->what = $data["what"];
+        $competence->with = $data["with"];
+        $competence->where = $data["where"];
+        $competence->save();
+
+        foreach ($data["children"] as $elem){
+            if ($elem["type"] == 'skil')
+            {
+                $skill = new Skill;
+                $skill->dpp_id = $dpp->id;
+                $skill->zun_version_id = $zv->id;
+                $skill->name = $elem["text"];
+                $skill->keyword = $elem["keyword"];
+                $skill->what = $elem["what"];
+                $skill->with = $elem["with"];
+                $skill->where = $elem["where"];
+                $skill->competence_id = $competence->id;
+                $skill->save();
+                foreach ($elem["children"] as $abil){
+                    $ability = new Ability;
+                    $ability->dpp_id = $dpp->id;
+                    $ability->zun_version_id = $zv->id;
+                    $ability->name = $abil["text"];
+                    $ability->keyword = $abil["keyword"];
+                    $ability->what = $abil["what"];
+                    $ability->with = $abil["with"];
+                    $ability->where = $abil["where"];
+                    $ability->skill_id = $skill->id;
+                    $ability->has_parent_comp = false;
+                    $ability->save();
+                    foreach ($abil["children"] as $know){
+                        $knowledge = new Knowledge;
+                        $knowledge->dpp_id = $dpp->id;
+                        $knowledge->zun_version_id = $zv->id;
+                        $knowledge->name = $know["text"];
+                        $knowledge->keyword = $know["keyword"];
+                        $knowledge->what = $know["what"];
+                        $knowledge->with = " ";
+                        $knowledge->where = " ";
+                        $knowledge->ability_id = $ability->id;
+                        $knowledge->is_through = false;
+                        $knowledge->save();
+                    }
+                }
+            }
+            if ($elem["type"] == 'abil')
+            {
+                $ability = new Ability;
+                $ability->dpp_id = $dpp->id;
+                $ability->zun_version_id = $zv->id;
+                $ability->name = $elem["text"];
+                $ability->keyword = $elem["keyword"];
+                $ability->what = $elem["what"];
+                $ability->with = $elem["with"];
+                $ability->where = $elem["where"];
+                $ability->skill_id = null;
+                $ability->has_parent_comp = true;
+                $ability->competence_id = $competence->id;
+                $ability->save();
+                foreach ($elem["children"] as $know){
+                    $knowledge = new Knowledge;
+                    $knowledge->dpp_id = $dpp->id;
+                    $knowledge->zun_version_id = $zv->id;
+                    $knowledge->name = $know["text"];
+                    $knowledge->keyword = $know["keyword"];
+                    $knowledge->what = $know["what"];
+                    $knowledge->with = " ";
+                    $knowledge->where = " ";
+                    $knowledge->ability_id = $ability->id;
+                    $knowledge->is_through = false;
+                    $knowledge->save();
+                }
+            }
+        }
+        // return true;
+    }
+
     public function get_zun_version_data_unattached(Dpp $dpp,ZunVersion $zv)
     {
         $result = [];
@@ -410,6 +495,14 @@ class ZunVersionController extends Controller
             $this->delete_ability($request);
             $request->ability = $request->item;
             $this->add_ability($dpp,$zv,$request);
+        }
+
+        if ($id2[0]=='c')
+        {
+            $request->id = $id;
+            $this->delete_competence($request);
+            $request->competence = $request->item;
+            $this->create_competence($dpp,$zv,$request);
         }
     }
 }

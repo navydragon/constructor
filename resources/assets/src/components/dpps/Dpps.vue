@@ -17,6 +17,11 @@
                     {{data.item.participants.length}}
                 </template>
                 <template v-slot:cell(modify)="data">
+                    <router-link v-if="!isBusy" icon="ion ion-md-eye" :to="{ name: 'dpp_inspect', params: {dpp: data.item.id } }" :exact="true">
+                       <b-button  variant="outline-info">
+                           <i class="ion ion-md-eye" style="font-size:20px;"></i>
+                       </b-button>
+                    </router-link>
                     <router-link v-if="!isBusy" icon="ion ion-md-person" :to="{ name: 'dpp_config', params: {dpp: data.item.id } }" :exact="true">
                        <b-button  variant="outline-primary">
                            <i class="ion ion-md-construct" style="font-size:20px;"></i>
@@ -92,6 +97,11 @@
           {
             key: 'participants',
             label: 'Участников',
+            sortable: true
+          },
+          {
+            key: 'zuns',
+            label: 'ЗУНов',
             sortable: true
           },
           {

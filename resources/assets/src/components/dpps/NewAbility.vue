@@ -2,7 +2,7 @@
   <span>
     <b-button v-b-modal.modal-addabil variant="success">Добавить умение</b-button>
         <!-- Модальное окно создания навыка -->
-    <b-modal @ok="handle_ok_skil" id="modal-addabil" ok-title="Добавить умение" cancel-title="Закрыть" size="xl" title="Создание нового умения">
+    <b-modal no-close-on-esc no-close-on-backdrop ok-only @ok="handle_ok_skil" id="modal-addabil" ok-title="Добавить умение" cancel-title="Закрыть" size="xl" title="Создание нового умения">
         <b-alert v-if="!new_skil.show_edit" show variant="info">Выберите компонент на диаграмме для редактирования</b-alert>
         <div v-for="elem in this.new_skil.skilData" :key="elem.id" class="row">
         <div class="col-md-12">
@@ -44,7 +44,7 @@
                 </b-form-row>
                 <b-form-row>
                 <b-form-group label-size="lg" label-cols-lg="2" label="Итоговое название" class="col">
-                    <b-form-input disabled  :value="ei_fulltext" />
+                    <p>{{ei_fulltext}}</p>
                 </b-form-group>
                 </b-form-row>
                 <b-button type="submit" variant="primary">Сохранить</b-button>
@@ -65,7 +65,7 @@
                 </b-form-row>
                 <b-form-row>
                 <b-form-group label-size="lg" label-cols-lg="2" label="Итоговое название:" class="col">
-                    <b-form-input disabled  :value="ei_fulltext" />
+                    <p>{{ei_fulltext}}</p>
                 </b-form-group>
                 </b-form-row>
                 <b-button type="submit" variant="primary">Сохранить</b-button>
@@ -136,9 +136,17 @@ export default {
       return this.combine_text(this.new_skil.editingItem)
       },
     ei_add_disable () {
-      if (this.new_skil.editingItem.children.length < 3) {
-        return false
+      if (this.new_skil.editingItem.type=='abil')
+      {
+        if (this.new_skil.editingItem.children.length < 10) {
+          return false
+        }
+      }else{
+        if (this.new_skil.editingItem.children.length < 3) {
+          return false
+        }
       }
+      
       return true
     },
   },
@@ -152,6 +160,9 @@ export default {
         this.new_skil.show_errors = false
         this.$emit('add_abil', this.new_skil.skilData[0]);
        // this.treeData[0].children.push(this.new_skil.skilData[0])
+        this.new_skil.show_edit = false
+        this.new_skil.editingItem = {}
+        this.new_skil.editingNode = null
         this.new_skil.skilData = [{
           'id': this.generate_id(),
           'text': 'Новое умение',

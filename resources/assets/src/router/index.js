@@ -59,6 +59,12 @@ const router = new Router({
       meta: { auth: true }
     },
     {
+      path: 'adm/dpps/:dpp/inspect',
+      name: 'dpp_inspect',
+      component: () => import('@/components/dpps/DppInspect.vue'),
+      meta: { auth: true }
+    },
+    {
       path: 'my_dpps',
       name: 'my_dpps',
       component: () => import('@/components/dpps/MyDpps'),
@@ -80,6 +86,18 @@ const router = new Router({
       path: 'my_dpps/:dpp/stages/:stage/work_ish',
       name: 'dpp_stage_work_ish',
       component: () => import('@/components/dpps/DppStageWorkIsh'),
+      meta: { auth: true }
+    },
+    {
+      path: 'my_dpps/:dpp/stages/:stage/work_om',
+      name: 'dpp_stage_work_om',
+      component: () => import('@/components/dpps/DppStageWorkOM'),
+      meta: { auth: true }
+    },
+    {
+      path: 'my_dpps/new_orgchart',
+      name: 'new_orgchart',
+      component: () => import('@/components/dpps/NewOC'),
       meta: { auth: true }
     },
   ]

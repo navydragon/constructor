@@ -67,7 +67,7 @@
         "vue-simple-calendar": "~4.2.1",
         "vue-simplemde": "~1.0.0",
         "vue-slider-component": "~3.0.16",
-        "vue-tables-2": "~1.4.50",
+        "vue-tables-2": "^1.4.93",
         "vue-template-compiler": "^2.6.11",
         "vue-text-mask": "~6.1.1",
         "vue-toasted": "~1.1.24",
@@ -121,6 +121,7 @@
         ]
     },
     "dependencies": {
+        "@balkangraph/orgchart.js": "^6.2.55",
         "@websanova/vue-auth": "^2.21.16-beta",
         "vue-organization-chart": "^1.1.6",
         "vue-search-select": "^2.9.3"

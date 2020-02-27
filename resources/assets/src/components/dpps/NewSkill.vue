@@ -2,7 +2,7 @@
   <span>
     <b-button v-b-modal.modal-addskil variant="secondary">Добавить навык</b-button>
         <!-- Модальное окно создания навыка -->
-    <b-modal @ok="handle_ok_skil" id="modal-addskil" ok-title="Добавить навык" cancel-title="Закрыть" size="xl" title="Создание нового навыка">
+    <b-modal no-close-on-esc no-close-on-backdrop ok-only @ok="handle_ok_skil" id="modal-addskil" ok-title="Добавить навык" cancel-title="Закрыть" size="xl" title="Создание нового навыка">
         <b-alert v-if="!new_skil.show_edit" show variant="info">Выберите компонент на диаграмме для редактирования</b-alert>
         <div v-for="elem in this.new_skil.skilData" :key="elem.id" class="row">
         <div class="col-md-12">
@@ -25,7 +25,7 @@
                 <b-alert show  v-if="!new_skil.editingItem.valid">Заполните параметры компонента</b-alert>
                 <b-form-row>
                 <b-form-group label-size="lg" label-cols-lg="2" label="Ключевое слово" class="col">
-                    <b-form-input disabled v-model="new_skil.editingItem.keyword" required placeholder="Владеть" value="Владеть" />
+                    <b-form-input disabled v-model="new_skil.editingItem.keyword" required placeholder="Владеть навыком" value="Владеть навыком" />
                 </b-form-group>
                 </b-form-row>
                 <b-form-row>
@@ -45,7 +45,7 @@
                 </b-form-row>
                 <b-form-row>
                 <b-form-group label-size="lg" label-cols-lg="2" label="Итоговое название" class="col">
-                    <b-form-input disabled  :value="ei_fulltext" />
+                    <p>{{ei_fulltext}}</p>
                 </b-form-group>
                 </b-form-row>
                 <b-form-row>
@@ -79,7 +79,7 @@
                 </b-form-row>
                 <b-form-row>
                 <b-form-group label-size="lg" label-cols-lg="2" label="Итоговое название" class="col">
-                    <b-form-input disabled  :value="ei_fulltext" />
+                    <p>{{ei_fulltext}}</p>
                 </b-form-group>
                 </b-form-row>
                 <b-button type="submit" variant="primary">Сохранить</b-button>
@@ -102,7 +102,7 @@
                 </b-form-row>
                 <b-form-row>
                 <b-form-group label-size="lg" label-cols-lg="2" label="Итоговое название:" class="col">
-                    <b-form-input disabled  :value="ei_fulltext" />
+                    <p>{{ei_fulltext}}</p>
                 </b-form-group>
                 </b-form-row>
                 <b-button type="submit" variant="primary">Сохранить</b-button>
@@ -158,7 +158,7 @@ export default {
         'color': 'btn-secondary',
         'icon': 'ion ion-ios-radio-button-on text-secondary',
         'valid': false,
-        'keyword': 'Владеть',
+        'keyword': 'Владеть навыком',
         'what': '',
         'with': '',
         'where': '',
@@ -173,9 +173,17 @@ export default {
       return this.combine_text(this.new_skil.editingItem)
       },
     ei_add_disable () {
-      if (this.new_skil.editingItem.children.length < 3) {
-        return false
+      if (this.new_skil.editingItem.type=='abil')
+      {
+        if (this.new_skil.editingItem.children.length < 10) {
+          return false
+        }
+      }else{
+        if (this.new_skil.editingItem.children.length < 3) {
+          return false
+        }
       }
+      
       return true
     },
   },
@@ -189,6 +197,9 @@ export default {
             this.new_skil.show_errors = false
             this.$emit('add_skil', this.new_skil.skilData[0]);
         // this.treeData[0].children.push(this.new_skil.skilData[0])
+            this.new_skil.show_edit = false
+            this.new_skil.editingItem = {}
+            this.new_skil.editingNode = null
             this.new_skil.skilData = [{
             'id': this.generate_id(),
             'text': 'Новый навык',
@@ -198,7 +209,7 @@ export default {
             'icon': 'ion ion-ios-radio-button-on text-secondary',
             'valid': false,
             'children': [],
-            'keyword': 'Владеть',
+            'keyword': 'Владеть навыком',
             'what': '',
             'with': '',
             'where': ''

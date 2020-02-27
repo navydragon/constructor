@@ -52,6 +52,7 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('/dpps/{dpp}/get_stage_data/{stage}','DppStageController@get_stage_data');
   Route::post('/dpps/{dpp}/{stage}/go_next','DppStageController@force_next_stage');
   
+  Route::get('/dpps/get_prof_levels','IshVersionController@get_prof_levels');
 
 
   Route::get('/dpps/{dpp}/config','DppController@get_dpp_to_config');

@@ -1,5 +1,5 @@
 <template>
-    <b-modal @ok="handle_ok_skil" id="modal-edititem" ok-title="Отредактировать" cancel-title="Закрыть" size="xl" title="Редактирование компонента">
+    <b-modal no-close-on-esc no-close-on-backdrop ok-only @ok="handle_ok_skil" id="modal-edititem" ok-title="Сохранить изменения" cancel-title="Закрыть" size="xl" title="Редактирование компонента">
         <b-alert v-if="!new_skil.show_edit" show variant="info">Выберите компонент на диаграмме для редактирования</b-alert>
         <div v-for="elem in this.new_skil.skilData" :key="elem.id" class="row">
         <div class="col-md-12">
@@ -17,12 +17,47 @@
             v-if="new_skil.show_edit"
             border-variant="secondary"
             >
+            <!-- Редактирование comp -->
+            <b-form v-if="new_skil.editingItem.type==='comp'" @submit="nc_onSubmit" @reset="nc_onReset">
+                <b-alert show  v-if="!new_skil.editingItem.valid">Заполните параметры компонента</b-alert>
+                <b-form-row>
+                <b-form-group label-size="lg" label-cols-lg="2" label="Ключевое слово" class="col">
+                    <b-form-input disabled v-model="new_skil.editingItem.keyword" required placeholder="Способен" value="Способен" />
+                </b-form-group>
+                </b-form-row>
+                <b-form-row>
+                <b-form-group label-size="lg" label-cols-lg="2" label="На что?" class="col">
+                    <b-input v-model="new_skil.editingItem.what" required placeholder="На что?" />
+                </b-form-group>
+                </b-form-row>
+                <b-form-row>
+                <b-form-group label-size="lg" label-cols-lg="2" label="При помощи чего?" class="col">
+                    <b-input v-model="new_skil.editingItem.with" required placeholder="При помощи чего?" />
+                </b-form-group>
+                </b-form-row>
+                <b-form-row>
+                <b-form-group label-size="lg" label-cols-lg="2" label="При каких условиях?" class="col">
+                    <b-input v-model="new_skil.editingItem.where" required placeholder="При каких условиях?" />
+                </b-form-group>
+                </b-form-row>
+                <b-form-row>
+                <b-form-group label-size="lg" label-cols-lg="2" label="Итоговое название" class="col">
+                    <p>{{ei_fulltext}}</p>
+                </b-form-group>
+                </b-form-row>
+                <b-form-row>
+                <b-button type="submit" variant="primary">Сохранить</b-button>&nbsp;
+                <b-button :disabled="ei_add_disable" v-if="new_skil.editingItem.valid" @click="nc_add_skil_to_comp" variant="secondary">Добавить навык</b-button>&nbsp;
+                <b-button :disabled="ei_add_disable" v-if="new_skil.editingItem.valid" @click="nc_add_abil_to_comp" variant="success">Добавить умение</b-button>
+                &nbsp;
+                </b-form-row>
+            </b-form>
             <!-- Редактирование skill -->
             <b-form v-if="new_skil.editingItem.type==='skil'" @submit="nc_onSubmit" @reset="nc_onReset">
                 <b-alert show  v-if="!new_skil.editingItem.valid">Заполните параметры компонента</b-alert>
                 <b-form-row>
                 <b-form-group label-size="lg" label-cols-lg="2" label="Ключевое слово" class="col">
-                    <b-form-input disabled v-model="new_skil.editingItem.keyword" required placeholder="Владеть" value="Владеть" />
+                    <b-form-input disabled v-model="new_skil.editingItem.keyword" required placeholder="Владеть навыком" value="Владеть навыком" />
                 </b-form-group>
                 </b-form-row>
                 <b-form-row>
@@ -42,12 +77,13 @@
                 </b-form-row>
                 <b-form-row>
                 <b-form-group label-size="lg" label-cols-lg="2" label="Итоговое название" class="col">
-                    <b-form-input disabled  :value="ei_fulltext" />
+                    <p>{{ei_fulltext}}</p>
                 </b-form-group>
                 </b-form-row>
                 <b-form-row>
                 <b-button type="submit" variant="primary">Сохранить</b-button>&nbsp;
-                <b-button :disabled="ei_add_disable" v-if="new_skil.editingItem.valid" @click="nc_add_abil_to_skil" variant="success">Добавить умение</b-button>
+                <b-button :disabled="ei_add_disable" v-if="new_skil.editingItem.valid" @click="nc_add_abil_to_skil" variant="success">Добавить умение</b-button> &nbsp;
+                <b-button :disabled="!is_deletable(new_skil.skilData[0], new_skil.editingItem,false)" @click="delete_el(new_skil.skilData[0].children, new_skil.editingItem)" variant="danger">Удалить компонент</b-button>
                 &nbsp;
                 </b-form-row>
             </b-form>
@@ -76,7 +112,7 @@
                 </b-form-row>
                 <b-form-row>
                 <b-form-group label-size="lg" label-cols-lg="2" label="Итоговое название" class="col">
-                    <b-form-input disabled  :value="ei_fulltext" />
+                    <p>{{ei_fulltext}}</p>
                 </b-form-group>
                 </b-form-row>
                 <b-button type="submit" variant="primary">Сохранить</b-button>
@@ -99,7 +135,7 @@
                 </b-form-row>
                 <b-form-row>
                 <b-form-group label-size="lg" label-cols-lg="2" label="Итоговое название:" class="col">
-                    <b-form-input disabled  :value="ei_fulltext" />
+                    <p>{{ei_fulltext}}</p>
                 </b-form-group>
                 </b-form-row>
                 <b-button type="submit" variant="primary">Сохранить</b-button>
@@ -145,10 +181,18 @@ export default {
     ei_fulltext () {
       return this.combine_text(this.new_skil.editingItem)
       },
-    ei_add_disable () {
-      if (this.new_skil.editingItem.children.length < 3) {
-        return false
+   ei_add_disable () {
+      if (this.new_skil.editingItem.type=='abil')
+      {
+        if (this.new_skil.editingItem.children.length < 10) {
+          return false
+        }
+      }else{
+        if (this.new_skil.editingItem.children.length < 3) {
+          return false
+        }
       }
+      
       return true
     },
   },
@@ -163,6 +207,9 @@ export default {
             this.$emit('update_item', this.new_skil.skilData[0]);
         // this.treeData[0].children.push(this.new_skil.skilData[0])
             this.new_skil.skilData = []
+            this.new_skil.show_edit = false
+            this.new_skil.editingItem = {}
+            this.new_skil.editingNode = null
         }
     },
     kek (node) {
@@ -246,6 +293,40 @@ export default {
         'children': []
       })
     },
+    nc_add_abil_to_comp () {
+      this.new_skil.editingItem.children.push({
+        'id': this.generate_id(),
+        'text': 'Умение ' + (this.new_skil.editingItem.children.length + 1),
+        'opened': true,
+        'valid': false,
+        'type': 'abil',
+        'title': 'Умение',
+        'color': 'btn-success',
+        'icon': 'ion ion-ios-radio-button-on text-success',
+        'keyword': 'Уметь',
+        'what': '',
+        'with': '',
+        'where': '',
+        'children': []
+      })
+    },
+    nc_add_skil_to_comp () {
+      this.new_skil.editingItem.children.push({
+        'id': this.generate_id(),
+        'text': 'Навык ' + (this.new_skil.editingItem.children.length + 1),
+        'opened': true,
+        'valid': false,
+        'type': 'skil',
+        'title': 'Навык',
+        'color': 'btn-secondary',
+        'icon': 'ion ion-ios-radio-button-on text-secondary',
+        'keyword': 'Владеть навыком',
+        'what': '',
+        'with': '',
+        'where': '',
+        'children': []
+      })
+    },
     nc_add_know_to_abil () {
       this.new_skil.editingItem.children.push({
         'id': this.generate_id(),
@@ -302,7 +383,7 @@ export default {
            if (data.children[i].id == el.id)
            {
              // console.log('found '+data.children[i].text+' in '+data.text+'('+data.children.length+')')
-              if (data.children.length > 2)
+              if (data.children.length > 1)
               {
                console.log('can_be_deleted')
                found = true

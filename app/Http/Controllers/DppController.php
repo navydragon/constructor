@@ -8,11 +8,15 @@ use App\DppType;
 use App\Dpp;
 use App\User;
 use App\Role;
+use App\Skill;
+use App\Ability;
+use App\Knowledge;
 use App\StageType;
 use App\DppStage;
 use App\DppUserRole;
 use App\ZunVersion;
 use App\IshVersion;
+use App\OmVersion;
 use Auth;
 class DppController extends Controller
 {
@@ -34,6 +38,10 @@ class DppController extends Controller
         {
             $dpp->type_name = $dpp->type->name;
             $dpp->participants = $dpp->participants;
+            $dpp_sc = Skill::where('dpp_id','=',$dpp->id)->get()->count();
+            $dpp_ac = Ability::where('dpp_id','=',$dpp->id)->get()->count();
+            $dpp_kc = Knowledge::where('dpp_id','=',$dpp->id)->get()->count();
+            $dpp->zuns = $dpp_sc + $dpp_ac + $dpp_kc;
         }
         return $dpps;
     }
@@ -192,6 +200,18 @@ class DppController extends Controller
                 $zv->author_id = Auth::user()->id;
                 $zv->save();
                 $dpp->zun_version_id = $zv->id;
+                $dpp->save();
+            }
+        }
+
+        if ($ds->stage_type_id == 2) {
+            if ($dpp->om_versions->count() == 0)
+            {
+                $om = new OmVersion;
+                $om->dpp_id = $dpp->id;
+                $om->author_id = Auth::user()->id;
+                $om->save();
+                $dpp->om_version_id = $om->id;
                 $dpp->save();
             }
         }

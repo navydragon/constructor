@@ -39,4 +39,9 @@ class Dpp extends Model
     {
         return $this->hasMany('App\IshVersion','dpp_id');
     }
+
+    public function om_versions()
+    {
+        return $this->hasMany('App\OmVersion','dpp_id');
+    }
 }

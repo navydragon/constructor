@@ -47,7 +47,7 @@
               <template slot-scope="_">
                   <div style="display: inherit; width: 100px" @click.ctrl="customItemClickWithCtrl" >
                   <i :class="_.vm.themeIconClasses" role="presentation" v-if="!_.model.loading"></i>
-                  <span v-html="_.model.text"></span> &nbsp; <span v-if="_.model.type!='folder' && _.model.is_main==true"  @click="delete_el_from_tree(_.model, $event)" class="btn btn-outline-danger btn-xs"><i class="ion ion-md-close"></i></span> <span v-if="_.model.type!='folder' && _.model.is_main==true" class="btn btn-outline-info btn-xs" @click="edit_item(_.model)"><i class="ion ion-md-create"></i></span>
+                  <span v-if="_.model.type!='folder' && _.model.is_main==true"  @click="delete_el_from_tree(_.model, $event)" class="btn btn-outline-danger btn-xs"><i class="ion ion-md-close"></i></span> <span v-if="_.model.type!='folder' && _.model.is_main==true" class="btn btn-outline-info btn-xs" @click="edit_item(_.model)"><i class="ion ion-md-create"></i></span> &nbsp; <span v-html="_.model.text"></span> &nbsp; 
                   </div>
               </template>
             </v-jstree>
@@ -75,7 +75,7 @@
                         <template slot-scope="_">
                             <div style="display: inherit; width: 100px" @click.ctrl="customItemClickWithCtrl" >
                             <i :class="_.vm.themeIconClasses" role="presentation" v-if="!_.model.loading"></i>
-                            <span v-html="_.model.text"></span> &nbsp; <span v-if="_.model.type!='folder' && _.model.is_main==true"  @click="delete_el_from_tree(_.model, $event)" class="btn btn-outline-danger btn-xs"><i class="ion ion-md-close"></i></span> 
+                            <span v-if="_.model.type!='folder' && _.model.is_main==true"  @click="delete_el_from_tree(_.model, $event)" class="btn btn-outline-danger btn-xs"><i class="ion ion-md-close"></i></span> &nbsp; <span v-if="_.model.type!='folder' && _.model.is_main==true" class="btn btn-outline-info btn-xs" @click="edit_item(_.model)"><i class="ion ion-md-create"></i></span> &nbsp; <span v-html="_.model.text"></span> &nbsp;  
                             </div>
                         </template>
                         </v-jstree>
@@ -83,6 +83,11 @@
                 </div>
             </b-tab>
             </b-tabs>
+            <!--
+            <div class="row">
+                <div class="col-md-12"><b-button block variant="success" @click="go_forward()">Согласовать и перейти к следующему этапу</b-button></div>
+            </div>
+            -->
         </b-card>
 
 
@@ -245,6 +250,13 @@ export default {
         .then((response) => (this.get_zun_versions_data()))
         .finally(() => (this.$bvModal.hide("modal-edititem")));
     },
+    go_forward()
+    {
+      var self = this
+      axios
+      .post('/dpps/'+this.$route.params.dpp+'/'+ this.stage.id+'/go_next')
+      .then(() => (this.$router.push('/my_dpps/'+this.$route.params.dpp+'/overview/1')))
+    }
 
   },
   mounted() {

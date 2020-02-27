@@ -8,16 +8,11 @@
                 <h4>ОБЩИЕ ПОЛОЖЕНИЯ</h4>
                 <h5>Требования к обучающимся</h5>
                 <h5>Требования к уровню профессионального образования </h5>
-                <div>
-                    <b-form-textarea
-                    id="req_user_edulevel"
-                    v-model="ish_data.req_user_edulevel"
-                    :state="ish_data.req_user_edulevel.length >= 10"
-                    placeholder="лица, имеющие высшее образование, лица, получающие высшее образование, или лица, имеющие среднее профессиональное образование, лица, получающие среднее профессиональное образование"
-                    rows="3"
-                    ></b-form-textarea>
-                    <br>
-                </div>
+                <b-form-row class="m-0">
+                    <b-form-group>
+                        <b-form-checkbox-group :state="ish_data.pl.length>0" id="checkbox-group" :options="prof_levels_arr" stacked v-model="ish_data.pl" name="selectedItems"> </b-form-checkbox-group>
+                    </b-form-group>
+                </b-form-row>
                 <h5>Требования к квалификации</h5>
                 <div>
                     <b-form-textarea
@@ -31,19 +26,12 @@
                 </div>
                 <h4>ЦЕЛЬ И ЗАДАЧИ ОСВОЕНИЯ</h4>
                 <h5>Цель освоения</h5>
-                <div>
-                    <b-form-textarea
-                    id="target"
-                    v-model="ish_data.target"
-                    :state="ish_data.target.length >= 10"
-                    placeholder="Целью освоения программы являются совершенствование и (или) получение новой компетенции, необходимой для профессиональной деятельности, и (или) повышение профессионального уровня в рамках имеющейся квалификации в области профессиональной деятельности."
-                    rows="3"
-                    ></b-form-textarea>
-                    <br>
-                </div>
+                <p class="text-justify">
+                    Целью освоения программы являются совершенствование и (или) получение новой компетенции, необходимой для профессиональной деятельности, и (или) повышение профессионального уровня в рамках имеющейся квалификации в области профессиональной деятельности.
+                </p>
                 <h5>Задачи освоения</h5>
                 <div>
-                   <p>Задачами освоения программы являются:
+                   <p class="text-justify">Задачами освоения программы являются:
                     <ul>
                         <li>приобретение обучающимися знаний, умений и навыков в соответствии с учебным планом и календарным графиком учебного процесса;</li>
                         <li>оценка достижений обучающимися планируемых результатов обучения.</li>
@@ -52,7 +40,7 @@
                 </div>
                  <b-alert v-if="show_errors" show variant="danger">
                      <strong>Обнаружены ошибки!</strong>
-                     <ul v-for="(error,index) in errors" v-key="index">
+                     <ul v-for="(error,index) in errors" :key="index">
                          <li>{{error}}</li>
                      </ul>
                  </b-alert>
@@ -80,8 +68,10 @@ export default {
           req_user_edulevel: '',
           req_user_kval: '',
           target: '',  
-          tasks: '',  
-        }
+          tasks: '',
+          pl: [],  
+        },
+        prof_levels_arr: []
       }
   },
   computed: {
@@ -107,9 +97,8 @@ export default {
     {
         this.show_errors = false 
         this.errors = []
-        if (this.ish_data.req_user_edulevel.length < 10) {this.errors.push("Некорректно введены Требования к уровню профессионального образования")}
         if (this.ish_data.req_user_kval.length < 10) {this.errors.push("Некорректно введены Требования к квалификации")}
-        if (this.ish_data.target.length < 10) {this.errors.push("Некорректно введена Цель освоения")}
+        if (this.ish_data.pl.length == 0) {this.errors.push("Не выбраны требования к уровню профессионального образования")}
         if (this.errors.length > 0)
         {
             this.show_errors = true
@@ -127,10 +116,15 @@ export default {
   },
   mounted() {
       axios
+       .get('/dpps/get_prof_levels')
+       .then(response => (this.prof_levels_arr = response.data))
+
+      axios
         .get('/dpps/'+this.$route.params.dpp+'/get_stage_data/'+ this.$route.params.stage)
         .then(response => (this.stage = response.data))
         .finally( () =>( this.get_ish_versions_data() ) )  
       
+     
   }
 }
 </script>
