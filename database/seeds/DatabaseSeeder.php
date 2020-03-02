@@ -19,5 +19,6 @@ class DatabaseSeeder extends Seeder
         //$this->call(DppStagesTableSeeder::class);
         //$this->call(DppStageStatusesTableSeeder::class);
         //$this->call(ProfLevelsTableSeeder::class);
+        $this->call(QuestionTypesSeeder::class);
     }
 }

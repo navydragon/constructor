@@ -1,8 +1,7 @@
 <template>
     <div>
       <div>
-        <b-button block v-b-modal.modal-addquest variant="primary">Добавить вопрос</b-button>
-        <b-modal no-close-on-esc no-close-on-backdrop @ok="handle_ok" id="modal-addquest" ok-title="Добавить вопрос" cancel-title="Закрыть" size="xl" title="Создание нового вопроса">
+        <b-modal no-close-on-esc no-close-on-backdrop @ok="handle_ok" id="modal-editquestion" ok-title="Сохранить" cancel-title="Закрыть" size="xl" title="Редактирование вопроса">
         <b-form-group
                 :state="new_question.text_state"
                 label="Выберите знание"
@@ -11,10 +10,7 @@
                 label-cols-lg="2"
                 label-size="lg"
         >
-            <model-select id="knowledge-input" :options="knowledges"
-                        v-model="new_question.knowledge"
-                        placeholder="Выберите знание">
-            </model-select>
+            <p>{{new_question.knowledge.name}}</p>
         </b-form-group>
         <b-form-group
                 :state="new_question.type_state"
@@ -24,10 +20,9 @@
                 label-cols-lg="2"
                 label-size="lg"
                 >
-                <b-form-select id="type-input" @change="show_errors=false" v-model="new_question.type" :options="type_options">
-                </b-form-select>
+            <p>{{new_question.type.name}}</p>
         </b-form-group>
-         <b-form-group
+        <b-form-group
                 :state="new_question.text_state"
                 label="Текст вопроса"
                 label-for="text-input"
@@ -41,6 +36,7 @@
                     v-model="new_question.text"
                 ></b-form-textarea>
         </b-form-group>
+        
         <div v-if="new_question.type.id==1">
             <p>Введите варианты ответов и укажите правильный</p>
             <b-table bordered :items="new_question.single_choice_answers" :fields="new_question.single_choice_fields">
@@ -168,15 +164,16 @@ import draggable from 'vuedraggable/src/vuedraggable'
 import { ModelSelect } from 'vue-search-select'
 
 export default {
-  name: "new-question",
+  name: "edit-question",
   metaInfo: {
-  title: "Добавить новый вопрос"
+  title: "Отредактировать вопрос"
   },
   components: {
     draggable, ModelSelect
   },
   props: {
-      knowledges: Array
+      knowledges: Array,
+      question_to_edit: Number,
   },
   data () {
     return {
@@ -272,30 +269,67 @@ export default {
         bvModalEvt.preventDefault()
         this.errors = []
         this.show_errors = false
-        if (!this.new_question.knowledge.value) { this.errors.push("Не выбрано знание, для которого формируется вопрос")}
         if (this.new_question.text.length < 5) { this.errors.push("Не введен текст вопроса")}
-        if (!this.new_question.type.id) { this.errors.push("Не выбран тип вопроса")} 
         else {
         switch (this.new_question.type.id)
         {
             case 1:
                 if (this.new_question.single_choice_right == "")
                 { this.errors.push("Не выбран правильный вариант ответа")}
+                for (var i = 0; i < this.new_question.single_choice_answers.length; i++)
+                {
+                    if (this.new_question.single_choice_answers[i].text == '')
+                    {
+                        this.errors.push("Не введен один из вариантов ответа")
+                    }
+                }
             break;
             case 2:
                 if (this.new_question.multi_choice_right.length < 2)
                 { this.errors.push("Для данного типа вопроса необходимо выбрать более одного правильного варианта ответа")}
+                for (var i = 0; i < this.new_question.multi_choice_answers.length; i++)
+                {
+                    if (this.new_question.multi_choice_answers[i].text == '')
+                    {
+                        this.errors.push("Не введен вариантов ответа")
+                    }
+                }
             break;
             case 3:
+                for (var i = 0; i < this.new_question.free_choice_answers.length; i++)
+                {
+                    if (this.new_question.free_choice_answers[i].text == '')
+                    {
+                        this.errors.push("Не введен вариантов ответа")
+                    }
+                }
+            break;
             case 4:
+                for (var i = 0; i < this.new_question.sequence_choice_answers.length; i++)
+                {
+                    if (this.new_question.sequence_choice_answers[i].text == '')
+                    {
+                        this.errors.push("Не введен вариантов ответа")
+                    }
+                }
+            break;
             case 5:
+                for (var i = 0; i < this.new_question.accordance_choice_answers.length; i++)
+                {
+                    if (this.new_question.accordance_choice_answers[i].accord1 == '' || this.new_question.accordance_choice_answers[i].accord2 == '')
+                    {
+                        this.errors.push("Не введен вариантов ответа")
+                    }
+                }
+            break;
         }
        }
        if (this.errors.length > 0)
        {
            this.show_errors = true
        }else{
-           this.$emit('add_question', this.new_question)
+           console.log("OK")
+           this.$emit('update_question', this.new_question,this.question_to_edit)
        }
     },
     generate_id () {
@@ -364,7 +398,44 @@ export default {
         });
         this.new_question.accordance_choice_answers = new_arr
     },
+  },
+  
+  mounted() {
+      self = this
+      axios
+        .get('/dpps/get_question_data/'+ this.question_to_edit)
+        .then(function (response){ 
+              self.new_question.knowledge = response.data.knowledge
+              self.new_question.type = response.data.type
+              self.new_question.text = response.data.text
+              console.log(response.data.ans_arr)
+              switch (response.data.type.id) {
+                  case 1: 
+                  self.new_question.single_choice_answers = response.data.ans_arr 
+                  self.new_question.single_choice_right = response.data.single_choice_right 
+                  break;
+                  case 2: 
+                  self.new_question.multi_choice_answers = response.data.ans_arr 
+                  self.new_question.multi_choice_right = response.data.multi_choice_right
+                  break;
+                  case 3: 
+                  self.new_question.free_choice_answers = response.data.ans_arr 
+                  break;
+                  case 4: 
+                  self.new_question.sequence_choice_answers = response.data.ans_arr 
+                  break;
+                  case 5: 
+                  self.new_question.accordance_choice_answers = response.data.ans_arr 
+                  break;
+                  default: break;
+              }
+          })
 
+        //.finally (function (response){ 
+        //      axios
+        //      .get('/dpps/'+self.stage.dpp_id+'/get_knowledges_to_ov/'+ self.stage.om_version_id)
+        //      .then(response => (self.knowledges = response.data))
+        //  })
   }
 }
 </script>

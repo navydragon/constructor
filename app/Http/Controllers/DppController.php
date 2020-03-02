@@ -17,6 +17,7 @@ use App\DppUserRole;
 use App\ZunVersion;
 use App\IshVersion;
 use App\OmVersion;
+use App\QuestionType;
 use Auth;
 class DppController extends Controller
 {
@@ -239,6 +240,23 @@ class DppController extends Controller
             DppStage::destroy($stage->id);
         }
         Dpp::destroy($request->id);
+    }
+
+    public function get_knowledges_to_ov(Dpp $dpp, OmVersion $ov)
+    {
+        $arr = $dpp->knowledges;
+        foreach ($arr as $elem)
+        {
+            $elem->value = $elem->id;
+            $elem->text = $elem->name;
+            $kn = Knowledge::find($elem->id);
+            $elem->questions = $kn->questions;
+            foreach ($elem->questions as $q)
+            {
+                $q->type_name = $q->type->name;
+            }
+        }
+        return $arr;
     }
   
 }

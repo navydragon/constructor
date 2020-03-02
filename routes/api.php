@@ -39,6 +39,7 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/zuns/abil/delete','ZunVersionController@delete_ability');
   Route::post('/zuns/skil/delete','ZunVersionController@delete_skill');
   Route::post('/zuns/comp/delete','ZunVersionController@delete_competence');
+  Route::post('/questions/delete','OmVersionController@delete_question');
 
   Route::post('/dpps/{dpp}/{zv}/add_skill','ZunVersionController@add_skill');
   Route::post('/dpps/{dpp}/{zv}/add_ability','ZunVersionController@add_ability');
@@ -52,8 +53,13 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('/dpps/{dpp}/get_stage_data/{stage}','DppStageController@get_stage_data');
   Route::post('/dpps/{dpp}/{stage}/go_next','DppStageController@force_next_stage');
   
+  Route::get('/dpps/{dpp}/get_knowledges_to_ov/{ov}','DppController@get_knowledges_to_ov');
+
   Route::get('/dpps/get_prof_levels','IshVersionController@get_prof_levels');
 
+  Route::post('/om_version/{ov}/add_question','OmVersionController@add_question');
+  Route::post('/om_version/{ov}/update_question','OmVersionController@update_question');
+  Route::get('/dpps/get_question_data/{question}','OmVersionController@get_question_data');
 
   Route::get('/dpps/{dpp}/config','DppController@get_dpp_to_config');
   Route::get('/stage_types','DppController@get_all_stage_types');

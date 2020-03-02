@@ -44,4 +44,9 @@ class Dpp extends Model
     {
         return $this->hasMany('App\OmVersion','dpp_id');
     }
+
+    public function knowledges()
+    {
+        return $this->hasMany('App\Knowledge','dpp_id');
+    }
 }

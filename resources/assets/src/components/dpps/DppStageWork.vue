@@ -18,7 +18,6 @@
             <new-ability v-on:add_abil="add_abil"></new-ability>
             <edit-item v-if="show_edit_window" v-on:update_item="update_item" :new_skil="data_to_edit"></edit-item>
             <new-comp :tree_data="treeData[0]" v-on:add_comp="add_comp"></new-comp>
-            </b-modal>
             <hr class="container-m-nx border-light my-4">
             <!-- Org Chart -->
             <div class="row">
@@ -83,11 +82,11 @@
                 </div>
             </b-tab>
             </b-tabs>
-            <!--
+            
             <div class="row">
                 <div class="col-md-12"><b-button block variant="success" @click="go_forward()">Согласовать и перейти к следующему этапу</b-button></div>
             </div>
-            -->
+            
         </b-card>
 
 

@@ -24,9 +24,11 @@
                     <h4>Исходные данные</h4>
                     <div v-if="!isBusy">
                         <h5>Требования к уровню профессионального образования</h5>
-                        <ul v-if="ish_data.prof_levels.length > 0" v-for="(elem,index) in ish_data.prof_levels" :key="index">
+                        <div v-if="ish_data.prof_levels.length > 0">
+                        <ul v-for="(elem,index) in ish_data.prof_levels" :key="index">
                             <li>{{elem.name}}</li>
                         </ul>
+                        </div>
                         <p v-if="ish_data.prof_levels.length == 0">
                             {{ish_data.req_user_edulevel}}
                         </p>

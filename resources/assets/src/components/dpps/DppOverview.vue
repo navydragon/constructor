@@ -10,14 +10,14 @@
         <div class="col-md-4 col-lg-4 col-xl-3">
           <h5>Этапы разработки:</h5>  
           <div class="ui-bordered mb-4">
-            <div v-for="st in dpp.stages" class="d-flex align-items-center w-100 py-2 px-3" :class="{'bg-lighter font-weight-bold': curStage == st.id}">
+            <div v-for="st in dpp.stages" :key="st.id" class="d-flex align-items-center w-100 py-2 px-3" :class="{'bg-lighter font-weight-bold': curStage == st.id}">
               <a href="#" @click="setcurStage(st)" class="d-block text-body">{{dpp.stages.indexOf(st)+1}}. {{st.name}}</a>
             </div>
           </div>
         </div>
         <div class="col-md-8 col-lg-8 col-xl-9">
             <b-alert v-if="curStage==false" show variant="info">Выберите этап</b-alert>
-            <div v-for="st in dpp.stages">
+            <div v-for="st in dpp.stages" :key="st.id">
                 <div v-if="curStage.id == st.id">
                   <h5>{{dpp.stages.indexOf(st)+1}}. {{st.name}}</h5>
                   <p><strong>Статус этапа:</strong> {{st.stage_status_name}}</p>

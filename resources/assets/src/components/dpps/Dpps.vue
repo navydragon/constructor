@@ -27,9 +27,9 @@
                            <i class="ion ion-md-construct" style="font-size:20px;"></i>
                        </b-button>
                     </router-link>
-                    <b-button @click="delete_dpp(data.item,data.item.id)" variant="outline-danger">
+                    <!-- <b-button @click="delete_dpp(data.item,data.item.id)" variant="outline-danger">
                            <i class="ion ion-md-close" style="font-size:20px;"></i>
-                       </b-button>
+                       </b-button> -->
                 </template>
             </b-table>
             {{this.info}}
@@ -170,11 +170,13 @@
       {
         this.$bvModal.msgBoxConfirm('Действительно хотите удалить программу?')
           .then(value => {
-            axios
-            .post('/dpps/delete', {
-                'id': id
-            })
-            .then ( () => (this.items.splice(this.items.indexOf(item),1)));
+            if (value === true) {
+              axios
+              .post('/dpps/delete', {
+                  'id': id
+              })
+              .then ( () => (this.items.splice(this.items.indexOf(item),1)));
+            }
           })
           .catch(err => {
             // An error occurred
