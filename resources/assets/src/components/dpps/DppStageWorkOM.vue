@@ -112,7 +112,7 @@ export default {
             headings: {
                 text: 'Текст вопроса',
                 type_name: 'Тип вопроса',
-                edit: 'Управление'
+                edit: 'Действия'
             }
         }
     }

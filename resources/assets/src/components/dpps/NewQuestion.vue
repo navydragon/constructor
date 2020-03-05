@@ -110,7 +110,7 @@
             <b-button variant="primary" @click="add_free_choice_answer">Добавить ответ</b-button>
         </div>
         <div v-if="new_question.type.id==4">
-            <p>Добавьте ответы и перетаскивайте их (используя иконоку <i class="ion ion-ios-move m-r-1"></i>), установив правильную последовательность ответов.</p>
+            <p>Запишите ответы в правильной последовательности. Вы можете поменять последовательность ответов путем перетаскивания элемента (с помощью иконки <i class="ion ion-ios-move m-r-1"></i>). Для обучающихся в момент прохождения теста ответы будут перемешаны.</p>
             <draggable v-model="new_question.sequence_choice_answers" v-bind="{animation: 150, handle: '.ion'}" tag="div" class="sortable-example">
                 <div v-for="item in new_question.sequence_choice_answers" :key="item.id" style="margin-bottom:10px">
                     <b-row>
@@ -189,31 +189,31 @@ export default {
         type: '',
         type_state: '',
         single_choice_answers: [
-            {id: this.generate_id(), text: 'Ответ 1', is_right: false },
-            {id: this.generate_id(), text: 'Ответ 2', is_right: false },
-            {id: this.generate_id(), text: 'Ответ 3', is_right: false },
-            {id: this.generate_id(), text: 'Ответ 4', is_right: false }
+            {id: this.generate_id(), text: '', is_right: false },
+            {id: this.generate_id(), text: '', is_right: false },
+            {id: this.generate_id(), text: '', is_right: false },
+            {id: this.generate_id(), text: '', is_right: false }
         ],
         free_choice_answers: [
-            {id: this.generate_id(), text: 'Ответ 1', is_right: true },
+            {id: this.generate_id(), text: '', is_right: true },
         ],
         multi_choice_answers: [
-            {id: this.generate_id(), text: 'Ответ 1', is_right: false },
-            {id: this.generate_id(), text: 'Ответ 2', is_right: false },
-            {id: this.generate_id(), text: 'Ответ 3', is_right: false },
-            {id: this.generate_id(), text: 'Ответ 4', is_right: false }
+            {id: this.generate_id(), text: '', is_right: false },
+            {id: this.generate_id(), text: '', is_right: false },
+            {id: this.generate_id(), text: '', is_right: false },
+            {id: this.generate_id(), text: '', is_right: false }
         ],
         sequence_choice_answers: [
-            {id: this.generate_id(), text: 'Ответ 1', is_right: true },
-            {id: this.generate_id(), text: 'Ответ 2', is_right: true },
-            {id: this.generate_id(), text: 'Ответ 3', is_right: true },
-            {id: this.generate_id(), text: 'Ответ 4', is_right: true }
+            {id: this.generate_id(), text: '', is_right: true },
+            {id: this.generate_id(), text: '', is_right: true },
+            {id: this.generate_id(), text: '', is_right: true },
+            {id: this.generate_id(), text: '', is_right: true }
         ],
         accordance_choice_answers: [
-            {id: this.generate_id(), accord1: 'Элемент 1', accord2: 'Соответствующий элемент 1', is_right: true },
-            {id: this.generate_id(), accord1: 'Элемент 2', accord2: 'Соответствующий элемент 2', is_right: true },
-            {id: this.generate_id(), accord1: 'Элемент 3', accord2: 'Соответствующий элемент 3', is_right: true },
-            {id: this.generate_id(), accord1: 'Элемент 4', accord2: 'Соответствующий элемент 4', is_right: true }
+            {id: this.generate_id(), accord1: '', accord2: '', is_right: true },
+            {id: this.generate_id(), accord1: '', accord2: '', is_right: true },
+            {id: this.generate_id(), accord1: '', accord2: '', is_right: true },
+            {id: this.generate_id(), accord1: '', accord2: '', is_right: true }
         ],
         single_choice_fields: [
             {
@@ -281,14 +281,52 @@ export default {
             case 1:
                 if (this.new_question.single_choice_right == "")
                 { this.errors.push("Не выбран правильный вариант ответа")}
+                for (var i = 0; i < this.new_question.single_choice_answers.length; i++)
+                {
+                    if (this.new_question.single_choice_answers[i].text == '')
+                    {
+                        this.errors.push("Не введен один из вариантов ответа")
+                    }
+                }
             break;
             case 2:
                 if (this.new_question.multi_choice_right.length < 2)
                 { this.errors.push("Для данного типа вопроса необходимо выбрать более одного правильного варианта ответа")}
+                for (var i = 0; i < this.new_question.multi_choice_answers.length; i++)
+                {
+                    if (this.new_question.multi_choice_answers[i].text == '')
+                    {
+                        this.errors.push("Не введен вариантов ответа")
+                    }
+                }
             break;
             case 3:
+                for (var i = 0; i < this.new_question.free_choice_answers.length; i++)
+                {
+                    if (this.new_question.free_choice_answers[i].text == '')
+                    {
+                        this.errors.push("Не введен вариантов ответа")
+                    }
+                }
+            break;
             case 4:
+                for (var i = 0; i < this.new_question.sequence_choice_answers.length; i++)
+                {
+                    if (this.new_question.sequence_choice_answers[i].text == '')
+                    {
+                        this.errors.push("Не введен вариантов ответа")
+                    }
+                }
+            break;
             case 5:
+                for (var i = 0; i < this.new_question.accordance_choice_answers.length; i++)
+                {
+                    if (this.new_question.accordance_choice_answers[i].accord1 == '' || this.new_question.accordance_choice_answers[i].accord2 == '')
+                    {
+                        this.errors.push("Не введен вариантов ответа")
+                    }
+                }
+            break;
         }
        }
        if (this.errors.length > 0)
@@ -303,27 +341,27 @@ export default {
     },
     add_single_choice_answer () {
       this.new_question.single_choice_answers.push(
-          {id: this.generate_id(), text: 'Новый ответ', is_right: false }
+          {id: this.generate_id(), text: '', is_right: false }
       )    
     },
     add_multi_choice_answer () {
       this.new_question.multi_choice_answers.push(
-          {id: this.generate_id(), text: 'Новый ответ', is_right: false }
+          {id: this.generate_id(), text: '', is_right: false }
       )    
     },
     add_free_choice_answer () {
       this.new_question.free_choice_answers.push(
-          {id: this.generate_id(), text: 'Новый ответ', is_right: true }
+          {id: this.generate_id(), text: '', is_right: true }
       )    
     },
     add_sequence_choice_answer() {
         this.new_question.sequence_choice_answers.push(
-          {id: this.generate_id(), text: 'Новый ответ', is_right: true }
+          {id: this.generate_id(), text: '', is_right: true }
       )  
     },
     add_accordance_choice_answer() {
         this.new_question.accordance_choice_answers.push(
-          {id: this.generate_id(), accord1: 'Новый элемент',  accord2: 'Новый соответствующий элемент', is_right: true }
+          {id: this.generate_id(), accord1: '',  accord2: '', is_right: true }
       )  
     },
     remove_single_choice_answer (item) {

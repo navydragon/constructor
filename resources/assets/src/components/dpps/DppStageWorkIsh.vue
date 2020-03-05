@@ -38,6 +38,11 @@
                     </ul>
                     </p>
                 </div>
+                <h4>НОРМАТИВНО-СПРАВОЧНАЯ ИНФОРМАЦИЯ</h4>
+                <div>
+                    <b-alert show>Добавьте названия источников НСИ, которые будут использованы в ДПП. Вы также сможете дополнить данный список на последующих этапах разработки ДПП.</b-alert>
+                </div>
+                <hr>
                  <b-alert v-if="show_errors" show variant="danger">
                      <strong>Обнаружены ошибки!</strong>
                      <ul v-for="(error,index) in errors" :key="index">
@@ -69,7 +74,9 @@ export default {
           req_user_kval: '',
           target: '',  
           tasks: '',
-          pl: [],  
+          pl: [],
+          nsi_types: [],
+          nsi: [],
         },
         prof_levels_arr: []
       }

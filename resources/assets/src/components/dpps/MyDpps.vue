@@ -4,7 +4,7 @@
             Ниже отображаются все ДПП, где Вы назначены как исполнитель
             </b-card-text>
             <hr>
-            <div v-for="my_dpp in my_dpps">
+            <div v-for="my_dpp in my_dpps" :key="my_dpp.id">
                 <b-card header-border-variant="secondary" border-variant="secondary"  header-bg-variant="light" :header="my_dpp.name">
                     <h5>Статус: {{my_dpp.status_name}}</h5>
                     <h5>Текущий этап: {{my_dpp.current_stage_name}}</h5>

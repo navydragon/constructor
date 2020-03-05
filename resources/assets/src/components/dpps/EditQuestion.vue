@@ -106,7 +106,7 @@
             <b-button variant="primary" @click="add_free_choice_answer">Добавить ответ</b-button>
         </div>
         <div v-if="new_question.type.id==4">
-            <p>Добавьте ответы и перетаскивайте их (используя иконоку <i class="ion ion-ios-move m-r-1"></i>), установив правильную последовательность ответов.</p>
+            <p>Запишите ответы в правильной последовательности. Вы можете поменять последовательность ответов путем перетаскивания элемента (с помощью иконки <i class="ion ion-ios-move m-r-1"></i>). Для обучающихся в момент прохождения теста ответы будут перемешаны.</p>
             <draggable v-model="new_question.sequence_choice_answers" v-bind="{animation: 150, handle: '.ion'}" tag="div" class="sortable-example">
                 <div v-for="item in new_question.sequence_choice_answers" :key="item.id" style="margin-bottom:10px">
                     <b-row>

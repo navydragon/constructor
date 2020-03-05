@@ -24,6 +24,12 @@ Route::post('auth/logout', 'AuthController@logout');
 Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('auth/user', 'AuthController@user');
   Route::get('/users','UserController@get_all_users');
+  Route::post('/users/check_email','UserController@check_email');
+  Route::post('/users/add_user','UserController@add_user');
+  Route::post('/users/discard_password','UserController@discard_password');
+  
+  Route::post('/users/send_reg_data','UserController@send_reg_data');
+
   Route::get('/roles','UserController@get_all_roles');
   Route::post('/add_dpp_user_role','UserController@add_dpp_user_role');
   Route::post('/delete_dpp_user_role','UserController@delete_dpp_user_role');
@@ -48,11 +54,25 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   
   Route::get('/dpps/{dpp}/get_zun_version_data/{zv}/unattached','ZunVersionController@get_zun_version_data_unattached');
   Route::get('/dpps/{dpp}/get_zun_version_data/{zv}/attached','ZunVersionController@get_zun_version_data_attached');
+  Route::get('/dpps/{dpp}/get_zun_version_data2/{zv}','ZunVersionController@get_zun_version_data2');
+
   Route::get('/dpps/{dpp}/get_ish_version_data/{iv}','IshVersionController@get_ish_version_data');
   Route::post('/dpps/{dpp}/update_ish_version_data/{iv}','IshVersionController@update_ish_version_data');
   Route::get('/dpps/{dpp}/get_stage_data/{stage}','DppStageController@get_stage_data');
   Route::post('/dpps/{dpp}/{stage}/go_next','DppStageController@force_next_stage');
   
+  Route::post('/dpps/{dpp}/add_skill','ZunVersionController@add_skill2');
+  Route::post('/dpps/{dpp}/remove_skill','ZunVersionController@remove_skill2');
+  
+  Route::post('/dpps/{dpp}/add_ability','ZunVersionController@add_ability2');
+  Route::post('/dpps/{dpp}/remove_ability','ZunVersionController@remove_ability2');
+ 
+  Route::post('/dpps/{dpp}/add_knowledge','ZunVersionController@add_knowledge2');
+  Route::post('/dpps/{dpp}/remove_knowledge','ZunVersionController@remove_knowledge2');
+
+  Route::post('/dpps/{dpp}/move_elem','ZunVersionController@move_elem2');
+  Route::post('/dpps/{dpp}/disconnect','ZunVersionController@disconnect2');
+
   Route::get('/dpps/{dpp}/get_knowledges_to_ov/{ov}','DppController@get_knowledges_to_ov');
 
   Route::get('/dpps/get_prof_levels','IshVersionController@get_prof_levels');

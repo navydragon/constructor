@@ -505,4 +505,198 @@ class ZunVersionController extends Controller
             $this->create_competence($dpp,$zv,$request);
         }
     }
+
+    /* version 2 */
+    public function get_zun_version_data2(Dpp $dpp,ZunVersion $zv)
+    {
+        $result = [];
+        $competences = Competence::where('zun_version_id',$zv->id)->get();
+        $skills = Skill::where('zun_version_id',$zv->id)->get();
+        $abilities = Ability::where('zun_version_id',$zv->id)->get();
+        $knowledges = Knowledge::where('zun_version_id',$zv->id)->get();
+        foreach ($competences as $competence)
+        {
+            $row = [];
+            $row["id"] = $competence->id;
+            $row["name"] = $competence->name;
+            $row["pid"] = null;
+            $row["type"] = "Компетенция";
+            array_push($result,$row);                    
+        }
+        foreach ($skills as $skill)
+        {
+            $row = [];
+            $row["id"] = $skill->id;
+            $row["name"] = $skill->name;
+            $row["pid"] = $skill->competence_id;
+            $row["type"] = "Навык";
+            array_push($result,$row);                    
+        }
+        foreach ($abilities as $ability)
+        {
+            $row = [];
+            $row["id"] = $ability->id;
+            $row["name"] = $ability->name;
+            if ($ability->has_parent_comp == true)
+            {
+                $row["pid"] = $ability->competence_id;
+            }else{
+                $row["pid"] = $ability->skill_id;
+            }
+            $row["type"] = "Умение";
+            array_push($result,$row);                    
+        }
+        foreach ($knowledges as $knowledge)
+        {
+            $row = [];
+            $row["id"] = $knowledge->id;
+            $row["name"] = $knowledge->name;
+            $row["pid"] = $knowledge->ability_id;
+            $row["type"] = "Знание";
+            array_push($result,$row);                    
+        }
+        return json_encode($result);
+    }
+
+    public function add_skill2(Dpp $dpp,ZunVersion $zv, Request $request)
+    {
+        $data = $request->skill_data; 
+        $skill = new Skill;
+        $skill->dpp_id = $dpp->id;
+        $skill->zun_version_id = $request->zun_version;
+        $skill->name = $request->skill_name;
+        $skill->keyword = $data["keyword"];
+        $skill->what = $data["what"];
+        $skill->with = $data["with"];
+        $skill->where = $data["where"];
+        $skill->competence_id = $request->parent_node;
+        $skill->save();
+        return $skill;
+    }
+
+    public function remove_skill2 (Request $request)
+    {
+        Skill::destroy($request->skill_id);
+    }
+
+    public function add_ability2(Dpp $dpp,ZunVersion $zv, Request $request)
+    {
+        $data = $request->ability_data; 
+        $ability = new Ability;
+        $ability->dpp_id = $dpp->id;
+        $ability->zun_version_id = $request->zun_version;
+        $ability->name = $request->ability_name;
+        $ability->keyword = $data["keyword"];
+        $ability->what = $data["what"];
+        $ability->with = $data["with"];
+        $ability->where = $data["where"];
+        $ability->has_parent_comp = false;
+        $ability->skill_id = $request->parent_node;
+        $ability->save();
+        return $ability;
+    }
+
+    public function remove_ability2 (Request $request)
+    {
+        Ability::destroy($request->ability_id);
+    }
+
+    public function add_knowledge2(Dpp $dpp,ZunVersion $zv, Request $request)
+    {
+        $data = $request->knowledge_data; 
+        $knowldge = new Knowledge;
+        $knowldge->dpp_id = $dpp->id;
+        $knowldge->zun_version_id = $request->zun_version;
+        $knowldge->name = $request->knowledge_name;
+        $knowldge->keyword = $data["keyword"];
+        $knowldge->what = $data["what"];
+        $knowldge->with = " ";
+        $knowldge->where = " ";
+        $knowldge->is_through = false;
+        $knowldge->ability_id = $request->parent_node;
+        $knowldge->save();
+        return $knowldge;
+    }
+
+    public function remove_knowledge2 (Request $request)
+    {
+        Knowledge::destroy($request->knowledge_id);
+    }
+
+    public function move_elem2(Request $request)
+    {
+        $elem_type = $request->elem_type; 
+        $elem_id = $request->elem_id;
+        $to_type = $request->to_type;
+        $to_id = $request->to_id;
+
+        switch ($elem_type) {
+            case 'Знание':
+                $kn = Knowledge::find($elem_id);
+                if ($to_type == 'Умение') 
+                {
+                    $kn->ability_id = $to_id;
+                }
+                $kn->save();
+            break;
+
+            case 'Навык':
+                $sk = Skill::find($elem_id);
+                $sk->competence_id = $to_id;
+                $sk->save();
+            break;
+
+            case 'Умение':
+                $ab = Ability::find($elem_id);
+                if ($to_type == 'Компетенция')
+                {
+                    $ab->has_parent_comp = true;
+                    $ab->skill_id = null;
+                    $ab->competence_id = $to_id;
+                }
+                if ($to_type == 'Навык')
+                {
+                    $ab->has_parent_comp = false;
+                    $ab->skill_id = $to_id;
+                    $ab->competence_id = null;
+                }                
+                $ab->save();
+            break;
+            
+            default:
+            break;
+        }
+    }
+
+    public function disconnect2(Request $request)
+    {
+        $el = $request->elem;
+        switch ($el["type"]) {
+            case 'Знание':
+                $kn = Knowledge::find($el["id"]);
+                $kn->ability_id = null;
+                $kn->save();
+            break;
+            case 'Умение':
+                $ab = Ability::find($el["id"]);
+                if ($ab->has_parent_comp == true)
+                {
+                    $ab->competence_id = null;
+                }else{
+                    $ab->skill_id = null;
+                }
+                $ab->save();
+            break;
+            
+            case 'Навык':
+                $sk = Skill::find($el["id"]);
+                $sk->competence_id = null;
+                $sk->save();
+            break;
+
+            default:
+                # code...
+                break;
+        }
+    }
 }

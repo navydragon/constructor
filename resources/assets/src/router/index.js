@@ -83,6 +83,12 @@ const router = new Router({
       meta: { auth: true }
     },
     {
+      path: 'my_dpps/:dpp/stages/:stage/work2',
+      name: 'dpp_stage_work2',
+      component: () => import('@/components/dpps/NewOC'),
+      meta: { auth: true }
+    },
+    {
       path: 'my_dpps/:dpp/stages/:stage/work_ish',
       name: 'dpp_stage_work_ish',
       component: () => import('@/components/dpps/DppStageWorkIsh'),
