@@ -38,10 +38,11 @@
                     </ul>
                     </p>
                 </div>
-                <h4>НОРМАТИВНО-СПРАВОЧНАЯ ИНФОРМАЦИЯ</h4>
+                <h4>НОРМАТИВНО-СПРАВОЧНАЯ ИНФОРМАЦИЯ </h4>
                 <div>
                     <b-alert show>Добавьте названия источников НСИ, которые будут использованы в ДПП. Вы также сможете дополнить данный список на последующих этапах разработки ДПП.</b-alert>
                 </div>
+                <nsis v-if="!isBusy" :ish_version_id="stage.ish_version_id"></nsis>
                 <hr>
                  <b-alert v-if="show_errors" show variant="danger">
                      <strong>Обнаружены ошибки!</strong>
@@ -58,8 +59,10 @@
 </template>
 
 <script>
+import Nsis from '@/components/nsis/Nsis'
 export default {
   name: "dpp_stage_work_ish",
+  components: {Nsis},
   metaInfo: {
     title: "Разработка ДПП - Исходные данные"
   },
@@ -76,7 +79,7 @@ export default {
           tasks: '',
           pl: [],
           nsi_types: [],
-          nsi: [],
+          nsis: [],
         },
         prof_levels_arr: []
       }
@@ -92,6 +95,7 @@ export default {
         axios
         .get('/dpps/'+this.$route.params.dpp+'/get_ish_version_data/'+ this.stage.ish_version_id)
         .then(response => (this.ish_data = response.data))
+        .finally(() => (this.isBusy=false))
     },
     save()
     {

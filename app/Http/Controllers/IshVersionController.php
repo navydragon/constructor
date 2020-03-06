@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\IshVersion;
 use App\Dpp;
 use App\ProfLevel;
+use App\NsiType;
+use App\Nsi;
+use Auth;
 class IshVersionController extends Controller
 {
     public function get_ish_version_data(Dpp $dpp,IshVersion $iv)
@@ -41,5 +44,57 @@ class IshVersionController extends Controller
         $iv->save();
         $iv->prof_levels()->sync($request->ish_data["pl"]);
         
+    }
+
+    public function get_nsi_types()
+    {
+        $types = NsiType::all();
+        return $types;
+    }
+
+    public function get_nsis(IshVersion $iv, Request $request)
+    {
+        $nsis = $iv->nsis;
+        return $nsis;
+    }
+
+    public function get_nsi(Nsi $nsi)
+    {
+        return $nsi;
+    }
+
+    public function add_nsi(Request $request)
+    {
+        $data = $request->nsi_data;
+        $nsi = new Nsi;
+        $nsi->type_id = $data["type"];
+        $nsi->name = $data["name"];
+        $nsi->authors = $data["authors"];
+        $nsi->output = $data["output"];
+        $nsi->url = $data["url"];
+        $nsi->ish_version_id = $request->ish_version_id;
+        $nsi->author_id = Auth::user()->id;
+        $nsi->save();
+        return $nsi;
+    }
+
+    public function update_nsi(Request $request)
+    {
+        $data = $request->nsi_data;
+        $nsi = Nsi::find($data["id"]);
+        $nsi->type_id = $data["type_id"];
+        $nsi->name = $data["name"];
+        $nsi->authors = $data["authors"];
+        $nsi->output = $data["output"];
+        $nsi->url = $data["url"];
+        $nsi->author_id = Auth::user()->id;
+        $nsi->save();
+        return $nsi;
+    }
+
+    public function remove_nsi(Request $request)
+    {
+        Nsi::destroy($request->nsi_id);
+        return $request->nsi_id;
     }
 }

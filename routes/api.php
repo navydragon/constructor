@@ -41,6 +41,14 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/dpps/stages/start','DppController@start_stage');
   Route::get('/my_dpps','DppController@get_all_my_dpps');
 
+  Route::get('/nsis/nsi_types','IshVersionController@get_nsi_types');
+  Route::post('/nsis/add_nsi','IshVersionController@add_nsi');
+  Route::post('/nsis/update_nsi','IshVersionController@update_nsi');
+  
+  Route::get('/nsis/{iv}','IshVersionController@get_nsis');
+  Route::get('/nsis/get_nsi/{nsi}','IshVersionController@get_nsi');
+  Route::post('/nsis/remove_nsi','IshVersionController@remove_nsi');
+    
   Route::post('/zuns/know/delete','ZunVersionController@delete_knowledge');
   Route::post('/zuns/abil/delete','ZunVersionController@delete_ability');
   Route::post('/zuns/skil/delete','ZunVersionController@delete_skill');
@@ -60,6 +68,9 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/dpps/{dpp}/update_ish_version_data/{iv}','IshVersionController@update_ish_version_data');
   Route::get('/dpps/{dpp}/get_stage_data/{stage}','DppStageController@get_stage_data');
   Route::post('/dpps/{dpp}/{stage}/go_next','DppStageController@force_next_stage');
+
+  Route::post('/dpps/{dpp}/add_competence','ZunVersionController@add_competence2');
+  Route::post('/dpps/{dpp}/remove_competence','ZunVersionController@remove_competence2');
   
   Route::post('/dpps/{dpp}/add_skill','ZunVersionController@add_skill2');
   Route::post('/dpps/{dpp}/remove_skill','ZunVersionController@remove_skill2');

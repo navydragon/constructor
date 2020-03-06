@@ -2,7 +2,8 @@
     <div>
         <b-modal no-close-on-esc no-close-on-backdrop @ok="handle_ok" id="modal-newknowledge" ok-title="Сохранить" cancel-title="Закрыть" size="xl" title="Создание нового знания">
             <p>Parent: {{parent_node}}</p>
-                <b-alert show >Заполните параметры компонента</b-alert>
+                <h4>НАЗВАНИЕ ЗНАНИЯ</h4>
+                <b-alert show >Заполните параметры названия компонента</b-alert>
                 <b-form-row>
                 <b-form-group label-size="lg" label-cols-lg="2" label="Ключевое слово" class="col">
                     <b-form-input disabled v-model="new_knowledge.keyword" required placeholder="Знать" value="Знать" />
@@ -18,20 +19,27 @@
                     <p>{{name}}</p>
                 </b-form-group>
                 </b-form-row>
-                <b-alert show variant="danger" v-if="!new_knowledge.valid"><strong>Ошибка!</strong> Заполните ВСЕ параметры компонента</b-alert>
+                <h4>НОРМАТИВНО-СПРАВОЧНАЯ ИНФОРМАЦИЯ</h4>
+                <b-alert show >Соотнесите знание с источниками НСИ</b-alert>
+                <nsi-choose @change_nsi="change_nsi" v-if="!isBusy" :ish_version_id="ish_version_id"></nsi-choose>
+                <hr>
+                <b-alert show variant="danger" v-if="!new_knowledge.valid"><strong>Ошибка!</strong> Заполните ВСЕ параметры названия компонента</b-alert>
         </b-modal>
     </div>
 </template>
 
 <script>
+import NsiChoose from '@/components/nsis/NsiChoose'
 export default {
   name: "new-knowledge2",
   metaInfo: {
   title: "Добавить новое знание"
   },
   props: {
-      parent_node: String
+      parent_node: String,
+      ish_version_id: Number
   },
+  components: {NsiChoose},
   data() {
     return  {
       new_knowledge: {
@@ -39,9 +47,11 @@ export default {
         what: '',
         with: ' ',
         where: ' ',
-        valid: true
+        valid: true,
+        nsis: []
       },
       errors: [],
+      isBusy: true
     }
   },
   computed: {
@@ -67,6 +77,12 @@ export default {
       combine_text (elem) {
         return elem.keyword + ' ' + elem.what + ' ' + elem.with + ' ' + elem.where
       },
+      change_nsi (data) {
+       this.new_knowledge.nsis = data.nsi_data
+      },
+  },
+  mounted() {
+    this.isBusy = false
   }
 }
 </script>
