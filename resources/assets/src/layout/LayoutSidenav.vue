@@ -17,6 +17,7 @@
             <template slot="link-text">Управление</template>
             <sidenav-router-link  icon="ion ion-md-person" to="/adm/users" :exact="true">Пользователи</sidenav-router-link>
             <sidenav-router-link  icon="ion ion-md-paper" to="/adm/dpps" :exact="true">ДПП</sidenav-router-link>      
+            <sidenav-router-link  icon="ion ion-md-paper" to="/adm/typologies" :exact="true">Типовые структуры ДПП</sidenav-router-link> 
           </sidenav-menu>
         </div>
         <div class="sidenav-item" v-if="$auth.check()">

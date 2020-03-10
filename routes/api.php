@@ -44,6 +44,10 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('/nsis/nsi_types','IshVersionController@get_nsi_types');
   Route::post('/nsis/add_nsi','IshVersionController@add_nsi');
   Route::post('/nsis/update_nsi','IshVersionController@update_nsi');
+
+  Route::get('/typologies/get_typologies','TypologyController@get_typologies');
+  Route::post('/typologies/add_typology','TypologyController@add_typology');
+  
   
   Route::get('/nsis/{iv}','IshVersionController@get_nsis');
   Route::get('/nsis/get_nsi/{nsi}','IshVersionController@get_nsi');
@@ -63,6 +67,13 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('/dpps/{dpp}/get_zun_version_data/{zv}/unattached','ZunVersionController@get_zun_version_data_unattached');
   Route::get('/dpps/{dpp}/get_zun_version_data/{zv}/attached','ZunVersionController@get_zun_version_data_attached');
   Route::get('/dpps/{dpp}/get_zun_version_data2/{zv}','ZunVersionController@get_zun_version_data2');
+  Route::get('/dpps/{dpp}/get_links/{zv}','ZunVersionController@get_links');
+  Route::get('/dpps/{dpp}/get_typology','ZunVersionController@get_typology');
+  
+  Route::get('/dpps/get_skill_info/{sk}','ZunVersionController@get_skill_info');
+  Route::get('/dpps/get_ability_info/{ab}','ZunVersionController@get_ability_info');
+  Route::get('/dpps/get_knowledge_info/{kn}','ZunVersionController@get_knowledge_info');
+  
 
   Route::get('/dpps/{dpp}/get_ish_version_data/{iv}','IshVersionController@get_ish_version_data');
   Route::post('/dpps/{dpp}/update_ish_version_data/{iv}','IshVersionController@update_ish_version_data');
@@ -73,13 +84,17 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/dpps/{dpp}/remove_competence','ZunVersionController@remove_competence2');
   
   Route::post('/dpps/{dpp}/add_skill','ZunVersionController@add_skill2');
+  Route::post('/dpps/{dpp}/update_skill','ZunVersionController@update_skill2');
   Route::post('/dpps/{dpp}/remove_skill','ZunVersionController@remove_skill2');
   
   Route::post('/dpps/{dpp}/add_ability','ZunVersionController@add_ability2');
   Route::post('/dpps/{dpp}/remove_ability','ZunVersionController@remove_ability2');
- 
+  Route::post('/dpps/{dpp}/update_ability','ZunVersionController@update_ability2');
+
   Route::post('/dpps/{dpp}/add_knowledge','ZunVersionController@add_knowledge2');
   Route::post('/dpps/{dpp}/remove_knowledge','ZunVersionController@remove_knowledge2');
+  Route::post('/dpps/{dpp}/update_knowledge','ZunVersionController@update_knowledge2');
+  Route::post('/dpps/{dpp}/add_knowledge_link','ZunVersionController@add_knowledge_link2');
 
   Route::post('/dpps/{dpp}/move_elem','ZunVersionController@move_elem2');
   Route::post('/dpps/{dpp}/disconnect','ZunVersionController@disconnect2');

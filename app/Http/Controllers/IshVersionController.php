@@ -8,6 +8,8 @@ use App\Dpp;
 use App\ProfLevel;
 use App\NsiType;
 use App\Nsi;
+use App\Typology;
+use App\TypologyPart;
 use Auth;
 class IshVersionController extends Controller
 {
@@ -21,6 +23,13 @@ class IshVersionController extends Controller
         {
             $arr[] = $el->id;
         }
+        $tls = Typology::all();
+        foreach ($tls as $tl)
+        {
+            $tl->parts = $tl->typology_parts;
+        }
+        $iv->typologies = $tls;
+        $iv->typology = $iv->typology_id;
         $iv->pl = $arr;
         return $iv;
     }
@@ -41,6 +50,7 @@ class IshVersionController extends Controller
         $iv->req_user_edulevel = $request->ish_data["req_user_edulevel"];
         $iv->req_user_kval = $request->ish_data["req_user_kval"];
         $iv->target = $request->ish_data["target"];
+        $iv->typology_id = $request->ish_data["typology"];
         $iv->save();
         $iv->prof_levels()->sync($request->ish_data["pl"]);
         

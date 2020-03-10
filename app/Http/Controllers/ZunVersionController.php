@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Dpp;
 use App\ZunVersion;
+use App\IshVersion;
+use App\Typology;
 use App\Skill;
 use App\Ability;
 use App\Knowledge;
@@ -518,7 +520,7 @@ class ZunVersionController extends Controller
         foreach ($competences as $competence)
         {
             $row = [];
-            $row["id"] = $competence->id;
+            $row["id"] = 'c'.$competence->id;
             $row["name"] = $competence->name;
             $row["pid"] = null;
             $row["type"] = "Компетенция";
@@ -527,22 +529,22 @@ class ZunVersionController extends Controller
         foreach ($skills as $skill)
         {
             $row = [];
-            $row["id"] = $skill->id;
+            $row["id"] = 's'.$skill->id;
             $row["name"] = $skill->name;
-            $row["pid"] = $skill->competence_id;
+            $row["pid"] = 'c'.$skill->competence_id;
             $row["type"] = "Навык";
             array_push($result,$row);                    
         }
         foreach ($abilities as $ability)
         {
             $row = [];
-            $row["id"] = $ability->id;
+            $row["id"] = 'a'.$ability->id;
             $row["name"] = $ability->name;
             if ($ability->has_parent_comp == true)
             {
-                $row["pid"] = $ability->competence_id;
+                $row["pid"] = 'c'.$ability->competence_id;
             }else{
-                $row["pid"] = $ability->skill_id;
+                $row["pid"] = 's'.$ability->skill_id;
             }
             $row["type"] = "Умение";
             array_push($result,$row);                    
@@ -550,16 +552,16 @@ class ZunVersionController extends Controller
         foreach ($knowledges as $knowledge)
         {
             $row = [];
-            $row["id"] = $knowledge->id;
+            $row["id"] = 'k'.$knowledge->id;
             $row["name"] = $knowledge->name;
-            $row["pid"] = $knowledge->ability_id;
+            $row["pid"] = 'a'.$knowledge->ability_id;
             $row["type"] = "Знание";
             array_push($result,$row);                    
         }
         foreach ($th_knowledges as $knowledge)
         {
             $row = [];
-            $row["id"] = $knowledge->id;
+            $row["id"] = 'k'.$knowledge->id;
             $row["name"] = $knowledge->name;
             $row["pid"] = 0;
             $row["type"] = "Знание";
@@ -588,6 +590,7 @@ class ZunVersionController extends Controller
         $comp->save();
         foreach ($data["elems"] as $elem)
         {
+            $elem = substr($elem,1);
             $sk = Skill::find($elem);
             if ($sk)
             {
@@ -600,17 +603,22 @@ class ZunVersionController extends Controller
                 $ab->save();
             }
         }
+        $comp->new_id='c'.$comp->id;
         return $comp;
     }
 
     public function remove_competence2(Request $request)
     {
-        Competence::destroy($request->competence_id);
+        $id = substr($request->competence_id,1); 
+        Competence::destroy($id);
     }
 
     public function add_skill2(Dpp $dpp,ZunVersion $zv, Request $request)
     {
-        $data = $request->skill_data; 
+        $data = $request->skill_data;
+        if ($request->parent_node != '')
+        { $parent_node = substr($request->parent_node,1); 
+        }else { $parent_node = null;}
         $skill = new Skill;
         $skill->dpp_id = $dpp->id;
         $skill->zun_version_id = $request->zun_version;
@@ -619,22 +627,44 @@ class ZunVersionController extends Controller
         $skill->what = $data["what"];
         $skill->with = $data["with"];
         $skill->where = $data["where"];
-        $skill->competence_id = $request->parent_node;
+        $skill->competence_id = $parent_node;
         $skill->save();
         $skill->nsis()->sync($data["nsis"]);
+        $skill->new_id = 's'.$skill->id;
+        $skill->new_parent = $request->parent_node;
         return $skill;
     }
 
     public function remove_skill2 (Request $request)
     {
-        $sk = Skill::find($request->skill_id);
+        $id = substr($request->skill_id,1); 
+        $sk = Skill::find($id);
         $sk->nsis()->detach();
-        Skill::destroy($request->skill_id);
+        Skill::destroy($id);
+    }
+
+    public function update_skill2  (Dpp $dpp, Request $request)
+    {
+        $data = $request->skill_data;
+        $skill = Skill::find($data["id"]);
+
+        $skill->name = $request->skill_name;
+        $skill->keyword = $data["keyword"];
+        $skill->what = $data["what"];
+        $skill->with = $data["with"];
+        $skill->where = $data["where"];
+        $skill->save();
+        $skill->nsis()->sync($data["nsis"]);
+        $skill->new_id = 's'.$skill->id;
+        return $skill;
     }
 
     public function add_ability2(Dpp $dpp,ZunVersion $zv, Request $request)
     {
-        $data = $request->ability_data; 
+        $data = $request->ability_data;
+        if ($request->parent_node != '')
+        { $parent_node = substr($request->parent_node,1); 
+        }else { $parent_node = null;} 
         $ability = new Ability;
         $ability->dpp_id = $dpp->id;
         $ability->zun_version_id = $request->zun_version;
@@ -650,63 +680,107 @@ class ZunVersionController extends Controller
         if ($request->parent_type == 'skill')
         {
             $ability->has_parent_comp = false;
-            $ability->skill_id = $request->parent_node;
+            $ability->skill_id = $parent_node;
         }
         if ($request->parent_type == 'competence')
         {
             $ability->has_parent_comp = true;
-            $ability->competence_id = $request->parent_node;
+            $ability->competence_id = $parent_node;
         }
         $ability->save();
         $ability->nsis()->sync($data["nsis"]);
+        $ability->new_id = 'a'.$ability->id;
+        $ability->new_parent = $request->parent_node;
         return $ability;
     }
 
     public function remove_ability2 (Request $request)
     {
-        $ab = Ability::find($request->ability_id);
+        $id = substr($request->ability_id,1); 
+        $ab = Ability::find($id);
         $ab->nsis()->detach();
-        Ability::destroy($request->ability_id);
+        Ability::destroy($id);
+    }
+
+    public function update_ability2  (Dpp $dpp, Request $request)
+    {
+        $data = $request->ability_data;
+        $ability = Ability::find($data["id"]);
+
+        $ability->name = $request->ability_name;
+        $ability->keyword = $data["keyword"];
+        $ability->what = $data["what"];
+        $ability->with = $data["with"];
+        $ability->where = $data["where"];
+        $ability->save();
+        $ability->nsis()->sync($data["nsis"]);
+        $ability->new_id = 'a'.$ability->id;
+        return $ability;
     }
 
     public function add_knowledge2(Dpp $dpp,ZunVersion $zv, Request $request)
     {
         $data = $request->knowledge_data; 
-        $knowldge = new Knowledge;
-        $knowldge->dpp_id = $dpp->id;
-        $knowldge->zun_version_id = $request->zun_version;
-        $knowldge->name = $request->knowledge_name;
-        $knowldge->keyword = $data["keyword"];
-        $knowldge->what = $data["what"];
-        $knowldge->with = " ";
-        $knowldge->where = " ";
+        $knowledge = new Knowledge;
+        $knowledge->dpp_id = $dpp->id;
+        $knowledge->zun_version_id = $request->zun_version;
+        $knowledge->name = $request->knowledge_name;
+        $knowledge->keyword = $data["keyword"];
+        $knowledge->what = $data["what"];
+        $knowledge->with = " ";
+        $knowledge->where = " ";
         if ($request->parent_node == '0')
         {
-            $knowldge->is_through = true;
-            $knowldge->ability_id = null;
+            $knowledge->is_through = true;
+            $knowledge->ability_id = null;
         }else{
-            $knowldge->is_through = false;
-            $knowldge->ability_id = $request->parent_node;
+            $knowledge->is_through = false;
+            $parent_node = substr($request->parent_node,1); 
+            $knowledge->ability_id = $parent_node;
         }
 
-        $knowldge->save();
-        $knowldge->nsis()->sync($data["nsis"]);
-        return $knowldge;
+        $knowledge->save();        
+        $knowledge->nsis()->sync($data["nsis"]);
+        $knowledge->new_id = 'k'.$knowledge->id;
+        $knowledge->new_parent = $request->parent_node;
+        return $knowledge;
     }
 
     public function remove_knowledge2 (Request $request)
     {
-        $kn = Knowledge::find($request->knowledge_id);
+        $id = substr($request->knowledge_id,1); 
+        $kn = Knowledge::find($id);
         $kn->nsis()->detach();
-        Knowledge::destroy($request->knowledge_id);
+        Knowledge::destroy($id);
+    }
+
+    public function update_knowledge2 (Dpp $dpp, Request $request)
+    {
+        $data = $request->knowledge_data;
+        $knowledge = Knowledge::find($data["id"]);
+        $knowledge->name = $request->knowledge_name;
+        $knowledge->what = $data["what"];
+        $knowledge->save();
+        $knowledge->nsis()->sync($data["nsis"]);
+        $knowledge->new_id = 'k'.$knowledge->id;
+        return $knowledge;
+    }
+
+    public function add_knowledge_link2(Dpp $dpp, Request $request)
+    {
+        $knowledge_id = substr($request->knowledge_id,1); 
+        $ability_id = substr($request->ability_id,1);
+        $kn = Knowledge::find($knowledge_id);
+        $kn->links()->attach($ability_id);
     }
 
     public function move_elem2(Request $request)
     {
         $elem_type = $request->elem_type; 
-        $elem_id = $request->elem_id;
+        $elem_id = substr($request->elem_id,1);
+         
         $to_type = $request->to_type;
-        $to_id = $request->to_id;
+        $to_id = substr($request->to_id,1);
 
         switch ($elem_type) {
             case 'Знание':
@@ -755,6 +829,7 @@ class ZunVersionController extends Controller
     public function disconnect2(Request $request)
     {
         $el = $request->elem;
+        $el["id"] = substr($el["id"],1);
         switch ($el["type"]) {
             case 'Знание':
                 $kn = Knowledge::find($el["id"]);
@@ -783,5 +858,83 @@ class ZunVersionController extends Controller
                 # code...
                 break;
         }
+    }
+
+    public function get_links (Dpp $dpp,ZunVersion $zv)
+    {
+        $result = [];
+        $knowledges = Knowledge::where('zun_version_id',$zv->id)->where('is_through',false)->get();
+        foreach ($knowledges as $knowledge)
+        {
+            $links = $knowledge->links()->get();
+            if (count($links) > 0) {
+             //   dd($links);
+            }
+            foreach ($links as $link)
+            {
+                $row = [];
+                $row["from"] = 'k'.$knowledge->id;
+                $row["to"] = 'a'.$link->id;
+                $row["label"] = '';
+                $row["template"] = 'blue';
+                array_push($result,$row);
+            }
+        }
+        return json_encode($result);
+    }
+
+    public function get_typology(Dpp $dpp)
+    {
+        $iv = IshVersion::find($dpp->ish_version_id);
+        $tl = Typology::find($iv->typology_id);
+        return json_encode($tl->typology_parts);
+    }
+
+    public function get_skill_info($sk)
+    {
+        $arr = [];
+        $id = substr($sk,1);
+        $sk = Skill::find($id);
+        $nsis = $sk->nsis()->get();
+        foreach ($nsis as $nsi)
+        {
+            array_push($arr,$nsi->id);
+        }
+        $sk->nsis = $arr;
+        $sk->valid = true;
+        //dd($sk->nsis);
+        return $sk;
+    }
+
+    public function get_ability_info($ab)
+    {
+        $arr = [];
+        $id = substr($ab,1);
+        $ab = Ability::find($id);
+        $nsis = $ab->nsis()->get();
+        foreach ($nsis as $nsi)
+        {
+            array_push($arr,$nsi->id);
+        }
+        $ab->nsis = $arr;
+        $ab->valid = true;
+        //dd($sk->nsis);
+        return $ab;
+    }
+
+    public function get_knowledge_info($kn)
+    {
+        $arr = [];
+        $id = substr($kn,1);
+        $kn = Knowledge::find($id);
+        $nsis = $kn->nsis()->get();
+        foreach ($nsis as $nsi)
+        {
+            array_push($arr,$nsi->id);
+        }
+        $kn->nsis = $arr;
+        $kn->valid = true;
+        //dd($sk->nsis);
+        return $kn;
     }
 }

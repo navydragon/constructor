@@ -73,7 +73,8 @@ import EditNsi from './EditNsi'
 export default {
   name: 'nsi-choose',
   props: {
-    ish_version_id: Number
+    ish_version_id: Number,
+    selected: Array,
   },
   components: {NewNsi,EditNsi},
   data () {
@@ -84,7 +85,7 @@ export default {
       isBusy: true,
       show_edit_window: false,
       nsi_to_edit: 0,
-      selected: [],
+      //selected: [],
     }
   },
   computed: {
@@ -166,7 +167,7 @@ export default {
       .then(response => (this.types = response.data)) 
        axios
       .get('/nsis/'+this.ish_version_id)
-      .then(response => (this.nsis = response.data))       
+      .then(response => (this.nsis = response.data))   
   },
 }
 </script>

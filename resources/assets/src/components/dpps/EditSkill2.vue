@@ -1,7 +1,6 @@
 <template>
     <div>
-        <b-modal no-close-on-esc no-close-on-backdrop @ok="handle_ok" id="modal-newskill" ok-title="Сохранить" cancel-title="Закрыть" size="xl" title="Создание нового навыка">
-            <p>Parent: {{parent_node}}</p>
+        <b-modal no-close-on-esc no-close-on-backdrop @ok="handle_ok" id="modal-editskill" ok-title="Сохранить" cancel-title="Закрыть" size="xl" title="Редактирование навыка">
                 <h4>НАЗВАНИЕ НАВЫКА</h4>
                 <b-alert show >Заполните параметры названия компонента</b-alert>
                 <b-form-row>
@@ -32,7 +31,7 @@
                 <hr>
                 <h4>НОРМАТИВНО-СПРАВОЧНАЯ ИНФОРМАЦИЯ</h4>
                 <b-alert show >Соотнесите навык с источниками НСИ</b-alert>
-                <nsi-choose @change_nsi="change_nsi" :selected="[]" v-if="!isBusy" :ish_version_id="ish_version_id"></nsi-choose>
+                <nsi-choose @change_nsi="change_nsi" v-if="!isBusy" :selected="new_skill.nsis" :ish_version_id="ish_version_id"></nsi-choose>
                 <hr>
                 <b-alert show variant="danger" v-if="!new_skill.valid"><strong>Ошибка!</strong> Заполните ВСЕ параметры названия компонента</b-alert>
         </b-modal>
@@ -42,13 +41,13 @@
 <script>
 import NsiChoose from '@/components/nsis/NsiChoose'
 export default {
-  name: "new-skill2",
+  name: "edit-skill2",
   metaInfo: {
-  title: "Добавить новый навык"
+  title: "Редактирование навыка"
   },
   props: {
-      parent_node: String,
       ish_version_id: Number,
+      edit_elem: String
   },
   components: {NsiChoose},
   data() {
@@ -78,10 +77,9 @@ export default {
           this.new_skill.valid = false
         }else{
           this.new_skill.valid = true
-          this.$emit('add_skill', {
+          this.$emit('update_skill', {
             skill_name: this.name,
             skill_data: this.new_skill,
-            parent_node: this.parent_node
             }) 
         }
       },
@@ -96,7 +94,11 @@ export default {
       },
   },
   mounted() {
-    this.isBusy = false
+    axios
+    .get('/dpps/get_skill_info/'+ this.edit_elem)
+    .then((response) => (this.new_skill = response.data) )
+    .finally(this.isBusy = false)
+
   }
 }
 </script>

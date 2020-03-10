@@ -38,6 +38,29 @@
                     </ul>
                     </p>
                 </div>
+                <hr>
+                <h4>ТИПОВАЯ СТРУКТУРА ДПП</h4>
+                <div>
+                    <b-alert show>Выберите наиболее подходящую типовую структуру ДПП. Типовая структура состоит из разделов, которых слудеует придерживаться во время разработки ДПП.</b-alert>
+                </div>
+                <div v-if="!isBusy" class="row">
+                    <div class="col-md-6">
+                        <h5>Виды типовых структур</h5>
+                        <b-form-radio v-model="ish_data.typology" v-for="elem in ish_data.typologies" :key="elem.id" name="some-radios" :value="elem.id">{{elem.name}}</b-form-radio>
+
+                    </div>
+                    <div class="col-md-6">
+                    <div  v-for="elem in ish_data.typologies" :key="elem.id"> 
+                        <div  v-if="ish_data.typology == elem.id">
+                            <h5>Типовые разделы ДПП ({{elem.name}})</h5>
+                            <ul>
+                                <li v-for="(part,index) in elem.parts" :key="index">{{part.name}}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <hr>
                 <h4>НОРМАТИВНО-СПРАВОЧНАЯ ИНФОРМАЦИЯ </h4>
                 <div>
                     <b-alert show>Добавьте названия источников НСИ, которые будут использованы в ДПП. Вы также сможете дополнить данный список на последующих этапах разработки ДПП.</b-alert>
@@ -80,6 +103,8 @@ export default {
           pl: [],
           nsi_types: [],
           nsis: [],
+          typologies: [],
+          typology: {},
         },
         prof_levels_arr: []
       }
@@ -88,6 +113,7 @@ export default {
       header() {
           return "Разработка ДПП / "+this.stage.dpp_name+" / "+this.stage.type_name
       },
+     
   },
   methods: {
     get_ish_versions_data()
@@ -110,6 +136,7 @@ export default {
         this.errors = []
         if (this.ish_data.req_user_kval.length < 10) {this.errors.push("Некорректно введены Требования к квалификации")}
         if (this.ish_data.pl.length == 0) {this.errors.push("Не выбраны требования к уровню профессионального образования")}
+        if (this.ish_data.pl.typology == null) {this.errors.push("Не выбрано типовое содержание ДПП")}
         if (this.errors.length > 0)
         {
             this.show_errors = true
@@ -123,7 +150,10 @@ export default {
                 .then(() => (this.$router.push('/my_dpps/'+this.$route.params.dpp+'/overview/1')))
             })
         }
-    }
+    },
+     typology() {
+          var t = this.ish_data.typologies.find(el => el.id == this.ish_data.typology)
+      }
   },
   mounted() {
       axios

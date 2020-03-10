@@ -71,6 +71,12 @@ const router = new Router({
       meta: { auth: true }
     },
     {
+      path: 'adm/typologies',
+      name: 'typologies',
+      component: () => import('@/components/typologies/Typologies'),
+      meta: { auth: true }
+    },
+    {
       path: 'my_dpps/:dpp/overview/:role',
       name: 'dpp_overview',
       component: () => import('@/components/dpps/DppOverview'),
@@ -79,7 +85,7 @@ const router = new Router({
     {
       path: 'my_dpps/:dpp/stages/:stage/work',
       name: 'dpp_stage_work',
-      component: () => import('@/components/dpps/DppStageWork'),
+      component: () => import('@/components/dpps/NewOC'),
       meta: { auth: true }
     },
     {
