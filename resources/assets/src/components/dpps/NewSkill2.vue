@@ -32,7 +32,7 @@
                 <hr>
                 <h4>НОРМАТИВНО-СПРАВОЧНАЯ ИНФОРМАЦИЯ</h4>
                 <b-alert show >Соотнесите навык с источниками НСИ</b-alert>
-                <nsi-choose @change_nsi="change_nsi" :selected="[]" v-if="!isBusy" :ish_version_id="ish_version_id"></nsi-choose>
+                <nsi-choose @change_nsi="change_nsi" :mode="'work'" :selected="[]" v-if="!isBusy" :ish_version_id="ish_version_id"></nsi-choose>
                 <hr>
                 <b-alert show variant="danger" v-if="!new_skill.valid"><strong>Ошибка!</strong> Заполните ВСЕ параметры названия компонента</b-alert>
         </b-modal>

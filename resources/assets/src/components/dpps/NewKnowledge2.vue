@@ -19,9 +19,12 @@
                     <p>{{name}}</p>
                 </b-form-group>
                 </b-form-row>
+                <h4>СООТВЕТСТВИЕ РАЗДЕЛУ ТИПОВОЙ СТРУКТУРЫ ДПП</h4>
+                <b-alert show >Выберите, какому разделу типовой структуры соответсвует данное знание</b-alert>
+                <b-form-radio v-for="dtp in dtps" :key="'d'+dtp.id" v-model="new_knowledge.dtp" name="dtps" :value="dtp.id">{{dtp.name}}</b-form-radio>
                 <h4>НОРМАТИВНО-СПРАВОЧНАЯ ИНФОРМАЦИЯ</h4>
                 <b-alert show >Соотнесите знание с источниками НСИ</b-alert>
-                <nsi-choose @change_nsi="change_nsi" v-if="!isBusy" :ish_version_id="ish_version_id"></nsi-choose>
+                <nsi-choose @change_nsi="change_nsi" v-if="!isBusy" :selected="[]" :ish_version_id="ish_version_id"></nsi-choose>
                 <hr>
                 <b-alert show variant="danger" v-if="!new_knowledge.valid"><strong>Ошибка!</strong> Заполните ВСЕ параметры названия компонента</b-alert>
         </b-modal>
@@ -37,7 +40,8 @@ export default {
   },
   props: {
       parent_node: String,
-      ish_version_id: Number
+      ish_version_id: Number,
+      dtps: Array
   },
   components: {NsiChoose},
   data() {
@@ -47,6 +51,7 @@ export default {
         what: '',
         with: ' ',
         where: ' ',
+        dtp: '',
         valid: true,
         nsis: []
       },

@@ -10,5 +10,5 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('/create_parts','IshVersionController@create_parts');
 Route::get('/{any}', 'ApplicationController')->where('any', '.*');

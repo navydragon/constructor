@@ -14,4 +14,9 @@ class IshVersion extends Model
     {
         return $this->hasMany('App\Nsi','ish_version_id');
     }
+
+    public function typology_parts()
+    {
+        return $this->hasMany('App\DppTypologyPart','ish_version_id');
+    }
 }

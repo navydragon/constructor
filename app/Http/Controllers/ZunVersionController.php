@@ -739,7 +739,10 @@ class ZunVersionController extends Controller
             $knowledge->ability_id = $parent_node;
         }
 
-        $knowledge->save();        
+        $knowledge->save();
+        if ($data["dtp"] != ""){
+            $knowledge->get_dtps()->attach($data["dtp"]);
+        }
         $knowledge->nsis()->sync($data["nsis"]);
         $knowledge->new_id = 'k'.$knowledge->id;
         $knowledge->new_parent = $request->parent_node;
@@ -761,6 +764,9 @@ class ZunVersionController extends Controller
         $knowledge->name = $request->knowledge_name;
         $knowledge->what = $data["what"];
         $knowledge->save();
+        if ($data["dtp"] != ""){
+            $knowledge->get_dtps()->sync($data["dtp"]);
+        }
         $knowledge->nsis()->sync($data["nsis"]);
         $knowledge->new_id = 'k'.$knowledge->id;
         return $knowledge;
@@ -887,7 +893,11 @@ class ZunVersionController extends Controller
     {
         $iv = IshVersion::find($dpp->ish_version_id);
         $tl = Typology::find($iv->typology_id);
-        return json_encode($tl->typology_parts);
+        foreach($iv->typology_parts as $part)
+        {
+            $part->knowledges = $part->get_knowledges;
+        }
+        return json_encode($iv->typology_parts);
     }
 
     public function get_skill_info($sk)
@@ -934,6 +944,12 @@ class ZunVersionController extends Controller
         }
         $kn->nsis = $arr;
         $kn->valid = true;
+        if ($kn->get_dtps()->count() != 0)
+        {
+        $kn->dtp = $kn->get_dtps()->first()->id;
+        }else{
+        $kn->dtp = "";
+        }
         //dd($sk->nsis);
         return $kn;
     }

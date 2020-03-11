@@ -18,4 +18,9 @@ class Knowledge extends Model
     {
         return $this->belongsToMany('App\Ability', 'knowledge_links', 'knowledge_id', 'ability_id');
     }
+
+    public function get_dtps()
+    {
+        return $this->belongsToMany('App\DppTypologyPart', 'knowledge_dtp', 'knowledge_id', 'dtp_id');
+    }
 }

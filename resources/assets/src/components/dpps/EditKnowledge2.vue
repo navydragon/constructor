@@ -18,7 +18,10 @@
                     <p>{{name}}</p>
                 </b-form-group>
                 </b-form-row>
-                <h4>НОРМАТИВНО-СПРАВОЧНАЯ ИНФОРМАЦИЯ</h4>
+                <h4>СООТВЕТСТВИЕ РАЗДЕЛУ ТИПОВОЙ СТРУКТУРЫ ДПП</h4>
+                <b-alert show >Выберите, какому разделу типовой структуры соответсвует данное знание</b-alert>
+                <b-form-radio v-for="dtp in dtps" :key="'d'+dtp.id" v-model="new_knowledge.dtp" name="dtps" :value="dtp.id">{{dtp.name}}</b-form-radio>
+                <h4 class="mt-2">НОРМАТИВНО-СПРАВОЧНАЯ ИНФОРМАЦИЯ</h4>
                 <b-alert show >Соотнесите знание с источниками НСИ</b-alert>
                 <nsi-choose @change_nsi="change_nsi" v-if="!isBusy" :selected="new_knowledge.nsis" :ish_version_id="ish_version_id"></nsi-choose>
                 <hr>
@@ -36,7 +39,8 @@ export default {
   },
   props: {
       ish_version_id: Number,
-      edit_elem: String
+      edit_elem: String,
+      dtps: Array,
   },
   components: {NsiChoose},
   data() {

@@ -1,15 +1,17 @@
 <template>
     <div class="row">
         <div class="col-md-12">
-            <new-nsi @add_nsi="add_nsi" :types="types" :key="nn"></new-nsi>
-            <hr>
+            <div v-if="!mode" >
+              <new-nsi @add_nsi="add_nsi" :types="types" :key="nn"></new-nsi>
+              <hr>
+            </div>
             <h5>Текущие источники ({{nsis.length}})</h5>
               <div class="mb-3" v-if="npas.length>0">
               <h5 >Нормативные правовые акты, нормативная техническая документация, иная документация ({{npas.length}})</h5>
               <b-list-group>
                 <b-list-group-item v-for="npa in npas" :key="npa.id">
                   <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click.prevent="edit_nsi(npa.id)"><i class="ion ion-md-create"></i></b-btn>
-                  <b-btn variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_nsi(npa.id)">X</b-btn>
+                  <b-btn v-if="!mode" variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_nsi(npa.id)">X</b-btn>
                   &nbsp;{{npa.name}}
                 </b-list-group-item>
               </b-list-group>
@@ -19,7 +21,7 @@
               <b-list-group>
                 <b-list-group-item v-for="ych in ychs" :key="ych.id">
                   <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click.prevent="edit_nsi(ych.id)"><i class="ion ion-md-create"></i></b-btn>
-                  <b-btn variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_nsi(ych.id)">X</b-btn>
+                  <b-btn v-if="!mode" variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_nsi(ych.id)">X</b-btn>
                   &nbsp;{{ych.name}}</b-list-group-item>
               </b-list-group>
               </div>
@@ -28,7 +30,7 @@
               <b-list-group>
                 <b-list-group-item v-for="ir in irs" :key="ir.id">
                   <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click.prevent="edit_nsi(ir.id)"><i class="ion ion-md-create"></i></b-btn>
-                  <b-btn variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_nsi(ir.id)">X</b-btn>
+                  <b-btn v-if="!mode" variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_nsi(ir.id)">X</b-btn>
                   &nbsp;{{ir.name}}</b-list-group-item>
               </b-list-group>
               </div>
@@ -37,7 +39,7 @@
               <b-list-group>
                 <b-list-group-item v-for="ebs in ebss" :key="ebs.id">
                   <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click.prevent="edit_nsi(ebs.id)"><i class="ion ion-md-create"></i></b-btn>
-                  &nbsp;<b-btn variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_nsi(ebs.id)">X</b-btn>
+                  &nbsp;<b-btn v-if="!mode" variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_nsi(ebs.id)">X</b-btn>
                   &nbsp;{{ebs.name}}</b-list-group-item>
               </b-list-group>
               </div>
@@ -54,7 +56,8 @@ import EditNsi from './EditNsi'
 export default {
   name: 'nsis',
   props: {
-    ish_version_id: Number
+    ish_version_id: Number,
+    mode: String
   },
   components: {NewNsi,EditNsi},
   data () {

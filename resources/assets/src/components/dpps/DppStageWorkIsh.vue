@@ -136,7 +136,7 @@ export default {
         this.errors = []
         if (this.ish_data.req_user_kval.length < 10) {this.errors.push("Некорректно введены Требования к квалификации")}
         if (this.ish_data.pl.length == 0) {this.errors.push("Не выбраны требования к уровню профессионального образования")}
-        if (this.ish_data.pl.typology == null) {this.errors.push("Не выбрано типовое содержание ДПП")}
+        if (this.ish_data.typology == null) {this.errors.push("Не выбрано типовое содержание ДПП")}
         if (this.errors.length > 0)
         {
             this.show_errors = true

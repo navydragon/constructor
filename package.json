@@ -124,6 +124,7 @@
         "@balkangraph/orgchart.js": "^6.2.55",
         "@websanova/vue-auth": "^2.21.16-beta",
         "vue-organization-chart": "^1.1.6",
-        "vue-search-select": "^2.9.3"
+        "vue-search-select": "^2.9.3",
+        "vue-tree-list": "^1.4.3"
     }
 }

@@ -16,8 +16,16 @@
         </div>
         <div class="col-md-6">
             <h5>Типовое содержание ДПП:</h5>
-            <ul>
-                <li v-for="part in parts" :key="part.id">{{part.name}}</li>
+            <ul type="none">
+                <li v-for="part in parts" :key="part.id">
+                <i v-if="part.knowledges.length==0" class="ion ion-md-folder"></i>
+                <i v-if="part.knowledges.length!=0" class="ion ion-md-folder text-success"></i>  
+                {{part.name}}
+                    <ul>
+                        <li v-for="knowledge in part.knowledges" :key="'kd'+knowledge.id">{{knowledge.name}}</li>
+                    </ul>
+
+                </li>
             </ul>
         </div>
         </div>
@@ -31,12 +39,12 @@
         <div id="tree" ref="tree"></div>
         <new-skill2 @add_skill="add_skill" :ish_version_id="stage.ish_version_id" :parent_node="parent_node" :key="ns"></new-skill2>
         <new-ability2 @add_ability="add_ability" :ish_version_id="stage.ish_version_id" :parent_node="parent_node" :key="as"></new-ability2>
-        <new-knowledge2 @add_knowledge="add_knowledge" :ish_version_id="stage.ish_version_id" :parent_node="parent_node" :key="ks"></new-knowledge2>
+        <new-knowledge2 @add_knowledge="add_knowledge" :dtps="parts" :ish_version_id="stage.ish_version_id" :parent_node="parent_node" :key="ks"></new-knowledge2>
         <new-competence2 @add_competence="add_competence" :elems="unattached_elems" :key="cs"></new-competence2>
         <add-parent2 v-if="edit_type=='parent'" @draw_parent="draw_parent" :edit_elem="edit_elem" :elems="nodes.filter(node => node.type == 'Умение')" :key="edit_elem.id"></add-parent2>
         <edit-skill2 v-if="!isBusy&&edit_elem.id!='0'&&edit_type=='skill'" @update_skill="update_skill" :edit_elem="edit_elem.id" :ish_version_id="stage.ish_version_id" :key="'s'+edit_elem.id"></edit-skill2>
         <edit-ability2 v-if="!isBusy&&edit_elem.id!='0'&&edit_type=='ability'" @update_ability="update_ability" :edit_elem="edit_elem.id" :ish_version_id="stage.ish_version_id" :key="'a'+edit_elem.id"></edit-ability2>
-        <edit-knowledge2 v-if="!isBusy&&edit_elem.id!='0'&&edit_type=='knowledge'" @update_knowledge="update_knowledge" :edit_elem="edit_elem.id" :ish_version_id="stage.ish_version_id" :key="'a'+edit_elem.id"></edit-knowledge2>
+        <edit-knowledge2 v-if="!isBusy&&edit_elem.id!='0'&&edit_type=='knowledge'" :dtps="parts" @update_knowledge="update_knowledge" :edit_elem="edit_elem.id" :ish_version_id="stage.ish_version_id" :key="'a'+edit_elem.id"></edit-knowledge2>
     </div>
 </template>
 
@@ -528,13 +536,16 @@
                 .then(function(response) {
                     self.chart.addNode({ id: response.data.new_id, pid: response.data.new_parent, name: response.data.name, type: "Знание",tags:["knowledge"] })
                     self.chart.center(response.data.new_id);
-                })
+                    })
                 .finally( function() {
                     //self.oc(self.$refs.tree, self.nodes)
                     self.$bvModal.hide("modal-newknowledge")
                     self.ks = self.ks+1;
                 }) 
                
+                axios
+                    .get('/dpps/'+this.$route.params.dpp+'/get_typology')
+                    .then(response => (self.parts = response.data))
             },
             delete_knowledge (node)
             {
@@ -588,6 +599,10 @@
                     //self.oc(self.$refs.tree, self.nodes)
                     self.$bvModal.hide("modal-editknowledge")
                 }) 
+
+                axios
+                    .get('/dpps/'+this.$route.params.dpp+'/get_typology')
+                    .then(response => (self.parts = response.data))
             },
             disconnect (node)
             {

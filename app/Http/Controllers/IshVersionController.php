@@ -10,6 +10,7 @@ use App\NsiType;
 use App\Nsi;
 use App\Typology;
 use App\TypologyPart;
+use App\DppTypologyPart;
 use Auth;
 class IshVersionController extends Controller
 {
@@ -30,6 +31,7 @@ class IshVersionController extends Controller
         }
         $iv->typologies = $tls;
         $iv->typology = $iv->typology_id;
+        $iv->dpp_parts = $iv->typology_parts;
         $iv->pl = $arr;
         return $iv;
     }
@@ -50,10 +52,34 @@ class IshVersionController extends Controller
         $iv->req_user_edulevel = $request->ish_data["req_user_edulevel"];
         $iv->req_user_kval = $request->ish_data["req_user_kval"];
         $iv->target = $request->ish_data["target"];
-        $iv->typology_id = $request->ish_data["typology"];
+        if ($iv->typology_id != $request->ish_data["typology"])
+        {
+            
+            foreach($iv->typology_parts as $part)
+            {
+                DppTypologyPart::destroy($part->id);
+            }
+            $typology = Typology::find($request->ish_data["typology"]);
+            $parts = $typology->typology_parts;
+            $k = 1;
+            foreach ($parts as $part)
+            {
+                $dtp = new DppTypologyPart;
+                $dtp->dpp_id = $dpp->id;
+                $dtp->typology_id = $typology->id;
+                $dtp->ish_version_id = $iv->id;
+                $dtp->name = $part->name;
+                $dtp->not_necessary = $part->not_necessary;
+                $dtp->position = $k;
+                $dtp->save();
+                $k++;
+            }
+            $iv->typology_id = $request->ish_data["typology"];
+        }
+        
         $iv->save();
         $iv->prof_levels()->sync($request->ish_data["pl"]);
-        
+                
     }
 
     public function get_nsi_types()
@@ -106,5 +132,33 @@ class IshVersionController extends Controller
     {
         Nsi::destroy($request->nsi_id);
         return $request->nsi_id;
+    }
+
+    public function create_parts()
+    {
+        $dpps = Dpp::all();
+        foreach ($dpps as $dpp)
+        {
+        try 
+        {
+        //$dpp = Dpp::findOrFail($dpp_id);
+        $iv = IshVersion::findOrFail($dpp->ish_version_id);
+        $typology = Typology::findOrFail($iv->typology_id);
+        $parts = $typology->typology_parts;
+        $k = 1;
+        foreach ($parts as $part)
+        {
+            $dtp = new DppTypologyPart;
+            $dtp->dpp_id = $dpp->id;
+            $dtp->typology_id = $typology->id;
+            $dtp->ish_version_id = $iv->id;
+            $dtp->name = $part->name;
+            $dtp->not_necessary = $part->not_necessary;
+            $dtp->position = $k;
+            $dtp->save();
+            $k++;
+        }
+        }catch(Exception  $e) {echo $e;}
+        }
     }
 }

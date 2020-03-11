@@ -47,7 +47,8 @@ Route::group(['middleware' => 'jwt.auth'], function(){
 
   Route::get('/typologies/get_typologies','TypologyController@get_typologies');
   Route::post('/typologies/add_typology','TypologyController@add_typology');
-  
+  Route::post('/typologies/add_dtp','TypologyController@add_dtp');
+  Route::post('/typologies/remove_dtp','TypologyController@remove_dtp');
   
   Route::get('/nsis/{iv}','IshVersionController@get_nsis');
   Route::get('/nsis/get_nsi/{nsi}','IshVersionController@get_nsi');
