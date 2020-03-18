@@ -53,7 +53,7 @@
                         <b-form-input  v-model="data.item.text" placeholder="Введите текст ответа"></b-form-input> &nbsp;
                     </b-col>
                     <b-col sm="1">
-                        <b-btn :disabled="new_question.single_choice_answers.length == 1" variant="outline-danger  icon-btn" class="btn" @click="remove_single_choice_answer(data.item)"><i class="ion ion-md-close"></i></b-btn>     
+                        <b-btn :disabled="new_question.single_choice_answers.length <= 4" variant="outline-danger  icon-btn" class="btn" @click="remove_single_choice_answer(data.item)"><i class="ion ion-md-close"></i></b-btn>     
                     </b-col>                        
                     </b-row> 
                 </template>
@@ -79,7 +79,7 @@
                         <b-form-input  v-model="data.item.text" placeholder="Введите текст ответа"></b-form-input> &nbsp;
                     </b-col>
                     <b-col sm="1">
-                        <b-btn :disabled="new_question.multi_choice_answers.length == 1" variant="outline-danger  icon-btn" class="btn" @click="remove_multi_choice_answer(data.item)"><i class="ion ion-md-close"></i></b-btn>     
+                        <b-btn :disabled="new_question.multi_choice_answers.length <= 4" variant="outline-danger  icon-btn" class="btn" @click="remove_multi_choice_answer(data.item)"><i class="ion ion-md-close"></i></b-btn>     
                     </b-col>                        
                     </b-row> 
                 </template>

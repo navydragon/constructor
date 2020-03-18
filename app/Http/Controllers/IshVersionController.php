@@ -108,6 +108,18 @@ class IshVersionController extends Controller
         $nsi->authors = $data["authors"];
         $nsi->output = $data["output"];
         $nsi->url = $data["url"];
+        $nsi->fullname = $data["fullname"];
+        $nsi->old_name = $data["old_name"];
+        $nsi->start_date = $data["start_date"];
+        $nsi->accept_date = $data["accept_date"];
+        $nsi->accept_number = $data["accept_number"];
+        $nsi->accept_odm = $data["accept_odm"];
+        $nsi->odm_number = $data["odm_number"];
+        $nsi->npa_type = $data["npa_type"];
+        $nsi->city = $data["city"];
+        $nsi->year = $data["year"];
+        $nsi->pages = $data["pages"];
+
         $nsi->ish_version_id = $request->ish_version_id;
         $nsi->author_id = Auth::user()->id;
         $nsi->save();
@@ -123,6 +135,17 @@ class IshVersionController extends Controller
         $nsi->authors = $data["authors"];
         $nsi->output = $data["output"];
         $nsi->url = $data["url"];
+        $nsi->fullname = $data["fullname"];
+        $nsi->old_name = $data["old_name"];
+        $nsi->start_date = $data["start_date"];
+        $nsi->accept_date = $data["accept_date"];
+        $nsi->accept_number = $data["accept_number"];
+        $nsi->accept_odm = $data["accept_odm"];
+        $nsi->odm_number = $data["odm_number"];
+        $nsi->npa_type = $data["npa_type"];
+        $nsi->city = $data["city"];
+        $nsi->year = $data["year"];
+        $nsi->pages = $data["pages"];
         $nsi->author_id = Auth::user()->id;
         $nsi->save();
         return $nsi;

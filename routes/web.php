@@ -11,4 +11,5 @@
 |
 */
 Route::get('/create_parts','IshVersionController@create_parts');
+Route::get('/set_zun_valid','ZunVersionController@set_zun_valid');
 Route::get('/{any}', 'ApplicationController')->where('any', '.*');

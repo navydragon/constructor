@@ -524,6 +524,7 @@ class ZunVersionController extends Controller
             $row["name"] = $competence->name;
             $row["pid"] = null;
             $row["type"] = "Компетенция";
+            $row["valid"] = $competence->valid;
             array_push($result,$row);                    
         }
         foreach ($skills as $skill)
@@ -533,6 +534,7 @@ class ZunVersionController extends Controller
             $row["name"] = $skill->name;
             $row["pid"] = 'c'.$skill->competence_id;
             $row["type"] = "Навык";
+            $row["valid"] = $skill->valid;
             array_push($result,$row);                    
         }
         foreach ($abilities as $ability)
@@ -547,6 +549,7 @@ class ZunVersionController extends Controller
                 $row["pid"] = 's'.$ability->skill_id;
             }
             $row["type"] = "Умение";
+            $row["valid"] = $ability->valid;
             array_push($result,$row);                    
         }
         foreach ($knowledges as $knowledge)
@@ -556,6 +559,7 @@ class ZunVersionController extends Controller
             $row["name"] = $knowledge->name;
             $row["pid"] = 'a'.$knowledge->ability_id;
             $row["type"] = "Знание";
+            $row["valid"] = $knowledge->valid;
             array_push($result,$row);                    
         }
         foreach ($th_knowledges as $knowledge)
@@ -565,6 +569,7 @@ class ZunVersionController extends Controller
             $row["name"] = $knowledge->name;
             $row["pid"] = 0;
             $row["type"] = "Знание";
+            $row["valid"] = $knowledge->valid;
             array_push($result,$row);                    
         }
         $row = [];
@@ -587,6 +592,7 @@ class ZunVersionController extends Controller
         $comp->what = $data["what"];
         $comp->with = $data["with"];
         $comp->where = $data["where"];
+        $comp->valid = true;
         $comp->save();
         foreach ($data["elems"] as $elem)
         {
@@ -613,6 +619,22 @@ class ZunVersionController extends Controller
         Competence::destroy($id);
     }
 
+    public function update_competence2  (Dpp $dpp, Request $request)
+    {
+        $data = $request->competence_data;
+        $competence = Competence::find($data["id"]);
+
+        $competence->name = $request->competence_name;
+        $competence->keyword = $data["keyword"];
+        $competence->what = $data["what"];
+        $competence->with = $data["with"];
+        $competence->where = $data["where"];
+        $competence->save();
+        
+        $competence->new_id = 'c'.$competence->id;
+        return $competence;
+    }
+
     public function add_skill2(Dpp $dpp,ZunVersion $zv, Request $request)
     {
         $data = $request->skill_data;
@@ -629,7 +651,30 @@ class ZunVersionController extends Controller
         $skill->where = $data["where"];
         $skill->competence_id = $parent_node;
         $skill->save();
-        $skill->nsis()->sync($data["nsis"]);
+        switch ($data["is_by_expert"]) {
+            case '0':
+                $skill->is_by_expert = 0;
+                $skill->save();
+                $skill->nsis()->sync($data["nsis"]);
+                if (count($data["nsis"]) > 0)
+                { $skill->valid = true; }else{ $skill->valid = false; }
+                $skill->save();
+            break;
+
+            case '1':
+                $skill->is_by_expert = 1;
+                $skill->expert_answer = $data["expert_answer"];
+                $skill->save();
+                if (strlen($data["expert_answer"]) != 0)
+                { $skill->valid = true; }else{ $skill->valid = false; }
+                $skill->save();
+            break;
+            
+            default:
+                $skill->valid = false;
+                $skill->save();
+            break;
+        }
         $skill->new_id = 's'.$skill->id;
         $skill->new_parent = $request->parent_node;
         return $skill;
@@ -654,7 +699,31 @@ class ZunVersionController extends Controller
         $skill->with = $data["with"];
         $skill->where = $data["where"];
         $skill->save();
-        $skill->nsis()->sync($data["nsis"]);
+        switch ($data["is_by_expert"]) {
+            case '0':
+                $skill->is_by_expert = 0;
+                $skill->expert_answer = null;
+                $skill->save();
+                $skill->nsis()->sync($data["nsis"]);
+                if (count($data["nsis"]) > 0)
+                { $skill->valid = true; }else{ $skill->valid = false; }
+                $skill->save();
+            break;
+
+            case '1':
+                $skill->is_by_expert = 1;
+                $skill->expert_answer = $data["expert_answer"];
+                if (strlen($data["expert_answer"]) != 0)
+                { $skill->valid = true; }else{ $skill->valid = false; }
+                $skill->save();
+                $skill->nsis()->detach();
+            break;
+            
+            default:
+                $skill->valid = false;
+                $skill->save();
+            break;
+        }
         $skill->new_id = 's'.$skill->id;
         return $skill;
     }
@@ -688,7 +757,29 @@ class ZunVersionController extends Controller
             $ability->competence_id = $parent_node;
         }
         $ability->save();
-        $ability->nsis()->sync($data["nsis"]);
+        switch ($data["is_by_expert"]) {
+            case '0':
+                $ability->is_by_expert = 0;
+                $ability->save();
+                $ability->nsis()->sync($data["nsis"]);
+                if (count($data["nsis"]) > 0)
+                { $ability->valid = true; }else{ $ability->valid = false; }
+                $ability->save();
+            break;
+
+            case '1':
+                $ability->is_by_expert = 1;
+                $ability->expert_answer = $data["expert_answer"];
+                if (strlen($data["expert_answer"]) != 0)
+                { $ability->valid = true; }else{ $ability->valid = false; }
+                $ability->save();
+            break;
+            
+            default:
+                $ability->valid = false;
+                $ability->save();
+            break;
+        }
         $ability->new_id = 'a'.$ability->id;
         $ability->new_parent = $request->parent_node;
         return $ability;
@@ -713,7 +804,32 @@ class ZunVersionController extends Controller
         $ability->with = $data["with"];
         $ability->where = $data["where"];
         $ability->save();
-        $ability->nsis()->sync($data["nsis"]);
+        switch ($data["is_by_expert"]) {
+            case '0':
+                $ability->is_by_expert = 0;
+                $ability->expert_answer = null;
+                $ability->save();
+                $ability->nsis()->sync($data["nsis"]);
+                if (count($data["nsis"]) > 0)
+                { $ability->valid = true; }else{ $ability->valid = false; }
+                $ability->save();
+            break;
+
+            case '1':
+                $ability->is_by_expert = 1;
+                $ability->expert_answer = $data["expert_answer"];
+                $ability->save();
+                $ability->nsis()->detach();
+                if (strlen($data["expert_answer"]) != 0)
+                { $ability->valid = true; }else{ $ability->valid = false; }
+                $ability->save();
+            break;
+            
+            default:
+                $ability->valid = false;
+                $ability->save();
+            break;
+        }
         $ability->new_id = 'a'.$ability->id;
         return $ability;
     }
@@ -743,7 +859,29 @@ class ZunVersionController extends Controller
         if ($data["dtp"] != ""){
             $knowledge->get_dtps()->attach($data["dtp"]);
         }
-        $knowledge->nsis()->sync($data["nsis"]);
+        switch ($data["is_by_expert"]) {
+            case '0':
+                $knowledge->is_by_expert = 0;
+                $knowledge->save();
+                $knowledge->nsis()->sync($data["nsis"]);
+                if (count($data["nsis"]) > 0 && $data["dtp"] != "")
+                { $knowledge->valid = true; }else{ $knowledge->valid = false; }
+                $knowledge->save();
+            break;
+
+            case '1':
+                $knowledge->is_by_expert = 1;
+                $knowledge->expert_answer = $data["expert_answer"];
+                $knowledge->save();
+                if (strlen($data["expert_answer"]) != 0 && $data["dtp"] != "")
+                { $knowledge->valid = true; }else{ $knowledge->valid = false; }
+                $knowledge->save();
+            break;
+            
+            default:
+                # code...
+                break;
+        }
         $knowledge->new_id = 'k'.$knowledge->id;
         $knowledge->new_parent = $request->parent_node;
         return $knowledge;
@@ -754,6 +892,7 @@ class ZunVersionController extends Controller
         $id = substr($request->knowledge_id,1); 
         $kn = Knowledge::find($id);
         $kn->nsis()->detach();
+        $kn->get_dtps()->detach();
         Knowledge::destroy($id);
     }
 
@@ -767,7 +906,31 @@ class ZunVersionController extends Controller
         if ($data["dtp"] != ""){
             $knowledge->get_dtps()->sync($data["dtp"]);
         }
-        $knowledge->nsis()->sync($data["nsis"]);
+        switch ($data["is_by_expert"]) {
+            case '0':
+                $knowledge->is_by_expert = 0;
+                $knowledge->expert_answer = null;
+                $knowledge->save();
+                $knowledge->nsis()->sync($data["nsis"]);
+                if (count($data["nsis"]) > 0 && $data["dtp"] != "")
+                { $knowledge->valid = true; }else{ $knowledge->valid = false; }
+                $knowledge->save();
+            break;
+
+            case '1':
+                $knowledge->is_by_expert = 1;
+                $knowledge->expert_answer = $data["expert_answer"];
+                $knowledge->save();
+                $knowledge->nsis()->detach();
+                if (strlen($data["expert_answer"]) != 0 && $data["dtp"] != "")
+                { $knowledge->valid = true; }else{ $knowledge->valid = false; }
+                $knowledge->save();
+            break;
+            
+            default:
+                # code...
+                break;
+        }
         $knowledge->new_id = 'k'.$knowledge->id;
         return $knowledge;
     }
@@ -952,5 +1115,22 @@ class ZunVersionController extends Controller
         }
         //dd($sk->nsis);
         return $kn;
+    }
+
+    public function get_competence_info ($co)
+    {
+        $id = substr($co,1);
+        $co = Competence::find($id);
+        return $co;
+    }
+
+    public function set_zun_valid()
+    {
+        $comps = Competence::all();
+        foreach ($comps as $comp)
+        {
+            $comp->valid = true;
+            $comp->save();
+        }
     }
 }

@@ -74,8 +74,8 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('/dpps/get_skill_info/{sk}','ZunVersionController@get_skill_info');
   Route::get('/dpps/get_ability_info/{ab}','ZunVersionController@get_ability_info');
   Route::get('/dpps/get_knowledge_info/{kn}','ZunVersionController@get_knowledge_info');
+  Route::get('/dpps/get_competence_info/{co}','ZunVersionController@get_competence_info');
   
-
   Route::get('/dpps/{dpp}/get_ish_version_data/{iv}','IshVersionController@get_ish_version_data');
   Route::post('/dpps/{dpp}/update_ish_version_data/{iv}','IshVersionController@update_ish_version_data');
   Route::get('/dpps/{dpp}/get_stage_data/{stage}','DppStageController@get_stage_data');
@@ -83,7 +83,8 @@ Route::group(['middleware' => 'jwt.auth'], function(){
 
   Route::post('/dpps/{dpp}/add_competence','ZunVersionController@add_competence2');
   Route::post('/dpps/{dpp}/remove_competence','ZunVersionController@remove_competence2');
-  
+  Route::post('/dpps/{dpp}/update_competence','ZunVersionController@update_competence2');
+
   Route::post('/dpps/{dpp}/add_skill','ZunVersionController@add_skill2');
   Route::post('/dpps/{dpp}/update_skill','ZunVersionController@update_skill2');
   Route::post('/dpps/{dpp}/remove_skill','ZunVersionController@remove_skill2');

@@ -29,9 +29,26 @@
                 </b-form-group>
                 </b-form-row>
                 <hr>
-                <h4>НОРМАТИВНО-СПРАВОЧНАЯ ИНФОРМАЦИЯ</h4>
+                <h4>ОБОСНОВАНИЕ</h4>
+                <b-alert show >Выберите на основе какой информации формируется навык</b-alert>
+                <b-form-radio v-model="new_skill.is_by_expert" name="is_by_expert" value="0">На основе источников НСИ</b-form-radio>
+                <b-form-radio v-model="new_skill.is_by_expert" name="is_by_expert" value="1">На основе мнения эксперта</b-form-radio>
+                <div class="mt-4" v-if="new_skill.is_by_expert==0">
+                <h5>ИСТОЧНИКИ НСИ</h5>
                 <b-alert show >Соотнесите навык с источниками НСИ</b-alert>
-                <nsi-choose @change_nsi="change_nsi" v-if="!isBusy" :selected="new_skill.nsis" :ish_version_id="ish_version_id"></nsi-choose>
+                <nsi-choose @change_nsi="change_nsi" :mode="'work'" :selected="new_skill.nsis" v-if="!isBusy" :ish_version_id="ish_version_id"></nsi-choose>
+                </div>
+                <div class="mt-4" v-if="new_skill.is_by_expert==1">
+                <h5>МНЕНИЕ ЭКСПЕРТА</h5>
+                <b-alert show >Введите комментарий, указав Ф.И.О. эксперта и его обоснование</b-alert>
+                <b-form-textarea
+                  id="textarea"
+                  v-model="new_skill.expert_answer"
+                  placeholder="Введите комментарий..."
+                  rows="3"
+                  max-rows="6"
+                ></b-form-textarea>
+                </div>
                 <hr>
                 <b-alert show variant="danger" v-if="!new_skill.valid"><strong>Ошибка!</strong> Заполните ВСЕ параметры названия компонента</b-alert>
         </b-modal>
@@ -58,6 +75,8 @@ export default {
         with: '',
         where: '',
         valid: true,
+        expert_answer: '',
+        is_by_expert: null,
         nsis: []
       },
       errors: [],
