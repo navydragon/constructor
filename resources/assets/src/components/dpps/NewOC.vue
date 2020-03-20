@@ -47,7 +47,7 @@
         <new-ability2 @add_ability="add_ability" :ish_version_id="stage.ish_version_id" :parent_node="parent_node" :key="as"></new-ability2>
         <new-knowledge2 @add_knowledge="add_knowledge" :dtps="parts" :ish_version_id="stage.ish_version_id" :parent_node="parent_node" :key="ks"></new-knowledge2>
         <new-competence2 @add_competence="add_competence" :elems="unattached_elems" :key="cs"></new-competence2>
-        <add-parent2 v-if="edit_type=='parent'" @draw_parent="draw_parent" :edit_elem="edit_elem" :elems="nodes.filter(node => node.type == 'Умение')" :key="edit_elem.id"></add-parent2>
+        <add-parent2 v-if="edit_type=='parent'" @draw_parent="draw_parent" :edit_elem="edit_elem" :elems="nodes.filter(node => node.tags == 'ability')" :key="edit_elem.id"></add-parent2>
         <edit-skill2 v-if="!isBusy&&edit_elem.id!='0'&&edit_type=='skill'" @update_skill="update_skill" :edit_elem="edit_elem.id" :ish_version_id="stage.ish_version_id" :key="'s'+edit_elem.id"></edit-skill2>
         <edit-ability2 v-if="!isBusy&&edit_elem.id!='0'&&edit_type=='ability'" @update_ability="update_ability" :edit_elem="edit_elem.id" :ish_version_id="stage.ish_version_id" :key="'a'+edit_elem.id"></edit-ability2>
         <edit-knowledge2 v-if="!isBusy&&edit_elem.id!='0'&&edit_type=='knowledge'" :dtps="parts" @update_knowledge="update_knowledge" :edit_elem="edit_elem.id" :ish_version_id="stage.ish_version_id" :key="'a'+edit_elem.id"></edit-knowledge2>

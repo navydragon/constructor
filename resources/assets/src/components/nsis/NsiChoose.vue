@@ -1,7 +1,24 @@
 <template>
+    <div>
     <div class="row">
         <div class="col-md-12">
             <h5>Выбрано источников ({{selected.length}})</h5>
+        </div>
+    </div>   
+            <div class="col-md-6" v-for="type in types" :key="'t'+type.id">
+                <h5>{{type.name}} ({{nsis.filter(nsi => nsi.type_id == type.id).length}})</h5>
+                <b-form-checkbox-group
+                    v-model="selected"
+                    :options="nsis.filter(nsi => nsi.type_id == type.id)"
+                    name="nsis"
+                    value-field = "id"
+                    text-field = "name"
+                    @input="change_nsi"
+                    stacked
+                ></b-form-checkbox-group>
+                <br>
+              </div> 
+            <!--
             <div class="row">
               <div class="col-md-6 mb-3" v-if="npas.length>0">
                <b-form-group  label-size="lg" label="Нормативные правовые акты, нормативная техническая документация, иная документация:">
@@ -60,8 +77,10 @@
                 </b-form-group>
               </div>
             </div>
+            -->
+
             <new-nsi @add_nsi="add_nsi" :types="types" :key="nn"></new-nsi>             
-        </div>
+       <!-- </div> -->
         <edit-nsi @update_nsi="update_nsi" v-if="show_edit_window" :nsi_id="nsi_to_edit" :types="types" :key="nsi_to_edit"></edit-nsi>
     </div>
 </template>

@@ -44,8 +44,8 @@
                         <new-dtp @add_dtp="add_dtp" :key="'ds'"></new-dtp>
                         <b-list-group>
                             <b-list-group-item v-for="dpp_part in ish_data.dpp_parts" :key="dpp_part.id">
-                                <b-btn variant="outline-primary icon-btn btn-xs" class="btn"><i class="ion ion-md-create"></i></b-btn>
-                                <b-btn variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_dtp(dpp_part.id,dpp_part.name)">X</b-btn>
+                                <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click="edit_dtp(dpp_part)"><i class="ion ion-md-create"></i></b-btn>
+                                <b-btn variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_dtp(dpp_part,dpp_part.name)">X</b-btn>
                                {{dpp_part.position}}. {{dpp_part.name}}
                             </b-list-group-item>
                         </b-list-group>
@@ -114,6 +114,26 @@
             </b-card>
         </div>
         </b-card>
+         <b-modal
+            id="edit_modal"
+            :key="edit_item.id"
+            ref="modal"
+            title="Редактирование раздела в программе"
+            ok-title="Сохранить"
+            size="lg"
+            cancel-title="Закрыть"
+            @ok="handleEditOk">
+                <b-form-group
+                label="Название раздела"
+                invalid-feedback="Необходимо ввести название"
+                label-size="lg"
+                >
+                <b-form-input
+                    v-model="edit_item.name"
+                    required
+                ></b-form-input>
+                </b-form-group>
+         </b-modal>
     </div>
 </template>
 
@@ -138,6 +158,7 @@ export default {
     return {
         isBusy: true,
         item: {},
+        edit_item: {},
         ish_data: {},
         nodes: [],
         treeData: [{
@@ -190,6 +211,23 @@ export default {
         .then((response) => (this.ish_data.dpp_parts.push(response.data)))
         .finally(()=>(this.$bvModal.hide("modal-newdtp")))
     },
+    edit_dtp (item) {
+         this.edit_item = item
+          this.$nextTick(() => {
+                    this.$bvModal.show("edit_modal")
+          })
+    },
+     handleEditOk(bvModalEvt) {
+        bvModalEvt.preventDefault()
+        self = this
+        axios
+        .post('/typologies/update_dtp', this.edit_item)
+        .then (function (response) {
+            var upd_item =  self.ish_data.dpp_parts.find(item => item.id == response.data.id)
+            upd_item = response.data
+            self.$bvModal.hide("edit_modal")
+        })
+      },
     remove_dtp (dtp,name) {
         this.$bvModal.msgBoxConfirm('Действительно хотите удалить раздел «'+name+'»? Это также удалит привязки к этому разделу знаний (если они имеются).')
         .then(value => {
@@ -197,7 +235,7 @@ export default {
         {
         axios
        .post('/typologies/remove_dtp',dtp)
-        .then((response) => (this.ish_data.dpp_parts = this.ish_data.dpp_parts.filter(part => part.id != dtp))) 
+        .then((response) => (this.ish_data.dpp_parts = this.ish_data.dpp_parts.filter(part => part.id != dtp.id))) 
         }})
     }
     },

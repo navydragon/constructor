@@ -38,6 +38,36 @@ class TypologyController extends Controller
         return $tl;
     }
 
+    public function update_typology(Request $request)
+    {
+        $tl = Typology::find($request->id);
+        $tl->name = $request->name;
+        $tl->save();
+        $parts = $request->parts;
+        foreach ($parts as $part)
+        {
+            $tlp = TypologyPart::find($part["id"]);
+            if ($tlp)
+            {
+                $tlp->name = $part["name"];
+                $tlp->save();
+            }else{
+                $tlp = new TypologyPart;
+                $tlp->name = $part["name"];
+                $tlp->typology_id = $tl->id;
+                $tlp->save();
+            } 
+        }
+        $tl->parts = $tl->typology_parts;
+        return $tl;
+    }
+
+    public function remove_part(Request $request)
+    {
+        $tlp = TypologyPart::find($request->id);
+        TypologyPart::destroy($request->id);
+    }
+
     public function add_dtp(Request $request)
     {
         $dtp = New DppTypologyPart;
@@ -54,6 +84,14 @@ class TypologyController extends Controller
 
     public function remove_dtp(Request $request)
     {
-        DppTypologyPart::destroy($request);
+        DppTypologyPart::destroy($request->id);
+    }
+
+    public function update_dtp(Request $request)
+    {
+        $dtp = DppTypologyPart::find($request->id);
+        $dtp->name = $request->name;
+        $dtp->save();
+        return $dtp;
     }
 }

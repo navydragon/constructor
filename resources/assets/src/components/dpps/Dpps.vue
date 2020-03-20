@@ -21,6 +21,11 @@
                        <b-button  variant="outline-info">
                            <i class="ion ion-md-eye" style="font-size:20px;"></i>
                        </b-button>
+                    <router-link v-if="!isBusy" icon="ion ion-md-person" :to="{ name: 'dpp_overview', params: {dpp: data.item.id, role: 1} }" :exact="true">
+                      <b-button  variant="outline-primary">
+                       <i class="ion ion-md-create" style="font-size:20px;"></i>
+                      </b-button>
+                    </router-link>
                     </router-link>
                     <router-link v-if="!isBusy" icon="ion ion-md-person" :to="{ name: 'dpp_config', params: {dpp: data.item.id } }" :exact="true">
                        <b-button  variant="outline-primary">

@@ -17,17 +17,13 @@
                 <template v-slot:cell(parts)="data">
                     {{data.item.parts.length}}
                 </template>
-                <!--
+                
                 <template v-slot:cell(modify)="data">
-                    
-                       <b-button  variant="outline-primary">
+                       <b-button  @click="edit_typology(data.item)"  variant="outline-primary">
                            <i class="ion ion-md-construct" style="font-size:20px;"></i>
                        </b-button>
-                      <b-button @click="delete_dpp(data.item,data.item.id)" variant="outline-danger">
-                           <i class="ion ion-md-close" style="font-size:20px;"></i>
-                       </b-button>
-               </template>
-                -->
+                </template>
+                
             </b-table>
          </b-card>
          <b-modal
@@ -66,6 +62,46 @@
                                 :state="elem.nameState"
                                 required
                             ></b-form-input>
+                        </div>
+                    </div>
+                </div>
+         </b-modal>
+         <b-modal
+            id="edit_modal"
+            :key="edit_item.id"
+            ref="modal"
+            title="Редактирование типовой структуры ДПП"
+            ok-title="Сохранить"
+            size="lg"
+            cancel-title="Закрыть"
+            @ok="handleEditOk">
+                <b-form-group
+                label="Название"
+                invalid-feedback="Необходимо ввести название"
+                label-size="lg"
+                >
+                <b-form-input
+                    v-model="edit_item.name"
+                    required
+                ></b-form-input>
+                </b-form-group>
+                <h5>Разделы типологии:</h5>
+                <b-button variant="primary" @click="add_part_to_edit">Добавить раздел</b-button>
+                <div v-for="(elem,index) in edit_item.parts" :key="elem.id" class="m-3">
+                    <div class="row">
+                        <div class="col-md-1">
+                            {{index+1}}.
+                        </div>
+                        <div class="col-md-10">
+                            <b-form-input
+                                v-model="elem.name"
+                                required
+                            ></b-form-input>
+                        </div>
+                        <div class="col-md-1">
+                          <b-button  @click="remove_part(elem)"  variant="outline-danger">
+                           <i class="ion ion-md-close" style="font-size:20px;"></i>
+                          </b-button>
                         </div>
                     </div>
                 </div>
@@ -112,7 +148,8 @@ export default {
                 name: '',
                 state: null
             }]  
-        }
+        },
+        edit_item: {}
       }
     },
     methods: {
@@ -127,6 +164,27 @@ export default {
         })
         .finally( () => (self.t = self.t + 1))
       },
+    handleEditOk(bvModalEvt) {
+        bvModalEvt.preventDefault()
+        self = this
+        axios
+        .post('/typologies/update_typology', this.edit_item)
+        .then (function (response) {
+            var upd_item =  self.items.find(item => item.id == response.data.id)
+            upd_item = response.data
+            self.$bvModal.hide("edit_modal")
+        })
+        .finally( () => (self.t = self.t + 1))
+      },
+    remove_part (item) {
+        self = this
+        axios
+        .post('/typologies/remove_part', item)
+        .then (function (response) {
+          self.edit_item.parts = self.edit_item.parts.filter(elem => elem.id != item.id)
+
+        })
+    },
       generate_id () {
         return `f${(~~(Math.random() * 1e8)).toString(16)}`
       },
@@ -136,6 +194,20 @@ export default {
               name: '',
               state: null
           })
+      },
+      add_part_to_edit () {
+          this.edit_item.parts.push( {
+              id: this.generate_id(),
+              name: '',
+              state: null
+          })
+      },
+      edit_typology (item) {
+          this.edit_item = item
+          this.$nextTick(() => {
+                    this.$bvModal.show("edit_modal")
+          })
+          
       }
     },
     mounted () {

@@ -6,44 +6,17 @@
               <hr>
             </div>
             <h5>Текущие источники ({{nsis.length}})</h5>
-              <div class="mb-3" v-if="npas.length>0">
-              <h5 >Нормативные правовые акты, нормативная техническая документация, иная документация ({{npas.length}})</h5>
-              <b-list-group>
-                <b-list-group-item v-for="npa in npas" :key="npa.id">
-                  <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click.prevent="edit_nsi(npa.id)"><i class="ion ion-md-create"></i></b-btn>
-                  <b-btn v-if="!mode" variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_nsi(npa.id)">X</b-btn>
-                  &nbsp;{{npa.name}}
+              <div v-for="type in types" :key="'t'+type.id">
+                <h5>{{type.name}} ({{nsis.filter(nsi => nsi.type_id == type.id).length}})</h5>
+                <b-list-group>
+                <b-list-group-item v-for="nsi in nsis.filter(nsi => nsi.type_id == type.id)" :key="nsi.id">
+                  <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click.prevent="edit_nsi(nsi.id)"><i class="ion ion-md-create"></i></b-btn>
+                  <b-btn v-if="!mode" variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_nsi(nsi.id)">X</b-btn>
+                  &nbsp;{{nsi.name}}
                 </b-list-group-item>
-              </b-list-group>
-              </div>
-              <div class="mb-3" v-if="ychs.length>0">
-              <h5 >Учебники, монографии ({{ychs.length}})</h5>
-              <b-list-group>
-                <b-list-group-item v-for="ych in ychs" :key="ych.id">
-                  <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click.prevent="edit_nsi(ych.id)"><i class="ion ion-md-create"></i></b-btn>
-                  <b-btn v-if="!mode" variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_nsi(ych.id)">X</b-btn>
-                  &nbsp;{{ych.name}}</b-list-group-item>
-              </b-list-group>
-              </div>
-              <div class="mb-3" v-if="irs.length>0"> 
-              <h5>Интернет ресурсы ({{irs.length}})</h5>
-              <b-list-group>
-                <b-list-group-item v-for="ir in irs" :key="ir.id">
-                  <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click.prevent="edit_nsi(ir.id)"><i class="ion ion-md-create"></i></b-btn>
-                  <b-btn v-if="!mode" variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_nsi(ir.id)">X</b-btn>
-                  &nbsp;{{ir.name}}</b-list-group-item>
-              </b-list-group>
-              </div>
-              <div class="mb-3" v-if="ebss.length>0">
-              <h5>Электронно-библиотечная система ({{ebss.length}})</h5>
-              <b-list-group>
-                <b-list-group-item v-for="ebs in ebss" :key="ebs.id">
-                  <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click.prevent="edit_nsi(ebs.id)"><i class="ion ion-md-create"></i></b-btn>
-                  &nbsp;<b-btn v-if="!mode" variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_nsi(ebs.id)">X</b-btn>
-                  &nbsp;{{ebs.name}}</b-list-group-item>
-              </b-list-group>
-              </div>
-              
+                </b-list-group>
+                <br>
+              </div> 
         </div>
         <edit-nsi @update_nsi="update_nsi" v-if="show_edit_window" :nsi_id="nsi_to_edit" :types="types" :key="nsi_to_edit"></edit-nsi>
     </div>
