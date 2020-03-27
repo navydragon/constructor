@@ -27,11 +27,14 @@ class TypologyController extends Controller
         $tl->name = $request->name;
         $tl->save();
         $parts = $request->parts;
+        $n = 1;
         foreach ($parts as $part)
         {
             $tlp = new TypologyPart;
             $tlp->name = $part["name"];
             $tlp->typology_id = $tl->id;
+            $tlp->position = $n;
+            $n++;
             $tlp->save();
         }
         $tl->parts = $tl->typology_parts;
@@ -44,17 +47,22 @@ class TypologyController extends Controller
         $tl->name = $request->name;
         $tl->save();
         $parts = $request->parts;
+        $n = 1;
         foreach ($parts as $part)
         {
             $tlp = TypologyPart::find($part["id"]);
             if ($tlp)
             {
                 $tlp->name = $part["name"];
+                $tlp->position = $n;
+                $n++;
                 $tlp->save();
             }else{
                 $tlp = new TypologyPart;
                 $tlp->name = $part["name"];
                 $tlp->typology_id = $tl->id;
+                $tlp->position = $n;
+                $n++;
                 $tlp->save();
             } 
         }
@@ -84,6 +92,14 @@ class TypologyController extends Controller
 
     public function remove_dtp(Request $request)
     {
+        $dtp = DppTypologyPart::find($request->id);
+        $nexts = DppTypologyPart::where('ish_version_id','=',$dtp->ish_version_id)->where('position','>',$dtp->position)->get();
+        foreach ($nexts as $next)
+        {
+            $next->position = $next->position - 1;
+            $next->save();
+        }
+        $dtp->get_knowledges()->detach();
         DppTypologyPart::destroy($request->id);
     }
 
@@ -93,5 +109,44 @@ class TypologyController extends Controller
         $dtp->name = $request->name;
         $dtp->save();
         return $dtp;
+    }
+
+    public function dtp_move_up(IshVersion $iv, Request $request)
+    {
+        $dtp = DppTypologyPart::find($request->part);
+        $previous = DppTypologyPart::where('ish_version_id','=',$iv->id)->where('position','=',$dtp->position - 1)->get()->first();
+        $dtp->position = $dtp->position - 1;
+        $previous->position = $previous->position + 1;
+        $dtp->save();
+        $previous->save();
+        $dtps = DppTypologyPart::where('ish_version_id','=',$iv->id)->orderBy('position','asc')->get();
+        return $dtps;
+    }
+
+    public function dtp_move_down(IshVersion $iv, Request $request)
+    {
+        $dtp = DppTypologyPart::find($request->part);
+        $previous = DppTypologyPart::where('ish_version_id','=',$iv->id)->where('position','=',$dtp->position + 1 )->get()->first();
+        $dtp->position = $dtp->position + 1 ;
+        $previous->position = $previous->position - 1;
+        $dtp->save();
+        $previous->save();
+        $dtps = DppTypologyPart::where('ish_version_id','=',$iv->id)->orderBy('position','asc')->get();
+        return $dtps;
+    }
+
+    public function make_tp_positions()
+    {
+        $tls = Typology::all();
+        foreach ($tls as $tl)
+        {
+            $n = 1;
+            foreach ($tl->typology_parts as $part)
+            {
+                $part->position = $n;
+                $n++;
+                $part->save();
+            }
+        }
     }
 }

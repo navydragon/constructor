@@ -513,10 +513,10 @@ class ZunVersionController extends Controller
     {
         $result = [];
         $competences = Competence::where('zun_version_id',$zv->id)->get();
-        $skills = Skill::where('zun_version_id',$zv->id)->get();
-        $abilities = Ability::where('zun_version_id',$zv->id)->get();
-        $knowledges = Knowledge::where('zun_version_id',$zv->id)->where('is_through',false)->get();
-        $th_knowledges = Knowledge::where('zun_version_id',$zv->id)->where('is_through',true)->get();
+        $skills = Skill::where('zun_version_id',$zv->id)->orderBy('position','asc')->get();
+        $abilities = Ability::where('zun_version_id',$zv->id)->orderBy('position','asc')->get();
+        $knowledges = Knowledge::where('zun_version_id',$zv->id)->where('is_through',false)->orderBy('position','asc')->get();
+        $th_knowledges = Knowledge::where('zun_version_id',$zv->id)->where('is_through',true)->orderBy('position','asc')->get();
         foreach ($competences as $competence)
         {
             $row = [];
@@ -560,6 +560,7 @@ class ZunVersionController extends Controller
             $row["pid"] = 'a'.$knowledge->ability_id;
             $row["type"] = "Знание";
             $row["valid"] = $knowledge->valid;
+            $row["position"] = $knowledge->position;
             array_push($result,$row);                    
         }
         foreach ($th_knowledges as $knowledge)
@@ -567,13 +568,13 @@ class ZunVersionController extends Controller
             $row = [];
             $row["id"] = 'k'.$knowledge->id;
             $row["name"] = $knowledge->name;
-            $row["pid"] = 0;
+            $row["pid"] = 'th';
             $row["type"] = "Знание";
             $row["valid"] = $knowledge->valid;
             array_push($result,$row);                    
         }
         $row = [];
-        $row["id"] = 0;
+        $row["id"] = 'th';
         $row["name"] = 'СКВОЗНЫЕ ЗНАНИЯ';
         $row["pid"] = null;
         $row["type"] = "Сквозные знания";
@@ -750,6 +751,8 @@ class ZunVersionController extends Controller
         {
             $ability->has_parent_comp = false;
             $ability->skill_id = $parent_node;
+            $abs_c = Ability::where('skill_id','=',$parent_node)->get()->count();
+            $ability->position = $abs_c + 1;
         }
         if ($request->parent_type == 'competence')
         {
@@ -892,6 +895,7 @@ class ZunVersionController extends Controller
         $id = substr($request->knowledge_id,1); 
         $kn = Knowledge::find($id);
         $kn->nsis()->detach();
+        $kn->links()->detach();
         $kn->get_dtps()->detach();
         Knowledge::destroy($id);
     }
@@ -1032,12 +1036,13 @@ class ZunVersionController extends Controller
     public function get_links (Dpp $dpp,ZunVersion $zv)
     {
         $result = [];
-        $knowledges = Knowledge::where('zun_version_id',$zv->id)->where('is_through',false)->get();
+        $knowledges = Knowledge::where('zun_version_id',$zv->id)->get();
         foreach ($knowledges as $knowledge)
         {
-            $links = $knowledge->links()->get();
+            $links = $knowledge->links;
+
             if (count($links) > 0) {
-             //   dd($links);
+
             }
             foreach ($links as $link)
             {
@@ -1131,6 +1136,97 @@ class ZunVersionController extends Controller
         {
             $comp->valid = true;
             $comp->save();
+        }
+    }
+    
+    public function make_positions()
+    {
+        $dpps = Dpps::all();
+    }
+
+    public function get_children(ZunVersion $zv,Request $request)
+    {
+        $type = $request->elem_type;
+        $id = substr($request->elem_id,1);
+        switch ($type) {
+            case 'ability':
+                $elem = Ability::find($id);
+                return $elem->knowledges;
+            break;
+            case 'skill':
+                $elem = Skill::find($id);
+                return $elem->abilities;
+            break;
+            case 'competence':
+                $elem = Competence::find($id);
+                if ($elem->skills->count() == 0) { return $elem->abilities;}
+                return $elem->skills;
+            break;
+            case 'through':
+                $th_knowledges = Knowledge::where('zun_version_id',$zv->id)->where('is_through',true)->orderBy('position','asc')->get();
+                return $th_knowledges;
+            break;
+            
+            default:
+                # code...
+                break;
+        }
+    }
+
+    public function update_order(Dpp $dpp, Request $request)
+    {
+        $el = $request->edit_elem;
+        switch ($el["tags"][0]) {
+            case 'ability':
+                $n = 1;
+                foreach ($request->children as $child) {
+                    $kn = Knowledge::find($child["id"]);
+                    $kn->position = $n;
+                    $kn->save();
+                    $n++;
+                }
+            break;
+            case 'skill':
+                $n = 1;
+                foreach ($request->children as $child) {
+                    $kn = Ability::find($child["id"]);
+                    $kn->position = $n;
+                    $kn->save();
+                    $n++;
+                }
+            break;
+            case 'through':
+                $n = 1;
+                foreach ($request->children as $child) {
+                    $kn = Knowledge::find($child["id"]);
+                    $kn->position = $n;
+                    $kn->save();
+                    $n++;
+                }
+            break;
+            case 'competence':
+                $n = 1;
+                foreach ($request->children as $child) {
+                    
+                    if ($child["keyword"] == "Владеть навыком")
+                    {
+                        $kn = Skill::find($child["id"]);
+                        $kn->position = $n;
+                        $kn->save();
+                        $n++;
+                    }else{
+                        $kn = Ability::find($child["id"]);
+                        $kn->position = $n;
+                        $kn->save();
+                        $n++;
+                    }
+                }
+                
+                
+            break;
+            default:
+                # code...
+                break;
         }
     }
 }

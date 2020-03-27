@@ -17,6 +17,6 @@ class IshVersion extends Model
 
     public function typology_parts()
     {
-        return $this->hasMany('App\DppTypologyPart','ish_version_id');
+        return $this->hasMany('App\DppTypologyPart','ish_version_id')->orderBy('position','asc');
     }
 }

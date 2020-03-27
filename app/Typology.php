@@ -8,6 +8,6 @@ class Typology extends Model
 {
     public function typology_parts()
     {
-        return $this->hasMany('App\TypologyPart','typology_id');
+        return $this->hasMany('App\TypologyPart','typology_id')->orderBy('position','asc');
     }
 }

@@ -41,6 +41,8 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/dpps/stages/start','DppController@start_stage');
   Route::get('/my_dpps','DppController@get_all_my_dpps');
 
+ 
+
   Route::get('/nsis/nsi_types','IshVersionController@get_nsi_types');
   Route::post('/nsis/add_nsi','IshVersionController@add_nsi');
   Route::post('/nsis/update_nsi','IshVersionController@update_nsi');
@@ -49,6 +51,9 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/typologies/add_typology','TypologyController@add_typology');
   Route::post('/typologies/update_typology','TypologyController@update_typology');
   Route::post('/typologies/remove_part','TypologyController@remove_part');
+  Route::post('/dpps/{iv}/typology_parts/move_up','TypologyController@dtp_move_up');
+  Route::post('/dpps/{iv}/typology_parts/move_down','TypologyController@dtp_move_down');
+  
   
   Route::post('/typologies/add_dtp','TypologyController@add_dtp');
   Route::post('/typologies/update_dtp','TypologyController@update_dtp');
@@ -74,6 +79,8 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('/dpps/{dpp}/get_zun_version_data2/{zv}','ZunVersionController@get_zun_version_data2');
   Route::get('/dpps/{dpp}/get_links/{zv}','ZunVersionController@get_links');
   Route::get('/dpps/{dpp}/get_typology','ZunVersionController@get_typology');
+
+  
   
   Route::get('/dpps/get_skill_info/{sk}','ZunVersionController@get_skill_info');
   Route::get('/dpps/get_ability_info/{ab}','ZunVersionController@get_ability_info');
@@ -104,7 +111,9 @@ Route::group(['middleware' => 'jwt.auth'], function(){
 
   Route::post('/dpps/{dpp}/move_elem','ZunVersionController@move_elem2');
   Route::post('/dpps/{dpp}/disconnect','ZunVersionController@disconnect2');
-
+  Route::post('/dpps/{zv}/get_children','ZunVersionController@get_children');
+  Route::post('/dpps/{dpp}/update_order','ZunVersionController@update_order');
+  
   Route::get('/dpps/{dpp}/get_knowledges_to_ov/{ov}','DppController@get_knowledges_to_ov');
 
   Route::get('/dpps/get_prof_levels','IshVersionController@get_prof_levels');

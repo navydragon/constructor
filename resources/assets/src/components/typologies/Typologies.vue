@@ -84,6 +84,7 @@
                     v-model="edit_item.name"
                     required
                 ></b-form-input>
+               
                 </b-form-group>
                 <h5>Разделы типологии:</h5>
                 <b-button variant="primary" @click="add_part_to_edit">Добавить раздел</b-button>
@@ -92,16 +93,20 @@
                         <div class="col-md-1">
                             {{index+1}}.
                         </div>
-                        <div class="col-md-10">
-                            <b-form-input
-                                v-model="elem.name"
-                                required
-                            ></b-form-input>
+                        <div class="col-md-9">
+                             <b-form-textarea
+                            v-model="elem.name"
+                            rows="3"
+                            max-rows="6"
+                            required
+                            ></b-form-textarea>
                         </div>
-                        <div class="col-md-1">
-                          <b-button  @click="remove_part(elem)"  variant="outline-danger">
-                           <i class="ion ion-md-close" style="font-size:20px;"></i>
-                          </b-button>
+                        <div class="col-md-2">
+                            <b-btn v-if="index!=0" variant="outline-info icon-btn btn-sm" class="btn" @click="move_up(elem)"><i class="ion ion-md-arrow-round-up"></i></b-btn>
+                            <b-btn v-if="index!=edit_item.parts.length-1" variant="outline-info icon-btn btn-sm" class="btn" @click="move_down(elem)"><i class="ion ion-md-arrow-round-down"></i></b-btn>
+                           <b-btn  @click="remove_part(elem)"  variant="outline-danger btn-sm"> 
+                           <i class="ion ion-md-close"></i>
+                          </b-btn>
                         </div>
                     </div>
                 </div>
@@ -208,6 +213,24 @@ export default {
                     this.$bvModal.show("edit_modal")
           })
           
+      },
+      move_up (part)
+      {
+          var upped = this.edit_item.parts.find(elem => elem.id == part.id)
+          var find_pos = upped.position - 1
+          var downed = this.edit_item.parts.find(elem => elem.position == find_pos)
+          downed.position = downed.position + 1
+          upped.position = upped.position - 1
+          this.edit_item.parts.sort((prev, next) => prev.position - next.position)
+      },
+      move_down (part)
+      {
+          var downed = this.edit_item.parts.find(elem => elem.id == part.id)
+          var find_pos = downed.position + 1
+          var upped = this.edit_item.parts.find(elem => elem.position == find_pos)
+          downed.position = downed.position + 1
+          upped.position = upped.position - 1
+          this.edit_item.parts.sort((prev, next) => prev.position - next.position)
       }
     },
     mounted () {

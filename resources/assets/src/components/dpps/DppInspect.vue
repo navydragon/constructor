@@ -43,7 +43,9 @@
                         <b-alert show >Отредактируйте (при необходимости) типовую структуру ДПП</b-alert>
                         <new-dtp @add_dtp="add_dtp" :key="'ds'"></new-dtp>
                         <b-list-group>
-                            <b-list-group-item v-for="dpp_part in ish_data.dpp_parts" :key="dpp_part.id">
+                            <b-list-group-item v-for="(dpp_part,index) in ish_data.dpp_parts" :key="dpp_part.id">
+                                <b-btn v-if="index!=0" variant="outline-info icon-btn btn-xs" class="btn" @click="move_up(dpp_part)"><i class="ion ion-md-arrow-round-up"></i></b-btn>
+                                <b-btn v-if="index!=ish_data.dpp_parts.length-1" variant="outline-info icon-btn btn-xs" class="btn" @click="move_down(dpp_part)"><i class="ion ion-md-arrow-round-down"></i></b-btn>
                                 <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click="edit_dtp(dpp_part)"><i class="ion ion-md-create"></i></b-btn>
                                 <b-btn variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_dtp(dpp_part,dpp_part.name)">X</b-btn>
                                {{dpp_part.position}}. {{dpp_part.name}}
@@ -74,37 +76,47 @@
                                 </ul>
                                 </li>
                             </ul>
+                            <ul style="padding-left:20px" type="none">
+                            <li v-for="abil in nodes.filter(el => el.type.includes('Умение')&&el.pid==comp.id)" :key="abil.id">
+                                <i class="ion ion-ios-radio-button-on text-success"></i> Умение: {{abil.name}}
+                                <ul style="padding-left:20px" type="none">
+                                    <li v-for="know in nodes.filter(el => el.type.includes('Знание')&&el.pid==abil.id)" :key="know.id">
+                                        <i class="ion ion-ios-radio-button-on text-warning"></i> Знание: {{know.name}}
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
                         </div>
                         <hr>
                         <h5>ЗУН, не прикрепленные к компетенциям</h5>
                         <ul style="padding-left:20px" type="none">
-                                <li v-for="skil in nodes.filter(el => el.type=='Навык'&&el.pid=='c')" :key="skil.id"><i class="ion ion-ios-radio-button-on text-secondary"></i> Навык: {{skil.name}}
-                                <ul style="padding-left:20px" type="none">
-                                    <li v-for="abil in nodes.filter(el => el.type=='Умение'&&el.pid==skil.id)" :key="abil.id">
-                                        <i class="ion ion-ios-radio-button-on text-success"></i> Умение: {{abil.name}}
-                                        <ul style="padding-left:20px" type="none">
-                                            <li v-for="know in nodes.filter(el => el.type=='Знание'&&el.pid==abil.id)" :key="know.id">
-                                                <i class="ion ion-ios-radio-button-on text-warning"></i> Знание: {{know.name}}
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
+                            <li v-for="skil in nodes.filter(el => el.type=='Навык'&&el.pid=='c')" :key="skil.id"><i class="ion ion-ios-radio-button-on text-secondary"></i> Навык: {{skil.name}}
+                            <ul style="padding-left:20px" type="none">
+                                <li v-for="abil in nodes.filter(el => el.type=='Умение'&&el.pid==skil.id)" :key="abil.id">
+                                    <i class="ion ion-ios-radio-button-on text-success"></i> Умение: {{abil.name}}
+                                    <ul style="padding-left:20px" type="none">
+                                        <li v-for="know in nodes.filter(el => el.type=='Знание'&&el.pid==abil.id)" :key="know.id">
+                                            <i class="ion ion-ios-radio-button-on text-warning"></i> Знание: {{know.name}}
+                                        </li>
+                                    </ul>
                                 </li>
+                            </ul>
+                            </li>
                         </ul>
                         <ul style="padding-left:20px" type="none">
                             <li v-for="abil in nodes.filter(el => el.type=='Умение'&&el.pid=='s')" :key="abil.id">
-                                        <i class="ion ion-ios-radio-button-on text-success"></i> Умение: {{abil.name}}
-                                        <ul style="padding-left:20px" type="none">
-                                            <li v-for="know in nodes.filter(el => el.type=='Знание'&&el.pid==abil.id)" :key="know.id">
-                                                <i class="ion ion-ios-radio-button-on text-warning"></i> Знание: {{know.name}}
-                                            </li>
-                                        </ul>
+                                <i class="ion ion-ios-radio-button-on text-success"></i> Умение: {{abil.name}}
+                                <ul style="padding-left:20px" type="none">
+                                    <li v-for="know in nodes.filter(el => el.type=='Знание'&&el.pid==abil.id)" :key="know.id">
+                                        <i class="ion ion-ios-radio-button-on text-warning"></i> Знание: {{know.name}}
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
                         <hr>
                         <h5>Сквозные знания:</h5>
                         <ul style="padding-left:20px" type="none">
-                            <li v-for="know in nodes.filter(el => el.type=='Знание'&&el.pid==0)" :key="know.id">
+                            <li v-for="know in nodes.filter(el => el.type=='Знание'&&el.pid=='th')" :key="know.id">
                                 <i class="ion ion-ios-radio-button-on text-warning"></i> Знание: {{know.name}}
                             </li>
                         </ul>
@@ -128,10 +140,12 @@
                 invalid-feedback="Необходимо ввести название"
                 label-size="lg"
                 >
-                <b-form-input
-                    v-model="edit_item.name"
-                    required
-                ></b-form-input>
+                 <b-form-textarea
+                             v-model="edit_item.name"
+                            rows="3"
+                            max-rows="6"
+                            required
+                ></b-form-textarea>
                 </b-form-group>
          </b-modal>
     </div>
@@ -237,8 +251,25 @@ export default {
        .post('/typologies/remove_dtp',dtp)
         .then((response) => (this.ish_data.dpp_parts = this.ish_data.dpp_parts.filter(part => part.id != dtp.id))) 
         }})
-    }
     },
+    move_up(part)
+    {
+        axios
+        .post('/dpps/'+ this.ish_data.id+'/typology_parts/move_up',{part: part.id})
+        .then(response => (this.ish_data.dpp_parts = response.data))
+        //.finally ( () => (this.get_data()));
+
+    },
+    move_down(part)
+    {
+        axios
+        .post('/dpps/'+ this.ish_data.id+'/typology_parts/move_down',{part: part.id})
+        .then(response => (this.ish_data.dpp_parts = response.data))
+        //.finally ( () => (this.get_data()));
+
+    },
+    },
+    
     mounted() {
         self = this
         axios
