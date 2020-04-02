@@ -3,6 +3,16 @@
     <b-button @click="$router.go(-1)" variant="primary">Назад</b-button>
     <b-card :title="header">
             <b-tabs content-class="mt-3" pills fill>
+            <b-button v-b-modal.modal-addquest variant="primary">Добавить вопрос</b-button>
+            <b-dropdown id="dropdown-2" text="Экспорт" class="m-md-2">
+            <b-dropdown-item :href="'/dpps/' +
+            this.$route.params.dpp +
+            '/export_om_questions/' +
+            this.stage.om_version_id">Экспорт в Word вопросов</b-dropdown-item>
+            </b-dropdown>
+            <new-question :knowledges="knowledges" v-on:add_question="add_question" :key="nq_key"></new-question>
+            <edit-question v-if="show_edit_window" v-on:update_question="update_question" :key="question_to_edit" :question_to_edit="question_to_edit"></edit-question>
+            <hr>
             <b-tab title="Знания" active>
                 <h5>Фильтр вопросов по знаниям</h5>
                 <model-select id="user-input" :options="knowledges"
@@ -18,8 +28,6 @@
                         </div>
                     </template>
                 </v-client-table>
-                <new-question :knowledges="knowledges" v-on:add_question="add_question" :key="nq_key"></new-question>
-                <edit-question v-if="show_edit_window" v-on:update_question="update_question" :key="question_to_edit" :question_to_edit="question_to_edit"></edit-question>
                 <hr>
                 <h5>Статистика вопросов</h5>
                 <table class="table table-bordered">

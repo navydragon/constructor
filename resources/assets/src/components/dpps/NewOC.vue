@@ -1267,6 +1267,9 @@ export default {
           this.errors.push("Не заполнен элемент «" + this.nodes[i].name + "»");
         }
       }
+      if (this.errors.length == 0) {
+        this.go_forward();
+      }
     },
     go_forward() {
       var self = this;

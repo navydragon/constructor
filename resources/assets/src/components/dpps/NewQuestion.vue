@@ -1,7 +1,6 @@
 <template>
     <div>
       <div>
-        <b-button block v-b-modal.modal-addquest variant="primary">Добавить вопрос</b-button>
         <b-modal no-close-on-esc no-close-on-backdrop @ok="handle_ok" id="modal-addquest" ok-title="Добавить вопрос" cancel-title="Закрыть" size="xl" title="Создание нового вопроса">
         <b-form-group
                 :state="new_question.text_state"

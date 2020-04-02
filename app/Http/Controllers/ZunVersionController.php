@@ -639,7 +639,7 @@ class ZunVersionController extends Controller
     public function add_skill2(Dpp $dpp,ZunVersion $zv, Request $request)
     {
         $data = $request->skill_data;
-        if ($request->parent_node != '')
+        if ($request->parent_node != 'root')
         { $parent_node = substr($request->parent_node,1); 
         }else { $parent_node = null;}
         $skill = new Skill;

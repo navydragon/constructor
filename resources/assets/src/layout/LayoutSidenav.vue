@@ -6,9 +6,9 @@
 
       <sidenav-router-link icon="ion ion-md-home" to="/" :exact="true">Главная</sidenav-router-link>
       <div class="sidenav-item" v-if="!$auth.check()">
-        <!--
+        
         <sidenav-router-link  icon="ion ion-md-person-add" to="/register" :exact="true">Регистрация</sidenav-router-link>
-        -->
+        
         <sidenav-router-link  icon="ion ion-ios-contact" to="/login" :exact="true">Авторизация</sidenav-router-link>
       </div>
       <div class="sidenav-item" v-if="$auth.check()">
