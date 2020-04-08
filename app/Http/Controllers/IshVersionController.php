@@ -33,6 +33,9 @@ class IshVersionController extends Controller
         $iv->typology = $iv->typology_id;
         $iv->dpp_parts = $iv->typology_parts;
         $iv->pl = $arr;
+        $iv->prof_standarts = $iv->prof_standarts;
+        $iv->dolg_kvals = $iv->dolg_kvals;
+        $iv->fgoses = $iv->fgoses;
         return $iv;
     }
 
@@ -183,5 +186,22 @@ class IshVersionController extends Controller
         }
         }catch(Exception  $e) {echo $e;}
         }
+    }
+
+    public function select_profstandarts(Dpp $dpp, IshVersion $iv, Request $request)
+    {
+        $iv->prof_standarts()->sync($request->data);
+        return $iv->prof_standarts;
+    }
+    public function select_dolgkvals(Dpp $dpp, IshVersion $iv, Request $request)
+    {
+        $iv->dolg_kvals()->sync($request->data);
+        return $iv->dolg_kvals;
+    }
+
+    public function select_fgoses(Dpp $dpp, IshVersion $iv, Request $request)
+    {
+        $iv->fgoses()->sync($request->data);
+        return $iv->fgoses;
     }
 }

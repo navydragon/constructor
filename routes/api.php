@@ -92,6 +92,11 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('/dpps/{dpp}/get_stage_data/{stage}','DppStageController@get_stage_data');
   Route::post('/dpps/{dpp}/{stage}/go_next','DppStageController@force_next_stage');
 
+  Route::post('/dpps/{dpp}/ish_version_data/{iv}/select_profstandarts','IshVersionController@select_profstandarts');
+  Route::post('/dpps/{dpp}/ish_version_data/{iv}/select_dolgkvals','IshVersionController@select_dolgkvals');
+  Route::post('/dpps/{dpp}/ish_version_data/{iv}/select_fgoses','IshVersionController@select_fgoses');
+  
+
   Route::post('/dpps/{dpp}/add_competence','ZunVersionController@add_competence2');
   Route::post('/dpps/{dpp}/remove_competence','ZunVersionController@remove_competence2');
   Route::post('/dpps/{dpp}/update_competence','ZunVersionController@update_competence2');
@@ -108,6 +113,25 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/dpps/{dpp}/remove_knowledge','ZunVersionController@remove_knowledge2');
   Route::post('/dpps/{dpp}/update_knowledge','ZunVersionController@update_knowledge2');
   Route::post('/dpps/{dpp}/add_knowledge_link','ZunVersionController@add_knowledge_link2');
+
+  Route::post('/profstandarts/add_profstandart','ProfStandartController@add_profstandart');
+  Route::post('/profstandarts/get_profstandarts','ProfStandartController@get_profstandarts');
+  Route::post('/profstandarts/get_profstandart','ProfStandartController@get_profstandart');
+  Route::post('/profstandarts/remove_profstandart','ProfStandartController@remove_profstandart');
+  Route::post('/profstandarts/update_profstandart','ProfStandartController@update_profstandart');
+  
+  Route::post('/dolgkvals/add_dolgkval','DolgKvalController@add_dolgkval');
+  Route::post('/dolgkvals/get_dolgkvals','DolgKvalController@get_dolgkvals');
+  Route::post('/dolgkvals/get_dolgkval','DolgKvalController@get_dolgkval');
+  Route::post('/dolgkvals/remove_dolgkval','DolgKvalController@remove_dolgkval');
+  Route::post('/dolgkvals/update_dolgkval','DolgKvalController@update_dolgkval');
+  
+  Route::post('/fgoses/add_fgos','FgosController@add_fgos');
+  Route::post('/fgoses/get_fgoses','FgosController@get_fgoses');
+  Route::post('/fgoses/get_fgos_levels','FgosController@get_fgos_levels');
+  Route::post('/fgoses/get_fgos','FgosController@get_fgos');
+  Route::post('/fgoses/remove_fgos','FgosController@remove_fgos');
+  Route::post('/fgoses/update_fgos','FgosController@update_fgos');
 
   Route::post('/dpps/{dpp}/move_elem','ZunVersionController@move_elem2');
   Route::post('/dpps/{dpp}/disconnect','ZunVersionController@disconnect2');

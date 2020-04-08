@@ -94,3 +94,7 @@ if (Mix.isUsing('hmr')) {
 } else {
     mix.version();
 }
+
+if (mix.inProduction()) {
+    mix.version();
+}

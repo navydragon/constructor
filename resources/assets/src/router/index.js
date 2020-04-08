@@ -71,9 +71,27 @@ const router = new Router({
       meta: { auth: true }
     },
     {
-      path: 'adm/typologies',
+      path: 'adm/sprav/typologies',
       name: 'typologies',
       component: () => import('@/components/typologies/Typologies'),
+      meta: { auth: true }
+    },
+    {
+      path: 'adm/sprav/profstandarts',
+      name: 'profstandarts',
+      component: () => import('@/components/profstandarts/Profstandarts'),
+      meta: { auth: true }
+    },
+    {
+      path: 'adm/sprav/dolg_kvals',
+      name: 'dolg_kvals',
+      component: () => import('@/components/dolgkvals/Dolgkvals'),
+      meta: { auth: true }
+    },
+    {
+      path: 'adm/sprav/fgoses',
+      name: 'fgoses',
+      component: () => import('@/components/fgoses/Fgoses'),
       meta: { auth: true }
     },
     {

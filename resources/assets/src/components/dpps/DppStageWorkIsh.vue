@@ -6,6 +6,22 @@
                     <br> <em>* так как система работает в тестовом режиме, предусматривается возможность заполнения полей формы ЛЮБЫМИ (более 10 символов) данными, без дополнительной проверки</em>                    
                 </b-alert>
                 <h4>ОБЩИЕ ПОЛОЖЕНИЯ</h4>
+                <h5>Нормативные правовые основания разработки</h5>
+                <b-alert show variant="info">Выберите нормативные документы (ПрофСтандарты, КвалТребования, ФГОСы), на основе которых разрабатывается ДПП.</b-alert>
+                <h5>Программа разработана на основе:</h5>
+                <p><strong>Профессиональных стандартов ({{ish_data.prof_standarts.length}})</strong> <choose-profstandart v-if="!isBusy" @select_profstandarts="select_profstandarts" :profstandarts="ish_data.prof_standarts"></choose-profstandart></p>
+                <ul>
+                    <li v-for="elem in ish_data.prof_standarts" :key="'ps_'+elem.id">{{elem.code}} - {{elem.name}}</li>
+                </ul>
+                <p><strong>Установленных квалификационных требований по должностям ({{ish_data.dolg_kvals.length}})</strong> <choose-dolgkval v-if="!isBusy" @select_dolgkvals="select_dolgkvals" :dolgkvals="ish_data.dolg_kvals"></choose-dolgkval></p>
+                <ul>
+                    <li v-for="elem in ish_data.dolg_kvals" :key="'dk_'+elem.id">{{elem.name}}</li>
+                </ul>
+                <p><strong>Требований федеральных государственных образовательных стандартов ({{ish_data.fgoses.length}})</strong> <choose-fgos v-if="!isBusy" @select_fgoses="select_fgoses" :fgoses="ish_data.fgoses"></choose-fgos></p>
+                <ul>
+                    <li v-for="elem in ish_data.fgoses" :key="'fg_'+elem.id">{{elem.code}} - {{elem.name}}</li>
+                </ul>
+                <hr>
                 <h5>Требования к обучающимся</h5>
                 <h5>Требования к уровню профессионального образования </h5>
                 <b-form-row class="m-0">
@@ -94,9 +110,12 @@
 
 <script>
 import Nsis from '@/components/nsis/Nsis'
+import ChooseProfstandart from '@/components/profstandarts/ChooseProfstandart'
+import ChooseDolgkval from '@/components/dolgkvals/ChooseDolgkval'
+import ChooseFgos from '@/components/fgoses/ChooseFgos'
 export default {
   name: "dpp_stage_work_ish",
-  components: {Nsis},
+  components: {Nsis,ChooseProfstandart,ChooseDolgkval,ChooseFgos},
   metaInfo: {
     title: "Разработка ДПП - Исходные данные"
   },
@@ -115,6 +134,9 @@ export default {
           nsi_types: [],
           nsis: [],
           typologies: [],
+          prof_standarts: [],
+          dolg_kvals: [],
+          fgoses: [],
           typology: {},
           make_new_competence: '',
         },
@@ -134,6 +156,27 @@ export default {
         .get('/dpps/'+this.$route.params.dpp+'/get_ish_version_data/'+ this.stage.ish_version_id)
         .then(response => (this.ish_data = response.data))
         .finally(() => (this.isBusy=false))
+    },
+    select_profstandarts(data)
+    {
+        axios
+        .post('/dpps/'+this.$route.params.dpp+'/ish_version_data/'+ this.stage.ish_version_id+'/select_profstandarts',{data: data})
+        .then(response => (this.ish_data.prof_standarts = response.data))
+        .finally(() => (this.$bvModal.hide("modal-choose-ps") ))
+    },
+    select_dolgkvals (data)
+    {
+        axios
+        .post('/dpps/'+this.$route.params.dpp+'/ish_version_data/'+ this.stage.ish_version_id+'/select_dolgkvals',{data: data})
+        .then(response => (this.ish_data.dolg_kvals = response.data))
+        .finally(() => (this.$bvModal.hide("modal-choose-dk") ))
+    },
+    select_fgoses (data)
+    {
+        axios
+        .post('/dpps/'+this.$route.params.dpp+'/ish_version_data/'+ this.stage.ish_version_id+'/select_fgoses',{data: data})
+        .then(response => (this.ish_data.fgoses = response.data))
+        .finally(() => (this.$bvModal.hide("modal-choose-fg") ))
     },
     save()
     {

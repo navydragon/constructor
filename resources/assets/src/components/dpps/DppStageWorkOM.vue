@@ -121,6 +121,20 @@ export default {
                 text: 'Текст вопроса',
                 type_name: 'Тип вопроса',
                 edit: 'Действия'
+            },
+            texts: {
+                count: "Showing {from} to {to} of {count} records|{count} records|Одна запись",
+                first: 'First',
+                last: 'Last',
+                filter: "Поиск:",
+                filterPlaceholder: "текст поиска",
+                limit: "Записей:",
+                page: "Страница:",
+                noResults: "Не найдено ни одной записи",
+                filterBy: "Filter by {column}",
+                loading: 'Загрузка...',
+                defaultOption: 'Select {column}',
+                columns: 'Columns'
             }
         }
     }

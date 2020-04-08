@@ -6,9 +6,9 @@
 
       <sidenav-router-link icon="ion ion-md-home" to="/" :exact="true">Главная</sidenav-router-link>
       <div class="sidenav-item" v-if="!$auth.check()">
-        
+        <!--
         <sidenav-router-link  icon="ion ion-md-person-add" to="/register" :exact="true">Регистрация</sidenav-router-link>
-        
+        -->
         <sidenav-router-link  icon="ion ion-ios-contact" to="/login" :exact="true">Авторизация</sidenav-router-link>
       </div>
       <div class="sidenav-item" v-if="$auth.check()">
@@ -17,7 +17,14 @@
             <template slot="link-text">Управление</template>
             <sidenav-router-link  icon="ion ion-md-person" to="/adm/users" :exact="true">Пользователи</sidenav-router-link>
             <sidenav-router-link  icon="ion ion-md-paper" to="/adm/dpps" :exact="true">ДПП</sidenav-router-link>      
-            <sidenav-router-link  icon="ion ion-md-paper" to="/adm/typologies" :exact="true">Типовые структуры ДПП</sidenav-router-link> 
+
+          </sidenav-menu>
+          <sidenav-menu :active="isMenuActive('/sprav')" :open="isMenuOpen('/sprav')">
+            <template slot="link-text">Справочники</template>
+            <sidenav-router-link  icon="ion ion-md-paper" to="/adm/sprav/typologies" :exact="true">Типовые структуры ДПП</sidenav-router-link> 
+            <sidenav-router-link  icon="ion ion-md-paper" to="/adm/sprav/profstandarts" :exact="true">Профессиональные стандарты</sidenav-router-link> 
+            <sidenav-router-link  icon="ion ion-md-paper" to="/adm/sprav/dolg_kvals" :exact="true">Квалификационные требования по должностям </sidenav-router-link> 
+            <sidenav-router-link  icon="ion ion-md-paper" to="/adm/sprav/fgoses" :exact="true">ФГОСы</sidenav-router-link>
           </sidenav-menu>
         </div>
         <div class="sidenav-item" v-if="$auth.check()">
