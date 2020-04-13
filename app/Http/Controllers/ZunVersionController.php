@@ -582,6 +582,49 @@ class ZunVersionController extends Controller
         return json_encode($result);
     }
 
+    
+    public function get_zuns_to_om(Dpp $dpp,ZunVersion $zv)
+    {
+        $result = [];
+        $competences = Competence::where('zun_version_id',$zv->id)->get();
+        $skills = Skill::where('zun_version_id',$zv->id)->orderBy('position','asc')->get();
+        $abilities = Ability::where('zun_version_id',$zv->id)->orderBy('position','asc')->get();
+        foreach ($competences as $competence)
+        {
+            $row = [];
+            $row["id"] = $competence->id;
+            $row["name"] = $competence->name;
+            $row["pid"] = null;
+            $row["type"] = "Компетенция";
+            array_push($result,$row);                    
+        }
+        foreach ($skills as $skill)
+        {
+            $row = [];
+            $row["id"] = $skill->id;
+            $row["name"] = $skill->name;
+            $row["pid"] = $skill->competence_id;
+            $row["type"] = "Навык";
+            array_push($result,$row);                    
+        }
+        foreach ($abilities as $ability)
+        {
+            $row = [];
+            $row["id"] = $ability->id;
+            $row["name"] = $ability->name;
+            if ($ability->has_parent_comp == true)
+            {
+                $row["pid"] = $ability->competence_id;
+            }else{
+                $row["pid"] = $ability->skill_id;
+            }
+            $row["type"] = "Умение";
+            $row["has_parent_comp"] = $ability->has_parent_comp;
+            array_push($result,$row);                    
+        }
+        return json_encode($result);
+    }
+
     public function add_competence2(Dpp $dpp,ZunVersion $zv, Request $request)
     {
         $data = $request->competence_data; 

@@ -77,6 +77,8 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('/dpps/{dpp}/get_zun_version_data/{zv}/unattached','ZunVersionController@get_zun_version_data_unattached');
   Route::get('/dpps/{dpp}/get_zun_version_data/{zv}/attached','ZunVersionController@get_zun_version_data_attached');
   Route::get('/dpps/{dpp}/get_zun_version_data2/{zv}','ZunVersionController@get_zun_version_data2');
+  Route::get('/dpps/{dpp}/get_zuns_to_om/{zv}','ZunVersionController@get_zuns_to_om');
+  
   Route::get('/dpps/{dpp}/get_links/{zv}','ZunVersionController@get_links');
   Route::get('/dpps/{dpp}/get_typology','ZunVersionController@get_typology');
 
@@ -139,12 +141,19 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/dpps/{dpp}/update_order','ZunVersionController@update_order');
   
   Route::get('/dpps/{dpp}/get_knowledges_to_ov/{ov}','DppController@get_knowledges_to_ov');
-
+  
+  
   Route::get('/dpps/get_prof_levels','IshVersionController@get_prof_levels');
 
   Route::post('/om_version/{ov}/add_question','OmVersionController@add_question');
   Route::post('/om_version/{ov}/update_question','OmVersionController@update_question');
   Route::get('/dpps/get_question_data/{question}','OmVersionController@get_question_data');
+
+  Route::get('/dpps/get_tasks/{ov}','OmVersionController@get_tasks');
+  Route::post('/dpps/add_task','OmVersionController@add_task');
+  Route::get('/dpps/get_task_data/{task}','OmVersionController@get_task_data');
+  
+  Route::post('/dpps/get_task_subject_types','OmVersionController@get_task_subject_types');
 
   Route::get('/dpps/{dpp}/config','DppController@get_dpp_to_config');
   Route::get('/stage_types','DppController@get_all_stage_types');

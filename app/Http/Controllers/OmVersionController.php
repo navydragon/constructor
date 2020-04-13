@@ -10,6 +10,8 @@ use App\MultiChoiceAnswer;
 use App\FreeChoiceAnswer;
 use App\SequenceChoiceAnswer;
 use App\AccordanceChoiceAnswer;
+use App\Task;
+use App\TaskSubjectType;
 use Auth;
 class OmVersionController extends Controller
 {
@@ -306,5 +308,39 @@ class OmVersionController extends Controller
         }
         $q->ans_arr = $ans_arr;
         return json_encode ($q);
+    }
+
+    public function add_task(Request $request)
+    {
+        $tasks_count = Task::where("om_version_id","=",$request->om_version_id)->get()->count();
+        $task = new Task;
+        $task->task_type_id = $request->type;
+        $task->om_version_id = $request->om_version_id;
+        $task->position = $tasks_count+1;
+        $task->save();
+        return $task->id;
+    }
+
+    public function get_task_subject_types()
+    {
+        return TaskSubjectType::all();
+    }
+
+    public function get_tasks(OmVersion $ov, Request $request)
+    {
+        $tasks = Task::where('om_version_id','=',$ov->id)->get();
+        foreach ($tasks as $task)
+        {
+            $task->name = $task->name.$task->position;
+        }
+        return $tasks;
+    }
+
+    public function get_task_data(Task $task, Request $request)
+    {
+        $task->name = $task->name.$task->position;
+        $task->type_name = $task->task_type->short_name;
+        $task->subject_skills = [];
+        return $task;
     }
 }

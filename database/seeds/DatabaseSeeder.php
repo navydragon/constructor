@@ -21,7 +21,9 @@ class DatabaseSeeder extends Seeder
         //$this->call(ProfLevelsTableSeeder::class);
         //$this->call(QuestionTypesSeeder::class);
         //$this->call(NsiTypeSeeder::class);
-        $this->call(FgosLevelsSeeder::class);
+        //$this->call(FgosLevelsSeeder::class);
+        //$this->call(TaskTypeSeeder::class);
+        $this->call(TaskSubjectTypeSeeped::class);
         
     }
 }
