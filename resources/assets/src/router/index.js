@@ -11,9 +11,9 @@ import Layout1 from '@/layout/Layout1'
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 Vue.use(VueAxios, axios);
-//axios.defaults.baseURL = 'http://localhost:8000/api';
+axios.defaults.baseURL = 'http://localhost:8000/api';
 //axios.defaults.baseURL = 'http://emiit.ru:8887/api';
-axios.defaults.baseURL = 'http://constructor.test/api';
+//axios.defaults.baseURL = 'http://constructor.test/api';
 
 Vue.use(Router)
 Vue.use(Meta)

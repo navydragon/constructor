@@ -18,12 +18,12 @@ class CreateTaskSpecificationsTable extends Migration
             $table->unsignedBigInteger('task_id');
             $table->foreign('task_id')->references('id')->on('tasks');
             $table->longText('description')->nullable();
-            $table->longText('place')->nullable();;
-            $table->longText('source')->nullable();;
-            $table->integer('time')->nullable();;
-            $table->longText('portfolio_structure_req')->nullable();;
-            $table->longText('portfolio_presentation_req')->nullable();;
-            $table->longText('portfolio_procedure')->nullable();;
+            $table->longText('place')->nullable();
+            $table->longText('source')->nullable();
+            $table->integer('time')->nullable();
+            $table->longText('portfolio_structure_req')->nullable();
+            $table->longText('portfolio_presentation_req')->nullable();
+            $table->longText('portfolio_procedure')->nullable();
             $table->timestamps();
         });
     }

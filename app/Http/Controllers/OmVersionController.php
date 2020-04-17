@@ -333,6 +333,7 @@ class OmVersionController extends Controller
         foreach ($tasks as $task)
         {
             $task->name = $task->name.$task->position;
+            $task->type_name = $task->task_type->short_name;
         }
         return $tasks;
     }
@@ -350,12 +351,14 @@ class OmVersionController extends Controller
     {
         $ts = TaskSpecification::firstOrCreate(['task_id' => $request->task_id]);
         $spec = $request->specification;
-        $ts->description
-        $ts->place
-        $ts->source
-        $ts->time   
-        $ts->portfolio_structure_req
-        $ts->portfolio_presentation_req
-        $ts->portfolio_procedure
+        $ts->description = $spec["description"];
+        $ts->place = $spec["place"];
+        $ts->source = $spec["source"];
+        $ts->time = $spec["time"];
+        $ts->portfolio_structure_req = $spec["portfolio_structure_req"];
+        $ts->portfolio_presentation_req = $spec["portfolio_presentation_req"];
+        $ts->portfolio_procedure = $spec["portfolio_procedure"];
+        $ts->save();
+        return $ts;
     }
 }

@@ -60,6 +60,9 @@
                 </b-dropdown>
                 <hr>
                 <v-client-table :data="tasks" :columns="task_columns" :options="task_options">
+                    <template slot="name" slot-scope="props">
+                        {{props.row.name}} ({{props.row.type_name}})
+                    </template>
                     <template slot="edit" slot-scope="props">
                         <div>
                         <b-btn variant="outline-info icon-btn" class="btn-sm" @click.prevent="edit_task(props.row.id)"><i class="ion ion-md-create"></i></b-btn>
@@ -290,10 +293,10 @@ export default {
                 'om_version_id': this.stage.om_version_id,
                 'type': type
             })
-            .then((response) => (this.$router.push('/my_dpps/1/stages/3/work_om/tasks/'+response.data)))
+            .then((response) => (this.$router.push('/my_dpps/'+this.$route.params.dpp+'/stages/'+this.stage.id+'/work_om/tasks/'+response.data)))
       },
       edit_task(task_id){
-        this.$router.push('/my_dpps/1/stages/3/work_om/tasks/'+task_id)
+        this.$router.push('/my_dpps/'+this.$route.params.dpp+'/stages/'+this.stage.id+'/work_om/tasks/'+task_id)
         /*
         this.task_to_edit = task_id
             this.show_task_edit_window = true
