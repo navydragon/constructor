@@ -11,6 +11,7 @@ use App\FreeChoiceAnswer;
 use App\SequenceChoiceAnswer;
 use App\AccordanceChoiceAnswer;
 use App\Task;
+use App\TaskSpecification;
 use App\TaskSubjectType;
 use Auth;
 class OmVersionController extends Controller
@@ -341,6 +342,20 @@ class OmVersionController extends Controller
         $task->name = $task->name.$task->position;
         $task->type_name = $task->task_type->short_name;
         $task->subject_skills = [];
+        $task->specification = TaskSpecification::firstOrCreate(['task_id' => $task->id]);
         return $task;
+    }
+
+    public function update_specification(Request $request)
+    {
+        $ts = TaskSpecification::firstOrCreate(['task_id' => $request->task_id]);
+        $spec = $request->specification;
+        $ts->description
+        $ts->place
+        $ts->source
+        $ts->time   
+        $ts->portfolio_structure_req
+        $ts->portfolio_presentation_req
+        $ts->portfolio_procedure
     }
 }

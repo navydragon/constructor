@@ -10,4 +10,9 @@ class Task extends Model
     {
         return $this->belongsTo('App\TaskType','task_type_id');
     }
+
+    public function specification()
+    {
+        return $this->hasOne('App\TaskSpecification','task_id');
+    }
 }

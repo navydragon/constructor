@@ -81,7 +81,7 @@ import Vue from 'vue'
 import { ClientTable } from 'vue-tables-2'
 import NewQuestion from './NewQuestion'
 import EditQuestion from './EditQuestion'
-import EditTask from './EditTask'
+
 Vue.use(ClientTable)
 
 
@@ -91,7 +91,7 @@ export default {
         title: "Разработка ДПП - Оценочные материалы"
   },
   components: {
-      ModelSelect, ClientTable,NewQuestion,EditQuestion,EditTask
+      ModelSelect, ClientTable,NewQuestion,EditQuestion
   },
   computed: {
       header() {
@@ -290,20 +290,17 @@ export default {
                 'om_version_id': this.stage.om_version_id,
                 'type': type
             })
-            .then (function (response) {
-                self.task_to_edit = response.data
-                self.show_task_edit_window = true
-                 self.$nextTick(() => {
-                    self.$bvModal.show("modal-edittask")
-                 })
-            })
+            .then((response) => (this.$router.push('/my_dpps/1/stages/3/work_om/tasks/'+response.data)))
       },
       edit_task(task_id){
+        this.$router.push('/my_dpps/1/stages/3/work_om/tasks/'+task_id)
+        /*
         this.task_to_edit = task_id
             this.show_task_edit_window = true
                 this.$nextTick(() => {
                 this.$bvModal.show("modal-edittask")
                 })
+        */
       },
       update_task(data)
       {

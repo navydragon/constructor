@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
         //$this->call(NsiTypeSeeder::class);
         //$this->call(FgosLevelsSeeder::class);
         //$this->call(TaskTypeSeeder::class);
-        $this->call(TaskSubjectTypeSeeped::class);
+        //$this->call(TaskSubjectTypeSeeped::class);
         
     }
 }

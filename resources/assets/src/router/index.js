@@ -11,7 +11,9 @@ import Layout1 from '@/layout/Layout1'
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 Vue.use(VueAxios, axios);
-axios.defaults.baseURL = 'http://localhost:8000/api';
+//axios.defaults.baseURL = 'http://localhost:8000/api';
+//axios.defaults.baseURL = 'http://emiit.ru:8887/api';
+axios.defaults.baseURL = 'http://constructor.test/api';
 
 Vue.use(Router)
 Vue.use(Meta)
@@ -122,6 +124,12 @@ const router = new Router({
       path: 'my_dpps/:dpp/stages/:stage/work_om',
       name: 'dpp_stage_work_om',
       component: () => import('@/components/dpps/DppStageWorkOM'),
+      meta: { auth: true }
+    },
+    {
+      path: 'my_dpps/:dpp/stages/:stage/work_om/tasks/:task',
+      name: 'edit_task',
+      component: () => import('@/components/dpps/tasks/EditTask'),
       meta: { auth: true }
     },
     {
