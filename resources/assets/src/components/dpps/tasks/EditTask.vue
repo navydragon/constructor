@@ -70,33 +70,24 @@
             </b-tab>            
             <b-tab title="Критерии оценки" >
               <b-card>
-                <b-button variant="primary" v-b-modal.modal-2>Добавить предмет оценки</b-button>
+                <b-button variant="primary" @click="create_subject">Добавить предмет оценки</b-button>
                 <hr>
-                <b-modal id="modal-2"  ok-title="Сохранить" size="xl" no-close-on-esc no-close-on-backdrop @ok="add_subject" cancel-title="Закрыть" title="Редактирование описания">
-                  <b-form-group label="Выберите, что будет оценивать данное задание">
-                  <b-form-select v-model="new_task.task_subject_type_id" :options="task_subject_types" value-field="id" text-field="name"></b-form-select>
-                </b-form-group>
-                <div v-if="new_task.task_subject_type_id==2">
-                    <b-form-group label="Выберите навык(-и), умения которого(-ых) будут оцениваться">
-                        <b-form-select v-model="new_task.subject_skills" :options="skills" value-field="id" text-field="name"></b-form-select>
-                    </b-form-group>              
-                    <b-form-group label="Выберите умения, которые будут оцениваться">
-                        <b-form-checkbox-group
-                            v-model="new_task.subject_abilities"
-                            stacked
-                            :options="abilities"
-                            value-field="id"
-                            text-field="name"
-                            name="abilities"
-                        ></b-form-checkbox-group>
-                    </b-form-group>
-                </div>
-                <div v-if="new_task.task_subject_type_id>2">
-                    <b-form-group label="Выберите навык(-и), которые будут оцениваться">
-                        <b-form-select v-model="new_task.subject_skills" :options="skills" value-field="id" text-field="name"></b-form-select>
-                    </b-form-group>
-                </div>
-                </b-modal>
+                <table class="table table-bordered">
+                  <thead>
+                    <tr><th>Предметы оценки</th><th>Объекты оценки</th></tr>
+                  </thead>
+                  <tbody>
+                    <tr v-if="new_task.subjects.length==0"><td colspan="3"><em>Пока не добавлено ни одного предмета оценки. </em></td></tr>
+                    <tr v-for="(subject,index) in new_task.subjects" :key="index">
+                      <td>
+                        <span><b-btn variant="outline-danger icon-btn" class="btn-sm" @click.prevent="remove_subject(subject)"><i class="ion ion-md-close"></i></b-btn> {{subject.name}} </span>
+                        <span v-if="subject.subject_type_id==4"> (и входящие в навык умения)</span> 
+                      </td>
+                      <td>{{}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <create-subject :zuns="zuns" @add_subject="add_subject" v-if="s_k!='sk'" :key="s_k"></create-subject>
               </b-card>
                 
 
@@ -110,39 +101,26 @@
 
 <script>
 
+import CreateSubject from './CreateSubject'
 
 export default {
   name: "edit-task",
   metaInfo: {
   title: "Создание и редактирование задания"
   },
-
+  components: { CreateSubject},
   data () {
     return {
         new_task: {
             subject_skills:[],
             specification:{}
         },
+        s_k: "sk",
         isBusy: true,
         zuns: Array,
         task_subject_types: [],
         errors: []
         }
-  },
-  computed: {
-      competences() {
-          return this.zuns.filter(zun => zun.type == 'Компетенция')
-      },
-      skills() {
-          return this.zuns.filter(zun => zun.type == 'Навык')
-      },
-      abilities() {
-          if (this.new_task.subject_skills.length == 0)
-          {
-              return this.zuns.filter(zun => zun.type == 'Умение') 
-          }
-          return this.zuns.filter(zun => (zun.type == 'Умение')&&(zun.pid == this.new_task.subject_skills))
-      }
   },
   methods: {
     update_specification(bvModalEvt) {
@@ -155,10 +133,44 @@ export default {
         .then( (response) => (this.new_task.specification = response.data))
         .finally(() =>(this.$bvModal.hide('modal-1')))
     },
-    add_subject()
-    {
-
+    create_subject() {
+      this.s_k += 1
+      this.$nextTick(() => {
+            this.$bvModal.show('modal-2')
+      })
+      
     },
+    add_subject(new_subject)
+    {
+      self = this
+      axios
+        .post('/dpps/tasks/add_subject',{
+            task_id: this.new_task.id,
+            subject: new_subject
+        })
+        .then( function(response) {
+          response.data.forEach(element => {
+            self.new_task.subjects.push(element)
+          })})
+        .finally(() =>(this.$bvModal.hide('modal-2')))
+    },
+    remove_subject (subject)
+      {
+        self = this;  
+        this.$bvModal.msgBoxConfirm('Действительно хотите предмет оценки «'+subject.name+'»?')
+        .then(value => {
+            if (value === true) 
+            {
+              axios
+              .post('/dpps/tasks/remove_subject', {
+                  'id': subject.id
+              })
+              .then (function (response) {
+               self.new_task.subjects = self.new_task.subjects.filter(el => el.id != subject.id)
+              })
+            }
+            })
+      },
     generate_id () {
       return `f${(~~(Math.random() * 1e8)).toString(16)}`
     },
@@ -183,10 +195,6 @@ export default {
             .get("/dpps/"+self.$route.params.dpp + "/get_zuns_to_om/" + self.stage.zun_version_id)
             .then(response => (self.zuns = response.data));
             })
-
-            axios
-            .post ('/dpps/get_task_subject_types')
-            .then ((response) => (this.task_subject_types = response.data))
 
             axios
             .get('/dpps/get_task_data/'+ this.$route.params.task)

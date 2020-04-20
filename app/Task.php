@@ -15,4 +15,9 @@ class Task extends Model
     {
         return $this->hasOne('App\TaskSpecification','task_id');
     }
+
+    public function subjects()
+    {
+        return $this->hasMany('App\TaskSubject','task_id');
+    }
 }

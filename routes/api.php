@@ -153,6 +153,10 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('/dpps/get_tasks/{ov}','OmVersionController@get_tasks');
   Route::post('/dpps/add_task','OmVersionController@add_task');
   Route::post('/dpps/tasks/update_specification','OmVersionController@update_specification');
+  Route::post('/dpps/tasks/update_specification','OmVersionController@update_specification');
+  Route::post('/dpps/tasks/add_subject','OmVersionController@add_subject');
+  Route::post('/dpps/tasks/remove_subject','OmVersionController@remove_subject');
+  
   
   Route::get('/dpps/get_task_data/{task}','OmVersionController@get_task_data');
   

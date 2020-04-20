@@ -13,6 +13,7 @@ use App\AccordanceChoiceAnswer;
 use App\Task;
 use App\TaskSpecification;
 use App\TaskSubjectType;
+use App\TaskSubject;
 use Auth;
 class OmVersionController extends Controller
 {
@@ -342,8 +343,19 @@ class OmVersionController extends Controller
     {
         $task->name = $task->name.$task->position;
         $task->type_name = $task->task_type->short_name;
+        
         $task->subject_skills = [];
         $task->specification = TaskSpecification::firstOrCreate(['task_id' => $task->id]);
+        $task->subjects = $task->subjects;
+        foreach ($task->subjects as $subject)
+        {
+            if ($subject->subject_type_id == 2)
+            {
+                $subject->name = $subject->ability->name;
+            }else{
+                $subject->name = $subject->skill->name;
+            }
+        }
         return $task;
     }
 
@@ -360,5 +372,39 @@ class OmVersionController extends Controller
         $ts->portfolio_procedure = $spec["portfolio_procedure"];
         $ts->save();
         return $ts;
+    }
+
+    public function add_subject (Task $task,Request $request)
+    {
+        $result = [];
+        $s = $request->subject;
+        if ($s["type_id"] == 2)
+        {
+            foreach ($s["abilities"] as $ability) {
+                $ts = new TaskSubject;
+                $ts->task_id = $request->task_id;
+                $ts->subject_type_id = $s["type_id"];
+                $ts->ability_id = $ability;
+                $ts->save();
+                $ts->name = $ts->ability->name;
+                array_push($result,$ts);
+            }
+        }
+        if ( ($s["type_id"] == 3) || ($s["type_id"] == 4) )
+        { 
+            $ts = new TaskSubject;
+            $ts->task_id = $request->task_id;
+            $ts->subject_type_id = $s["type_id"];
+            $ts->skill_id = $s["skills"];
+            $ts->save();
+            $ts->name = $ts->skill->name;
+            array_push($result,$ts);
+        } 
+        return json_encode($result);   
+    }
+
+    public function remove_subject(Request $request)
+    {
+        TaskSubject::destroy($request->id);
     }
 }
