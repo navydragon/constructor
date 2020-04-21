@@ -1,6 +1,6 @@
 <template>
     <b-modal id="modal-2"  ok-title="Сохранить" size="xl" no-close-on-esc no-close-on-backdrop @ok="add_subject" cancel-title="Закрыть" title="Добавить предмет оценки">
-                  <b-form-group label="Выберите, что будет оценивать данное задание">
+                <b-form-group label="Выберите, что будет оценивать данное задание">
                   <b-form-select v-model="new_subject.type_id" :options="task_subject_types" value-field="id" text-field="name"></b-form-select>
                 </b-form-group>
                 <div v-if="new_subject.type_id==2">
@@ -65,10 +65,9 @@ export default {
     },
   },
   mounted() {
-      axios
-            axios
-            .post ('/dpps/get_task_subject_types')
-            .then ((response) => (this.task_subject_types = response.data))
+    axios
+    .post ('/dpps/get_task_subject_types')
+    .then ((response) => (this.task_subject_types = response.data))
   }
 }
 </script>

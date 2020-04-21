@@ -153,11 +153,20 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('/dpps/get_tasks/{ov}','OmVersionController@get_tasks');
   Route::post('/dpps/add_task','OmVersionController@add_task');
   Route::post('/dpps/tasks/update_specification','OmVersionController@update_specification');
-  Route::post('/dpps/tasks/update_specification','OmVersionController@update_specification');
   Route::post('/dpps/tasks/add_subject','OmVersionController@add_subject');
+  Route::post('/dpps/tasks/add_object','OmVersionController@add_object');
+  Route::post('/dpps/tasks/get_task_object','OmVersionController@get_task_object');
+  Route::post('/dpps/tasks/update_object','OmVersionController@update_object');
+
   Route::post('/dpps/tasks/remove_subject','OmVersionController@remove_subject');
+  Route::post('/dpps/tasks/remove_object','OmVersionController@remove_object');
   
+  Route::post('/dpps/tasks/add_task_question','OmVersionController@add_task_question');
+  Route::post('/dpps/tasks/get_task_question','OmVersionController@get_task_question');
+  Route::post('/dpps/tasks/update_task_question','OmVersionController@update_task_question');
+  Route::post('/dpps/tasks/remove_task_question','OmVersionController@remove_task_question');
   
+
   Route::get('/dpps/get_task_data/{task}','OmVersionController@get_task_data');
   
   Route::post('/dpps/get_task_subject_types','OmVersionController@get_task_subject_types');

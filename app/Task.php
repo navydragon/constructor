@@ -20,4 +20,14 @@ class Task extends Model
     {
         return $this->hasMany('App\TaskSubject','task_id');
     }
+
+    public function objects()
+    {
+        return $this->hasMany('App\TaskObject','task_id');
+    }
+
+    public function questions()
+    {
+        return $this->hasMany('App\TaskQuestion','task_id');
+    }
 }

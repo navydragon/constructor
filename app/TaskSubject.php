@@ -15,4 +15,9 @@ class TaskSubject extends Model
     {
         return $this->belongsTo('App\Skill','skill_id');
     }
+
+    public function objects()
+    {
+        return $this->hasMany('App\TaskObject','subject_id');
+    }
 }

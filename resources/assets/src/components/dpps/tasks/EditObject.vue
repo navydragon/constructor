@@ -1,5 +1,5 @@
 <template>
-    <b-modal id="modal-3"  ok-title="Сохранить" size="xl" no-close-on-esc no-close-on-backdrop @ok="add_object" cancel-title="Закрыть" title="Добавить объект оценки">
+    <b-modal id="modal-4"  ok-title="Сохранить" size="xl" no-close-on-esc no-close-on-backdrop @ok="update_object" cancel-title="Закрыть" title="Редактировать объект оценки">
         <b-form-group label-size="lg" label="Выберите предмет оценки">
           <b-form-select v-model="new_object.subject_id" :options="subjects" value-field="id" text-field="name"></b-form-select>
         </b-form-group>
@@ -14,27 +14,37 @@
 
 <script>
 export default {
-  name: "create-object",
+  name: "edit-object",
   metaInfo: {
-  title: "Добавить объект оценки"
+  title: "Редактировать объект оценки"
   },
   props: {
     subjects: Array,
+    object_id: Number,
   },
   data (){
   return {
-    new_object: {},
+    new_object: {
+        name: '',
+        model_answer: '',
+        subject_id: ''
+    },
   }
   },  
 
   methods: {
-    add_object(bvModalEvt)
+    update_object(bvModalEvt)
     {
       bvModalEvt.preventDefault()
-      this.$emit('add_object', this.new_object) 
+      this.$emit('update_object', this.new_object) 
     },
   },
   mounted() {
+      axios
+      .post('/dpps/tasks/get_task_object',{
+          object_id : this.object_id
+      })
+      .then((response) => this.new_object = response.data)
   }
 }
 </script>

@@ -14,6 +14,8 @@ use App\Task;
 use App\TaskSpecification;
 use App\TaskSubjectType;
 use App\TaskSubject;
+use App\TaskObject;
+use App\TaskQuestion;
 use Auth;
 class OmVersionController extends Controller
 {
@@ -352,10 +354,19 @@ class OmVersionController extends Controller
             if ($subject->subject_type_id == 2)
             {
                 $subject->name = $subject->ability->name;
-            }else{
+            }
+            if ($subject->subject_type_id == 3)
+            {
                 $subject->name = $subject->skill->name;
             }
+            if ($subject->subject_type_id == 4)
+            {
+                $subject->name = $subject->skill->name." (и входящие в навык умения)";
+            }
+           
         }
+        $task->objects = $task->objects;
+        $task->questions = $task->questions;
         return $task;
     }
 
@@ -374,7 +385,7 @@ class OmVersionController extends Controller
         return $ts;
     }
 
-    public function add_subject (Task $task,Request $request)
+    public function add_subject (Request $request)
     {
         $result = [];
         $s = $request->subject;
@@ -398,6 +409,10 @@ class OmVersionController extends Controller
             $ts->skill_id = $s["skills"];
             $ts->save();
             $ts->name = $ts->skill->name;
+            if ($s["type_id"] == 4)
+            {
+                $ts->name = $ts->skill->name." (и входящие в навык умения)";;
+            }
             array_push($result,$ts);
         } 
         return json_encode($result);   
@@ -405,6 +420,77 @@ class OmVersionController extends Controller
 
     public function remove_subject(Request $request)
     {
+        $ts = TaskSubject::find($request->id);
+        foreach ($ts->objects as $object)
+        {
+            TaskObject::destroy($object->id);
+        }
         TaskSubject::destroy($request->id);
+    }
+
+    public function add_object(Request $request)
+    {
+        $o = $request->object;
+        $to = new TaskObject;
+        $to->task_id = $request->task_id;
+        $to->subject_id = $o["subject_id"];
+        $to->name = $o["name"];
+        $to->model_answer = $o["model_answer"];
+        $to->save();
+        return $to;
+    }
+
+    public function get_task_object(Request $request)
+    {
+        $o = TaskObject::find($request->object_id);
+        return $o;
+    }
+
+    public function update_object(Request $request)
+    {
+        $o = $request->object;
+        $to = TaskObject::find($o["id"]);
+        $to->subject_id = $o["subject_id"];
+        $to->name = $o["name"];
+        $to->model_answer = $o["model_answer"];
+        $to->save();
+        return $to;
+    }
+
+    public function remove_object(Request $request)
+    {
+        TaskObject::destroy($request->id);
+    }
+
+    public function add_task_question(Request $request)
+    {
+        $q = $request->question;
+        $tq = new TaskQuestion;
+        $tq->task_id = $request->task_id;
+        $tq->name = $q["name"];
+        $tq->model_answer = $q["model_answer"];
+        $tq->save();
+        return $tq;
+    }
+
+    public function remove_task_question(Request $request)
+    {
+        TaskQuestion::destroy($request->id);
+    }
+
+    public function get_task_question(Request $request)
+    {
+        $q = TaskQuestion::find($request->question_id);
+        return $q;
+    }
+
+    public function update_task_question(Request $request)
+    {
+        $q = $request->question;
+        $tq = TaskQuestion::find($q["id"]);
+        $tq->name = $q["name"];
+        $tq->model_answer = $q["model_answer"];
+        $tq->save();
+        return $tq;
     }
 }
