@@ -322,7 +322,31 @@ class OmVersionController extends Controller
         $task->om_version_id = $request->om_version_id;
         $task->position = $tasks_count+1;
         $task->save();
+        $ts = new TaskSpecification;
+        $ts->task_id = $task->id;
+        $ts->save();
         return $task->id;
+    }
+
+    public function remove_task(Request $request)
+    {
+        $task = Task::find($request->id);
+        $task->nsis()->detach();
+        foreach ($task->subjects as $subject)
+        {
+            foreach ($subject->objects as $object)
+            {
+                TaskObject::destroy($object->id);
+            }
+            TaskSubject::destroy($subject->id);
+        }
+        foreach ($task->questions as $question)
+        {
+            TaskQuestion::destroy($question->id);
+        }
+        $ts_id = $task->specification->id;
+        TaskSpecification::destroy($ts_id);
+        Task::destroy($task->id);
     }
 
     public function get_task_subject_types()
@@ -367,13 +391,22 @@ class OmVersionController extends Controller
         }
         $task->objects = $task->objects;
         $task->questions = $task->questions;
+        $arr = [];
+        $nsis = $task->nsis()->get();
+        foreach ($nsis as $nsi)
+        {
+            array_push($arr,$nsi->id);
+        }
+        $task->nsis = $arr;
         return $task;
     }
 
     public function update_specification(Request $request)
     {
+        $t = Task::find($request->task_id);
         $ts = TaskSpecification::firstOrCreate(['task_id' => $request->task_id]);
         $spec = $request->specification;
+        $t->nsis()->sync($request->nsis);
         $ts->description = $spec["description"];
         $ts->place = $spec["place"];
         $ts->source = $spec["source"];

@@ -18,7 +18,7 @@
                       <b-form-textarea v-model="new_task.specification.place"></b-form-textarea>
                   </b-form-group>
                   <b-form-group label-size="lg" description="" label="Источники информации для выполнения">
-                      <b-form-textarea rows="5" v-model="new_task.specification.source"></b-form-textarea>
+                      <nsi-choose @add_nsi="add_nsi" @change_nsi="change_nsi" :mode="'work'" :selected="new_task.nsis" :ish_version_id="stage.ish_version_id"></nsi-choose>
                   </b-form-group>
                   <b-form-group label-size="lg" description="" label="Максимальное время выполнения (минут)">
                       <b-form-input v-model="new_task.specification.time" :type="'number'"></b-form-input>
@@ -27,6 +27,9 @@
                 <div v-if="new_task.task_type_id==2">
                   <b-form-group label-size="lg" description="" label="Описание ситуации и постановка задачи">
                     <b-form-textarea rows="10" v-model="new_task.specification.description"></b-form-textarea>
+                  </b-form-group>
+                  <b-form-group label-size="lg" description="" label="Источники информации для выполнения">
+                      <nsi-choose @add_nsi="add_nsi" @change_nsi="change_nsi" :mode="'work'" :selected="new_task.nsis" :ish_version_id="stage.ish_version_id"></nsi-choose>
                   </b-form-group>
                   <b-form-group label-size="lg" description="" label="Требования к структуре и оформлению портфолио">
                       <b-form-textarea rows="10" v-model="new_task.specification.portfolio_structure_req"></b-form-textarea>
@@ -49,14 +52,23 @@
                 <h5>Место выполнения</h5>
                 <div class="mb-2" v-html="formatted(new_task.specification.place)"></div>
                 <h5>Источники информации для выполнения</h5>
-                <div class="mb-2" v-html="formatted(new_task.specification.source)"></div>
+                <div class="mb-2" v-if="new_task.nsis.length==0">Не заполнено</div>
+                <ul>
+                  <li v-for="nsi in new_task.nsis" :key="'nsi'+nsi">{{search_nsi(nsi)}}</li>
+                </ul>
                 <h5>Максимальное время выполнения (минут)</h5>
+                <div class="mb-2" v-if="new_task.specification.time==null">Не заполнено</div>
                 <div class="mb-2" v-html="new_task.specification.time"></div>
                 <h5></h5>
               </div>
               <div v-if="new_task.task_type_id==2">
                 <h5>Описание ситуации и постановка задачи</h5>
                 <div class="mb-2" v-html="formatted(new_task.specification.description)"></div>
+                <h5>Источники информации для выполнения</h5>
+                <div class="mb-2" v-if="new_task.nsis.length==0">Не заполнено</div>
+                <ul>
+                  <li v-for="nsi in new_task.nsis" :key="'nsi'+nsi">{{search_nsi(nsi)}}</li>
+                </ul>
                 <h5>Требования к структуре и оформлению портфолио</h5>
                 <div class="mb-2" v-html="formatted(new_task.specification.portfolio_structure_req)"></div>
                 <h5>Требования к оформлению презентации</h5>
@@ -64,6 +76,7 @@
                 <h5>Порядок защиты портфолио</h5> 
                 <div class="mb-2" v-html="formatted(new_task.specification.portfolio_procedure)"></div> 
                 <h5>Максимальное время защиты (минут)</h5>
+                <div class="mb-2" v-if="new_task.specification.time==null">Не заполнено</div>
                 <div class="mb-2" v-html="new_task.specification.time"></div>
               </div>
               </b-card>
@@ -140,6 +153,7 @@
 
             </b-tab>
             <b-tab title="Материально-техническое обеспечение">
+              <mtos :dpp_id="this.$route.params.dpp"></mtos>
             </b-tab>
             </b-tabs>          
       </div>
@@ -153,18 +167,28 @@ import CreateObject from './CreateObject'
 import EditObject from './EditObject'
 import CreateQuestion from './CreateQuestion'
 import EditQuestion from './EditQuestion'
+import NsiChoose from '@/components/nsis/NsiChoose'
+import Mtos from '@/components/mtos/Mtos'
 
 export default {
   name: "edit-task",
   metaInfo: {
   title: "Создание и редактирование задания"
   },
-  components: { CreateSubject,CreateObject,EditObject,CreateQuestion,EditQuestion},
+  components: { CreateSubject,CreateObject,EditObject,CreateQuestion,EditQuestion,NsiChoose,Mtos},
   data () {
     return {
         new_task: {
             subject_skills:[],
-            specification:{},
+            specification:{
+              description: '',
+              place: '',
+              source: '',
+              time: '',
+              portfolio_structure_req: '',
+              portfolio_presentation_req: '',
+              portfolio_procedure: '',
+            },
             subjects:[],
             objects: [],
             questions: [],
@@ -177,7 +201,9 @@ export default {
         isBusy: true,
         zuns: Array,
         task_subject_types: [],
-        errors: []
+        errors: [],
+        stage: {},
+        nsis: [],
         }
   },
   methods: {
@@ -186,7 +212,8 @@ export default {
         axios
         .post('/dpps/tasks/update_specification',{
             task_id : this.new_task.id,
-            specification: this.new_task.specification
+            specification: this.new_task.specification,
+            nsis: this.new_task.nsis,
         })
         .then( (response) => (this.new_task.specification = response.data))
         .finally(() =>(this.$bvModal.hide('modal-1')))
@@ -215,7 +242,7 @@ export default {
     remove_subject (subject)
       {
         self = this;  
-        this.$bvModal.msgBoxConfirm('Действительно хотите предмет оценки «'+subject.name+'»?')
+        this.$bvModal.msgBoxConfirm('Действительно хотите удалить предмет оценки «'+subject.name+'»?')
         .then(value => {
             if (value === true) 
             {
@@ -275,7 +302,7 @@ export default {
     remove_object (object)
     {
       self = this;  
-      this.$bvModal.msgBoxConfirm('Действительно хотите объект оценки «'+object.name+'»?')
+      this.$bvModal.msgBoxConfirm('Действительно хотите удалить объект оценки «'+object.name+'»?')
       .then(value => {
           if (value === true) 
           {
@@ -314,7 +341,7 @@ export default {
     remove_question (question)
     {
       self = this;  
-      this.$bvModal.msgBoxConfirm('Действительно хотите вопрос «'+question.name+'»?')
+      this.$bvModal.msgBoxConfirm('Действительно хотите удалить вопрос «'+question.name+'»?')
       .then(value => {
           if (value === true) 
           {
@@ -349,6 +376,12 @@ export default {
         })
         .finally(() =>(this.$bvModal.hide('modal-6')))
     },
+    change_nsi (data) {
+       this.new_task.nsis = data.nsi_data
+    },
+    add_nsi (data) {
+      this.nsis.push(data.nsi_data);
+    },
     generate_id () {
       return `f${(~~(Math.random() * 1e8)).toString(16)}`
     },
@@ -360,15 +393,27 @@ export default {
       }else{
         return "Не заполнено"
       }
+    },
+    search_nsi(nsi_id)
+    {
+      var nsi = this.nsis.find(el => el.id == nsi_id)
+      if (nsi)
+      {return nsi.name }
+      
     }
   },
   
   mounted() {
       self = this
+
       axios
         .get('/dpps/'+this.$route.params.dpp+'/get_stage_data/'+ this.$route.params.stage)
         .then(response => (this.stage = response.data))
         .finally (function (response){ 
+            axios
+            .get('/nsis/'+self.stage.ish_version_id)
+            .then((response) => (self.nsis = response.data))
+
             axios
             .get("/dpps/"+self.$route.params.dpp + "/get_zuns_to_om/" + self.stage.zun_version_id)
             .then(response => (self.zuns = response.data));

@@ -134,7 +134,10 @@ export default {
         .then(response => {
           alert('Источник добавлен!')
           self2.nn++
-          self2.nsis.push(response.data);          
+          self2.nsis.push(response.data);
+          this.$emit('add_nsi', {
+            nsi_data: response.data,          
+            })           
         })
     },
     update_nsi(data) {

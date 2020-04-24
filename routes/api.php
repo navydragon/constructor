@@ -46,6 +46,16 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('/nsis/nsi_types','IshVersionController@get_nsi_types');
   Route::post('/nsis/add_nsi','IshVersionController@add_nsi');
   Route::post('/nsis/update_nsi','IshVersionController@update_nsi');
+  Route::get('/nsis/{iv}','IshVersionController@get_nsis');
+  Route::get('/nsis/get_nsi/{nsi}','IshVersionController@get_nsi');
+  Route::post('/nsis/remove_nsi','IshVersionController@remove_nsi');
+
+  Route::get('/mtos/mto_types','MtoController@mto_types');
+  Route::post('/mtos/add_mto','MtoController@add_mto');
+  Route::post('/mtos/update_mto','MtoController@update_mto');
+  Route::get('/mtos/get_mtos/{dpp}','MtoController@get_mtos');
+  Route::get('/mtos/get_mto/{mto}','MtoController@get_mto');
+  Route::post('/mtos/remove_mto','MtoController@remove_mto');
 
   Route::get('/typologies/get_typologies','TypologyController@get_typologies');
   Route::post('/typologies/add_typology','TypologyController@add_typology');
@@ -59,9 +69,7 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/typologies/update_dtp','TypologyController@update_dtp');
   Route::post('/typologies/remove_dtp','TypologyController@remove_dtp');
  
-  Route::get('/nsis/{iv}','IshVersionController@get_nsis');
-  Route::get('/nsis/get_nsi/{nsi}','IshVersionController@get_nsi');
-  Route::post('/nsis/remove_nsi','IshVersionController@remove_nsi');
+
     
   Route::post('/zuns/know/delete','ZunVersionController@delete_knowledge');
   Route::post('/zuns/abil/delete','ZunVersionController@delete_ability');
@@ -152,6 +160,7 @@ Route::group(['middleware' => 'jwt.auth'], function(){
 
   Route::get('/dpps/get_tasks/{ov}','OmVersionController@get_tasks');
   Route::post('/dpps/add_task','OmVersionController@add_task');
+  Route::post('/dpps/tasks/remove_task','OmVersionController@remove_task');
   Route::post('/dpps/tasks/update_specification','OmVersionController@update_specification');
   Route::post('/dpps/tasks/add_subject','OmVersionController@add_subject');
   Route::post('/dpps/tasks/add_object','OmVersionController@add_object');

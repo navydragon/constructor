@@ -30,4 +30,8 @@ class Task extends Model
     {
         return $this->hasMany('App\TaskQuestion','task_id');
     }
+
+    function nsis () {
+        return $this->belongsToMany('App\Nsi', 'task_nsis', 'task_id', 'nsi_id');
+    }
 }

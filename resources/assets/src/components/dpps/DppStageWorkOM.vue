@@ -174,6 +174,7 @@ export default {
             headings: {
                 text: 'Текст вопроса',
                 type_name: 'Тип вопроса',
+                name: 'Задание',
                 edit: 'Действия'
             },
             texts: {
@@ -305,6 +306,26 @@ export default {
                 this.$bvModal.show("modal-edittask")
                 })
         */
+      },
+      remove_task(task)
+      {
+        self = this;  
+        this.$bvModal.msgBoxConfirm('Действительно хотите задание «'+task.name+' ('+task.type_name+')»?')
+        .then(value => {
+            if (value === true) 
+            {
+              axios
+              .post('/dpps/tasks/remove_task', {
+                  'id': task.id
+              })
+              .then( function (response) {
+                self.tasks = self.tasks.filter(el => el.id != task.id)
+              })
+              .finally (function (response) {
+               //self.new_task.subjects = self.new_task.subjects.filter(el => el.id != subject.id)
+              })
+            }
+            })
       },
       update_task(data)
       {
