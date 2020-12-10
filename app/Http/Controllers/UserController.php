@@ -103,14 +103,14 @@ class UserController extends Controller
     public function discard_password(Request $request)
     {
         $user = User::find($request->user);
-        $password = rand(100000, 999999);
+        $password = 111111;
         $user->password = bcrypt($password);
         $user->save();
         $data = array('name'=>$user->fullname,'email'=>$user->email,'password'=>$password);
-        Mail::send('emails.discard_password', $data, function($message) use ($user) {
-            $message->to($user->email,$user->fullname)->subject
-               ('Конструктор ДПП: Ваш пароль был сброшен');
-            $message->from('no-reply@edu.emiit.ru','Робот-почтальон конструктора ДПП');
-         });
+        // Mail::send('emails.discard_password', $data, function($message) use ($user) {
+        //     $message->to($user->email,$user->fullname)->subject
+        //        ('Конструктор ДПП: Ваш пароль был сброшен');
+        //     $message->from('no-reply@edu.emiit.ru','Робот-почтальон конструктора ДПП');
+        //  });
     }
 }

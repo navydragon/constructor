@@ -37,10 +37,13 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('/dpp_types','DppController@get_all_dpp_types');
   Route::get('/dpps','DppController@get_all_dpps');
   Route::post('/dpps/delete','DppController@delete_dpp');
+  Route::post('/dpps/archive_dpp','DppController@archive_dpp');
+  Route::post('/dpps/unarchive_dpp','DppController@unarchive_dpp');
   Route::get('/dpps/{dpp}/overview','DppController@get_dpp_overview');
   Route::post('/dpps/stages/start','DppController@start_stage');
   Route::get('/my_dpps','DppController@get_all_my_dpps');
 
+  
  
 
   Route::get('/nsis/nsi_types','IshVersionController@get_nsi_types');

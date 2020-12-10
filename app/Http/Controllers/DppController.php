@@ -258,5 +258,20 @@ class DppController extends Controller
         }
         return $arr;
     }
+
+    public function archive_dpp(Request $request)
+    {
+        $dpp = Dpp::find($request->id);
+        $dpp->is_archieved = true;
+        $dpp->save();
+        return $dpp;
+    }
   
+    public function unarchive_dpp(Request $request)
+    {
+        $dpp = Dpp::find($request->id);
+        $dpp->is_archieved = false;
+        $dpp->save();
+        return $dpp;
+    }
 }

@@ -6,37 +6,83 @@
             </b-card-text>
             <b-button variant="primary" v-b-modal.create_dpp>Создать ДПП</b-button>
             <hr>
-            <b-table :busy="isBusy" bordered hover :table-variant="'light'"  :head-variant="'light'" :items="items" :fields="fields">
-                <template v-slot:table-busy>
-                    <div class="text-center text-info my-2">
-                    <b-spinner class="align-middle"></b-spinner>
-                    <strong>Загрузка...</strong>
-                    </div>
-                </template>
-                <template v-slot:cell(participants)="data">
-                    {{data.item.participants.length}}
-                </template>
-                <template v-slot:cell(modify)="data">
-                    <router-link v-if="!isBusy" icon="ion ion-md-eye" :to="{ name: 'dpp_inspect', params: {dpp: data.item.id } }" :exact="true">
-                       <b-button  variant="outline-info">
-                           <i class="ion ion-md-eye" style="font-size:20px;"></i>
-                       </b-button>
-                    <router-link v-if="!isBusy" icon="ion ion-md-person" :to="{ name: 'dpp_overview', params: {dpp: data.item.id, role: 1} }" :exact="true">
-                      <b-button  variant="outline-primary">
-                       <i class="ion ion-md-create" style="font-size:20px;"></i>
-                      </b-button>
-                    </router-link>
-                    </router-link>
-                    <router-link v-if="!isBusy" icon="ion ion-md-person" :to="{ name: 'dpp_config', params: {dpp: data.item.id } }" :exact="true">
-                       <b-button  variant="outline-primary">
-                           <i class="ion ion-md-construct" style="font-size:20px;"></i>
-                       </b-button>
-                    </router-link>
-                    <!-- <b-button @click="delete_dpp(data.item,data.item.id)" variant="outline-danger">
-                           <i class="ion ion-md-close" style="font-size:20px;"></i>
-                       </b-button> -->
-                </template>
-            </b-table>
+            <b-card no-body>
+              <b-tabs card>
+                <b-tab title="Активные программы" active>
+                   <b-table :busy="isBusy" bordered hover :table-variant="'light'"  :head-variant="'light'" :items="active_items" :fields="fields">
+                    <template v-slot:table-busy>
+                        <div class="text-center text-info my-2">
+                        <b-spinner class="align-middle"></b-spinner>
+                        <strong>Загрузка...</strong>
+                        </div>
+                    </template>
+                    <template v-slot:cell(participants)="data">
+                        {{data.item.participants.length}}
+                    </template>
+                    <template v-slot:cell(modify)="data">
+                        <router-link v-if="!isBusy" icon="ion ion-md-eye" :to="{ name: 'dpp_inspect', params: {dpp: data.item.id } }" :exact="true">
+                          <b-button  variant="outline-info">
+                              <i class="ion ion-md-eye" style="font-size:20px;"></i>
+                          </b-button>
+                        <router-link v-if="!isBusy" icon="ion ion-md-person" :to="{ name: 'dpp_overview', params: {dpp: data.item.id, role: 1} }" :exact="true">
+                          <b-button  variant="outline-primary">
+                          <i class="ion ion-md-create" style="font-size:20px;"></i>
+                          </b-button>
+                        </router-link>
+                        </router-link>
+                        <router-link v-if="!isBusy" icon="ion ion-md-person" :to="{ name: 'dpp_config', params: {dpp: data.item.id } }" :exact="true">
+                          <b-button  variant="outline-primary">
+                              <i class="ion ion-md-construct" style="font-size:20px;"></i>
+                          </b-button>
+                        </router-link>
+                        <b-button @click="archive_dpp(data.item,data.item.id)"  variant="outline-primary">
+                              <i class="ion ion-md-archive" style="font-size:20px;"></i>
+                        </b-button>
+                        <!-- <b-button @click="delete_dpp(data.item,data.item.id)" variant="outline-danger">
+                              <i class="ion ion-md-close" style="font-size:20px;"></i>
+                          </b-button> -->
+                    </template>
+                   </b-table>
+                </b-tab>
+                <b-tab title="Архив">
+                  <b-table :busy="isBusy" bordered hover :table-variant="'light'"  :head-variant="'light'" :items="archieved_items" :fields="fields">
+                    <template v-slot:table-busy>
+                        <div class="text-center text-info my-2">
+                        <b-spinner class="align-middle"></b-spinner>
+                        <strong>Загрузка...</strong>
+                        </div>
+                    </template>
+                    <template v-slot:cell(participants)="data">
+                        {{data.item.participants.length}}
+                    </template>
+                    <template v-slot:cell(modify)="data">
+                        <router-link v-if="!isBusy" icon="ion ion-md-eye" :to="{ name: 'dpp_inspect', params: {dpp: data.item.id } }" :exact="true">
+                          <b-button  variant="outline-info">
+                              <i class="ion ion-md-eye" style="font-size:20px;"></i>
+                          </b-button>
+                        <router-link v-if="!isBusy" icon="ion ion-md-person" :to="{ name: 'dpp_overview', params: {dpp: data.item.id, role: 1} }" :exact="true">
+                          <b-button  variant="outline-primary">
+                          <i class="ion ion-md-create" style="font-size:20px;"></i>
+                          </b-button>
+                        </router-link>
+                        </router-link>
+                        <router-link v-if="!isBusy" icon="ion ion-md-person" :to="{ name: 'dpp_config', params: {dpp: data.item.id } }" :exact="true">
+                          <b-button  variant="outline-primary">
+                              <i class="ion ion-md-construct" style="font-size:20px;"></i>
+                          </b-button>
+                        </router-link>
+                        <b-button @click="unarchive_dpp(data.item,data.item.id)"  variant="outline-primary">
+                              <i class="ion ion-md-arrow-back" style="font-size:20px;"></i>
+                        </b-button>
+                        <!-- <b-button @click="delete_dpp(data.item,data.item.id)" variant="outline-danger">
+                              <i class="ion ion-md-close" style="font-size:20px;"></i>
+                          </b-button> -->
+                    </template>
+                   </b-table>
+                </b-tab>
+              </b-tabs>
+            </b-card>
+           
             {{this.info}}
         </b-card>
          <b-modal
@@ -130,6 +176,16 @@
         dpp_types: []
       }
     },
+    computed:{
+      active_items()
+      {
+        return this.items.filter(el =>el.is_archieved == 0)
+      },
+      archieved_items()
+      {
+        return this.items.filter(el =>el.is_archieved == 1)
+      }
+    },
     methods: {
       checkFormValidity() {
         const valid = this.$refs.form.checkValidity()
@@ -187,6 +243,33 @@
             // An error occurred
           })
         
+      },
+      archive_dpp(item,id)
+      {
+          this.isBusy = true
+          axios
+          .post('/dpps/archive_dpp', {
+              'id': id
+          })
+          .then(response => {  
+          // this.items.push(response.data)
+          let idx = this.items.indexOf(item);
+          this.$set(this.items[idx], 'is_archieved', 1)
+        })
+        .finally((response) => (this.isBusy = false))
+      },
+      unarchive_dpp(item,id)
+      {
+          this.isBusy = true
+          axios
+          .post('/dpps/unarchive_dpp', {
+              'id': id
+          })
+          .then(response => {  
+          let idx = this.items.indexOf(item);
+          this.$set(this.items[idx], 'is_archieved', 0)
+        })
+        .finally((response) => (this.isBusy = false))
       }
     },
     mounted() {

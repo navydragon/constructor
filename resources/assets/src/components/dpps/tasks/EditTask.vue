@@ -153,6 +153,7 @@
 
             </b-tab>
             <b-tab title="Материально-техническое обеспечение">
+              <task-mtos :dpp_id="this.$route.params.dpp"></task-mtos>
               <mtos :dpp_id="this.$route.params.dpp"></mtos>
             </b-tab>
             </b-tabs>          
@@ -169,13 +170,14 @@ import CreateQuestion from './CreateQuestion'
 import EditQuestion from './EditQuestion'
 import NsiChoose from '@/components/nsis/NsiChoose'
 import Mtos from '@/components/mtos/Mtos'
+import TaskMtos from '@/components/mtos/TaskMtos'
 
 export default {
   name: "edit-task",
   metaInfo: {
   title: "Создание и редактирование задания"
   },
-  components: { CreateSubject,CreateObject,EditObject,CreateQuestion,EditQuestion,NsiChoose,Mtos},
+  components: { CreateSubject,CreateObject,EditObject,CreateQuestion,EditQuestion,NsiChoose,Mtos,TaskMtos},
   data () {
     return {
         new_task: {

@@ -885,7 +885,7 @@ export default {
         })
         .then(function(response) {
           if (response.data.valid == true) {
-            var new_type = "Навык";
+            var new_type = "Умение";
           } else {
             var new_type =
               "<span class='btn btn-danger btn-xs'><strong style='font-size:16px;'>!</strong></span> Умение";

@@ -31,7 +31,7 @@
                 </b-form-row>
                 <hr>
                 <h4>ОБОСНОВАНИЕ</h4>
-                <b-alert show >Выберите на основе какой информации формируется навык</b-alert>
+                <b-alert show >Выберите на основе какой информации формируется умение</b-alert>
                 <b-form-radio v-model="new_ability.is_by_expert" name="is_by_expert" value="0">На основе источников НСИ</b-form-radio>
                 <b-form-radio v-model="new_ability.is_by_expert" name="is_by_expert" value="1">На основе мнения эксперта</b-form-radio>
                 <div class="mt-4" v-if="new_ability.is_by_expert==0">
