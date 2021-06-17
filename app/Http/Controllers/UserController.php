@@ -113,4 +113,34 @@ class UserController extends Controller
         //     $message->from('no-reply@edu.emiit.ru','Робот-почтальон конструктора ДПП');
         //  });
     }
+
+    public function update_user( Request $request)
+    {
+        
+        $data = $request->userInfoUpdate;
+        $user = User::findOrFail($data["id"]);
+
+        $already = User::where('email', '=', $data["email"])->get();
+        if (count($already) >0)
+        {
+            $already = $already->first();
+            if ($already->id != $data["id"])
+            {
+                return response([
+                    'status' => 'error',
+                    'msg' => 'Указанная почта уже зарегистрирована для другого пользователя'
+                ], 400);
+            }
+        }
+        $user->firstname = $data["firstname"];
+        $user->lastname = $data["lastname"];
+        $user->middlename = $data["middlename"];
+        $user->phone = $data["phone"];
+        $user->email = $data["email"];
+        $user->save();
+        return response([
+            'status' => 'success',
+            'data' => $user
+        ]);
+    }
 }

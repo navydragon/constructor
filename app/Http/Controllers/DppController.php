@@ -125,33 +125,38 @@ class DppController extends Controller
     {
         $user_id = Auth::user()->id;
         $my_dpps = DppUserRole::select('dpp_id')->where('user_id',$user_id)->distinct()->get();
+        $res = [];
         foreach ($my_dpps as $my_dpp)
         {
             $dpp = Dpp::find($my_dpp->dpp_id);
-            $my_dpp->name = $dpp->name;
-            $my_dpp->status_id = $dpp->status_id;
-            $my_dpp->status_name = $dpp->status->name;
-            $my_dpp->participants = $dpp->participants;
-            $my_dpp->current_stage_name = $dpp->current_stage->type->name;
-            foreach($my_dpp->participants as $user)
+            if ($dpp->is_archieved == 0)
             {
-                $u = User::find($user->user_id);
-                $user->fullname = $u->fullname;
-                $user->user_id = $u->id;
-                $user->email = $u->email;
-                $user->phone = $u->phone;
-                $r = Role::find($user->role_id);
-                $user->rolename = $r->name;
-                $user->role_id = $r->id;
-                if ($user->user_id == Auth::user()->id)
+                $my_dpp->name = $dpp->name;
+                $my_dpp->status_id = $dpp->status_id;
+                $my_dpp->status_name = $dpp->status->name;
+                $my_dpp->participants = $dpp->participants;
+                $my_dpp->current_stage_name = $dpp->current_stage->type->name;
+                foreach($my_dpp->participants as $user)
                 {
-                    $user->is_me = true;
-                }else{
-                    $user->is_me = false;
+                    $u = User::find($user->user_id);
+                    $user->fullname = $u->fullname;
+                    $user->user_id = $u->id;
+                    $user->email = $u->email;
+                    $user->phone = $u->phone;
+                    $r = Role::find($user->role_id);
+                    $user->rolename = $r->name;
+                    $user->role_id = $r->id;
+                    if ($user->user_id == Auth::user()->id)
+                    {
+                        $user->is_me = true;
+                    }else{
+                        $user->is_me = false;
+                    }
                 }
+                array_push ($res,$my_dpp);
             }
         }
-        return $my_dpps;
+        return $res;
     }
 
     public function get_dpp_overview(Dpp $dpp)

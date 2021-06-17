@@ -41,7 +41,8 @@ class AuthController extends Controller
         }
 
         return response([
-            'status' => 'success'
+            'status' => 'success',
+            'token' => $token
         ])
         ->header('Authorization', $token);
     }
@@ -49,7 +50,7 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         $user = User::find(Auth::user()->id);
-
+        $user->rights = $user->get_rights->shortname;
         return response([
             'status' => 'success',
             'data' => $user

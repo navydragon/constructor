@@ -30,4 +30,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function get_rights()
+    {
+        return $this->belongsTo('App\Right','right_id');
+    }
 }

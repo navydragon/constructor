@@ -13,12 +13,15 @@ class RightsTableSeeder extends Seeder
     {
         DB::table('rights')->insert([
             'name' => 'Суперадминистратор',
+            'shortname' => 'superadmin',
         ]);
         DB::table('rights')->insert([
             'name' => 'Администратор',
+            'shortname' => 'admin',
         ]);
         DB::table('rights')->insert([
             'name' => 'Пользователь',
+            'shortname' => 'user',
         ]);
     }
 }

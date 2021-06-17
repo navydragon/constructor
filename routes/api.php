@@ -19,15 +19,18 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 */
 
 Route::post('auth/register', 'AuthController@register');
+
 Route::post('auth/login', 'AuthController@login');
 Route::post('auth/logout', 'AuthController@logout');
+
 Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('auth/user', 'AuthController@user');
   Route::get('/users','UserController@get_all_users');
   Route::post('/users/check_email','UserController@check_email');
   Route::post('/users/add_user','UserController@add_user');
   Route::post('/users/discard_password','UserController@discard_password');
-  
+  Route::post('/users/update_user','UserController@update_user');
+
   Route::post('/users/send_reg_data','UserController@send_reg_data');
 
   Route::get('/roles','UserController@get_all_roles');

@@ -1,0 +1,1 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[15],{gKge:function(t,s,e){"use strict";e.r(s);var n=e("KHd+"),a=Object(n.a)({},(function(){var t=this.$createElement,s=this._self._c||t;return s("div",[s("h1",[this._v("Laravel 5 – Our Cool Dashboard")]),this._v("\n    "+this._s(this.$auth.user())+"\n")])}),[],!1,null,null,null);s.default=a.exports}}]);
