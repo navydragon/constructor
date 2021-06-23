@@ -18,6 +18,8 @@ use App\ZunVersion;
 use App\IshVersion;
 use App\OmVersion;
 use App\QuestionType;
+use App\StructureVersion;
+use App\StructureSection;
 use Auth;
 class DppController extends Controller
 {
@@ -219,6 +221,33 @@ class DppController extends Controller
                 $om->save();
                 $dpp->om_version_id = $om->id;
                 $dpp->save();
+            }
+        }
+
+        if ($ds->stage_type_id == 3) {
+            if ($dpp->st_versions->count() == 0)
+            {
+                $st = new StructureVersion;
+                $st->dpp_id = $dpp->id;
+                $st->author_id = Auth::user()->id;
+                $st->save();
+                $dpp->st_version_id = $st->id;
+                $dpp->save();
+                $n = 1;
+                foreach($dpp->typology_parts as $tp)
+                {
+                    $section = new StructureSection;
+                    $section->name = $tp->name;
+                    $section->position = $n;
+                    $section->st_version_id = $st->id;
+                    $section->save();
+                    $n++; 
+                    foreach ($tp->get_knowledges as $kn)
+                    {
+                        $section->knowledges()->attach($kn);
+                    }
+                }
+
             }
         }
 

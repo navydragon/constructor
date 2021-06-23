@@ -45,8 +45,18 @@ class Dpp extends Model
         return $this->hasMany('App\OmVersion','dpp_id');
     }
 
+    public function st_versions()
+    {
+        return $this->hasMany('App\StructureVersion','dpp_id');
+    }
+
     public function knowledges()
     {
         return $this->hasMany('App\Knowledge','dpp_id');
+    }
+
+    public function typology_parts()
+    {
+        return $this->hasMany('App\DppTypologyPart','dpp_id');
     }
 }

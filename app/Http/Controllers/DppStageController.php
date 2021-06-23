@@ -22,6 +22,7 @@ class DppStageController extends Controller
         $stage->zun_version_id = $dpp->zun_version_id;
         $stage->ish_version_id = $dpp->ish_version_id;
         $stage->om_version_id = $dpp->om_version_id;
+        $stage->st_version_id = $dpp->st_version_id;
         return $stage;
     }
 

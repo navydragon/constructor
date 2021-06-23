@@ -2,7 +2,7 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
-import BootstrapVue from 'bootstrap-vue'
+import { BootstrapVue  } from 'bootstrap-vue'
 
 import globals from './globals'
 import Popper from 'popper.js'

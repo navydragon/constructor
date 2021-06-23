@@ -130,6 +130,10 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/dpps/{dpp}/update_knowledge','ZunVersionController@update_knowledge2');
   Route::post('/dpps/{dpp}/add_knowledge_link','ZunVersionController@add_knowledge_link2');
 
+
+  Route::get('/dpps/{dpp}/get_sections/{sv}','StructureSectionController@get_sections');
+
+
   Route::post('/profstandarts/add_profstandart','ProfStandartController@add_profstandart');
   Route::post('/profstandarts/get_profstandarts','ProfStandartController@get_profstandarts');
   Route::post('/profstandarts/get_profstandart','ProfStandartController@get_profstandart');

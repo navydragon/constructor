@@ -1,6914 +1,4317 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([[2],{
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/AddParent2.vue?vue&type=script&lang=js&":
-/*!**********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/AddParent2.vue?vue&type=script&lang=js& ***!
-  \**********************************************************************************************************************************************************************************/
-/*! exports provided: default */
+/***/ "./node_modules/sortablejs/modular/sortable.esm.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/sortablejs/modular/sortable.esm.js ***!
+  \*********************************************************/
+/*! exports provided: default, MultiDrag, Sortable, Swap */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'add-parent2',
-  props: {
-    elems: Array,
-    edit_elem: Object
-  },
-  data: function data() {
-    return {
-      selected: '',
-      errors: []
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MultiDrag", function() { return MultiDragPlugin; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Sortable", function() { return Sortable; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Swap", function() { return SwapPlugin; });
+/**!
+ * Sortable 1.10.2
+ * @author	RubaXa   <trash@rubaxa.org>
+ * @author	owenm    <owen23355@gmail.com>
+ * @license MIT
+ */
+function _typeof(obj) {
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    _typeof = function (obj) {
+      return typeof obj;
     };
-  },
-  methods: {
-    handle_ok: function handle_ok(bvModalEvt) {
-      bvModalEvt.preventDefault();
-      this.errors = [];
+  } else {
+    _typeof = function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+  }
 
-      if (this.selected == '') {
-        this.errors.push('Выберите умение');
-      } else {
-        this.$emit('draw_parent', this.selected);
+  return _typeof(obj);
+}
+
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _objectSpread(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+    var ownKeys = Object.keys(source);
+
+    if (typeof Object.getOwnPropertySymbols === 'function') {
+      ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) {
+        return Object.getOwnPropertyDescriptor(source, sym).enumerable;
+      }));
+    }
+
+    ownKeys.forEach(function (key) {
+      _defineProperty(target, key, source[key]);
+    });
+  }
+
+  return target;
+}
+
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+function _objectWithoutProperties(source, excluded) {
+  if (source == null) return {};
+
+  var target = _objectWithoutPropertiesLoose(source, excluded);
+
+  var key, i;
+
+  if (Object.getOwnPropertySymbols) {
+    var sourceSymbolKeys = Object.getOwnPropertySymbols(source);
+
+    for (i = 0; i < sourceSymbolKeys.length; i++) {
+      key = sourceSymbolKeys[i];
+      if (excluded.indexOf(key) >= 0) continue;
+      if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue;
+      target[key] = source[key];
+    }
+  }
+
+  return target;
+}
+
+function _toConsumableArray(arr) {
+  return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread();
+}
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
+
+    return arr2;
+  }
+}
+
+function _iterableToArray(iter) {
+  if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter);
+}
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance");
+}
+
+var version = "1.10.2";
+
+function userAgent(pattern) {
+  if (typeof window !== 'undefined' && window.navigator) {
+    return !!
+    /*@__PURE__*/
+    navigator.userAgent.match(pattern);
+  }
+}
+
+var IE11OrLess = userAgent(/(?:Trident.*rv[ :]?11\.|msie|iemobile|Windows Phone)/i);
+var Edge = userAgent(/Edge/i);
+var FireFox = userAgent(/firefox/i);
+var Safari = userAgent(/safari/i) && !userAgent(/chrome/i) && !userAgent(/android/i);
+var IOS = userAgent(/iP(ad|od|hone)/i);
+var ChromeForAndroid = userAgent(/chrome/i) && userAgent(/android/i);
+
+var captureMode = {
+  capture: false,
+  passive: false
+};
+
+function on(el, event, fn) {
+  el.addEventListener(event, fn, !IE11OrLess && captureMode);
+}
+
+function off(el, event, fn) {
+  el.removeEventListener(event, fn, !IE11OrLess && captureMode);
+}
+
+function matches(
+/**HTMLElement*/
+el,
+/**String*/
+selector) {
+  if (!selector) return;
+  selector[0] === '>' && (selector = selector.substring(1));
+
+  if (el) {
+    try {
+      if (el.matches) {
+        return el.matches(selector);
+      } else if (el.msMatchesSelector) {
+        return el.msMatchesSelector(selector);
+      } else if (el.webkitMatchesSelector) {
+        return el.webkitMatchesSelector(selector);
+      }
+    } catch (_) {
+      return false;
+    }
+  }
+
+  return false;
+}
+
+function getParentOrHost(el) {
+  return el.host && el !== document && el.host.nodeType ? el.host : el.parentNode;
+}
+
+function closest(
+/**HTMLElement*/
+el,
+/**String*/
+selector,
+/**HTMLElement*/
+ctx, includeCTX) {
+  if (el) {
+    ctx = ctx || document;
+
+    do {
+      if (selector != null && (selector[0] === '>' ? el.parentNode === ctx && matches(el, selector) : matches(el, selector)) || includeCTX && el === ctx) {
+        return el;
+      }
+
+      if (el === ctx) break;
+      /* jshint boss:true */
+    } while (el = getParentOrHost(el));
+  }
+
+  return null;
+}
+
+var R_SPACE = /\s+/g;
+
+function toggleClass(el, name, state) {
+  if (el && name) {
+    if (el.classList) {
+      el.classList[state ? 'add' : 'remove'](name);
+    } else {
+      var className = (' ' + el.className + ' ').replace(R_SPACE, ' ').replace(' ' + name + ' ', ' ');
+      el.className = (className + (state ? ' ' + name : '')).replace(R_SPACE, ' ');
+    }
+  }
+}
+
+function css(el, prop, val) {
+  var style = el && el.style;
+
+  if (style) {
+    if (val === void 0) {
+      if (document.defaultView && document.defaultView.getComputedStyle) {
+        val = document.defaultView.getComputedStyle(el, '');
+      } else if (el.currentStyle) {
+        val = el.currentStyle;
+      }
+
+      return prop === void 0 ? val : val[prop];
+    } else {
+      if (!(prop in style) && prop.indexOf('webkit') === -1) {
+        prop = '-webkit-' + prop;
+      }
+
+      style[prop] = val + (typeof val === 'string' ? '' : 'px');
+    }
+  }
+}
+
+function matrix(el, selfOnly) {
+  var appliedTransforms = '';
+
+  if (typeof el === 'string') {
+    appliedTransforms = el;
+  } else {
+    do {
+      var transform = css(el, 'transform');
+
+      if (transform && transform !== 'none') {
+        appliedTransforms = transform + ' ' + appliedTransforms;
+      }
+      /* jshint boss:true */
+
+    } while (!selfOnly && (el = el.parentNode));
+  }
+
+  var matrixFn = window.DOMMatrix || window.WebKitCSSMatrix || window.CSSMatrix || window.MSCSSMatrix;
+  /*jshint -W056 */
+
+  return matrixFn && new matrixFn(appliedTransforms);
+}
+
+function find(ctx, tagName, iterator) {
+  if (ctx) {
+    var list = ctx.getElementsByTagName(tagName),
+        i = 0,
+        n = list.length;
+
+    if (iterator) {
+      for (; i < n; i++) {
+        iterator(list[i], i);
+      }
+    }
+
+    return list;
+  }
+
+  return [];
+}
+
+function getWindowScrollingElement() {
+  var scrollingElement = document.scrollingElement;
+
+  if (scrollingElement) {
+    return scrollingElement;
+  } else {
+    return document.documentElement;
+  }
+}
+/**
+ * Returns the "bounding client rect" of given element
+ * @param  {HTMLElement} el                       The element whose boundingClientRect is wanted
+ * @param  {[Boolean]} relativeToContainingBlock  Whether the rect should be relative to the containing block of (including) the container
+ * @param  {[Boolean]} relativeToNonStaticParent  Whether the rect should be relative to the relative parent of (including) the contaienr
+ * @param  {[Boolean]} undoScale                  Whether the container's scale() should be undone
+ * @param  {[HTMLElement]} container              The parent the element will be placed in
+ * @return {Object}                               The boundingClientRect of el, with specified adjustments
+ */
+
+
+function getRect(el, relativeToContainingBlock, relativeToNonStaticParent, undoScale, container) {
+  if (!el.getBoundingClientRect && el !== window) return;
+  var elRect, top, left, bottom, right, height, width;
+
+  if (el !== window && el !== getWindowScrollingElement()) {
+    elRect = el.getBoundingClientRect();
+    top = elRect.top;
+    left = elRect.left;
+    bottom = elRect.bottom;
+    right = elRect.right;
+    height = elRect.height;
+    width = elRect.width;
+  } else {
+    top = 0;
+    left = 0;
+    bottom = window.innerHeight;
+    right = window.innerWidth;
+    height = window.innerHeight;
+    width = window.innerWidth;
+  }
+
+  if ((relativeToContainingBlock || relativeToNonStaticParent) && el !== window) {
+    // Adjust for translate()
+    container = container || el.parentNode; // solves #1123 (see: https://stackoverflow.com/a/37953806/6088312)
+    // Not needed on <= IE11
+
+    if (!IE11OrLess) {
+      do {
+        if (container && container.getBoundingClientRect && (css(container, 'transform') !== 'none' || relativeToNonStaticParent && css(container, 'position') !== 'static')) {
+          var containerRect = container.getBoundingClientRect(); // Set relative to edges of padding box of container
+
+          top -= containerRect.top + parseInt(css(container, 'border-top-width'));
+          left -= containerRect.left + parseInt(css(container, 'border-left-width'));
+          bottom = top + elRect.height;
+          right = left + elRect.width;
+          break;
+        }
+        /* jshint boss:true */
+
+      } while (container = container.parentNode);
+    }
+  }
+
+  if (undoScale && el !== window) {
+    // Adjust for scale()
+    var elMatrix = matrix(container || el),
+        scaleX = elMatrix && elMatrix.a,
+        scaleY = elMatrix && elMatrix.d;
+
+    if (elMatrix) {
+      top /= scaleY;
+      left /= scaleX;
+      width /= scaleX;
+      height /= scaleY;
+      bottom = top + height;
+      right = left + width;
+    }
+  }
+
+  return {
+    top: top,
+    left: left,
+    bottom: bottom,
+    right: right,
+    width: width,
+    height: height
+  };
+}
+/**
+ * Checks if a side of an element is scrolled past a side of its parents
+ * @param  {HTMLElement}  el           The element who's side being scrolled out of view is in question
+ * @param  {String}       elSide       Side of the element in question ('top', 'left', 'right', 'bottom')
+ * @param  {String}       parentSide   Side of the parent in question ('top', 'left', 'right', 'bottom')
+ * @return {HTMLElement}               The parent scroll element that the el's side is scrolled past, or null if there is no such element
+ */
+
+
+function isScrolledPast(el, elSide, parentSide) {
+  var parent = getParentAutoScrollElement(el, true),
+      elSideVal = getRect(el)[elSide];
+  /* jshint boss:true */
+
+  while (parent) {
+    var parentSideVal = getRect(parent)[parentSide],
+        visible = void 0;
+
+    if (parentSide === 'top' || parentSide === 'left') {
+      visible = elSideVal >= parentSideVal;
+    } else {
+      visible = elSideVal <= parentSideVal;
+    }
+
+    if (!visible) return parent;
+    if (parent === getWindowScrollingElement()) break;
+    parent = getParentAutoScrollElement(parent, false);
+  }
+
+  return false;
+}
+/**
+ * Gets nth child of el, ignoring hidden children, sortable's elements (does not ignore clone if it's visible)
+ * and non-draggable elements
+ * @param  {HTMLElement} el       The parent element
+ * @param  {Number} childNum      The index of the child
+ * @param  {Object} options       Parent Sortable's options
+ * @return {HTMLElement}          The child at index childNum, or null if not found
+ */
+
+
+function getChild(el, childNum, options) {
+  var currentChild = 0,
+      i = 0,
+      children = el.children;
+
+  while (i < children.length) {
+    if (children[i].style.display !== 'none' && children[i] !== Sortable.ghost && children[i] !== Sortable.dragged && closest(children[i], options.draggable, el, false)) {
+      if (currentChild === childNum) {
+        return children[i];
+      }
+
+      currentChild++;
+    }
+
+    i++;
+  }
+
+  return null;
+}
+/**
+ * Gets the last child in the el, ignoring ghostEl or invisible elements (clones)
+ * @param  {HTMLElement} el       Parent element
+ * @param  {selector} selector    Any other elements that should be ignored
+ * @return {HTMLElement}          The last child, ignoring ghostEl
+ */
+
+
+function lastChild(el, selector) {
+  var last = el.lastElementChild;
+
+  while (last && (last === Sortable.ghost || css(last, 'display') === 'none' || selector && !matches(last, selector))) {
+    last = last.previousElementSibling;
+  }
+
+  return last || null;
+}
+/**
+ * Returns the index of an element within its parent for a selected set of
+ * elements
+ * @param  {HTMLElement} el
+ * @param  {selector} selector
+ * @return {number}
+ */
+
+
+function index(el, selector) {
+  var index = 0;
+
+  if (!el || !el.parentNode) {
+    return -1;
+  }
+  /* jshint boss:true */
+
+
+  while (el = el.previousElementSibling) {
+    if (el.nodeName.toUpperCase() !== 'TEMPLATE' && el !== Sortable.clone && (!selector || matches(el, selector))) {
+      index++;
+    }
+  }
+
+  return index;
+}
+/**
+ * Returns the scroll offset of the given element, added with all the scroll offsets of parent elements.
+ * The value is returned in real pixels.
+ * @param  {HTMLElement} el
+ * @return {Array}             Offsets in the format of [left, top]
+ */
+
+
+function getRelativeScrollOffset(el) {
+  var offsetLeft = 0,
+      offsetTop = 0,
+      winScroller = getWindowScrollingElement();
+
+  if (el) {
+    do {
+      var elMatrix = matrix(el),
+          scaleX = elMatrix.a,
+          scaleY = elMatrix.d;
+      offsetLeft += el.scrollLeft * scaleX;
+      offsetTop += el.scrollTop * scaleY;
+    } while (el !== winScroller && (el = el.parentNode));
+  }
+
+  return [offsetLeft, offsetTop];
+}
+/**
+ * Returns the index of the object within the given array
+ * @param  {Array} arr   Array that may or may not hold the object
+ * @param  {Object} obj  An object that has a key-value pair unique to and identical to a key-value pair in the object you want to find
+ * @return {Number}      The index of the object in the array, or -1
+ */
+
+
+function indexOfObject(arr, obj) {
+  for (var i in arr) {
+    if (!arr.hasOwnProperty(i)) continue;
+
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key) && obj[key] === arr[i][key]) return Number(i);
+    }
+  }
+
+  return -1;
+}
+
+function getParentAutoScrollElement(el, includeSelf) {
+  // skip to window
+  if (!el || !el.getBoundingClientRect) return getWindowScrollingElement();
+  var elem = el;
+  var gotSelf = false;
+
+  do {
+    // we don't need to get elem css if it isn't even overflowing in the first place (performance)
+    if (elem.clientWidth < elem.scrollWidth || elem.clientHeight < elem.scrollHeight) {
+      var elemCSS = css(elem);
+
+      if (elem.clientWidth < elem.scrollWidth && (elemCSS.overflowX == 'auto' || elemCSS.overflowX == 'scroll') || elem.clientHeight < elem.scrollHeight && (elemCSS.overflowY == 'auto' || elemCSS.overflowY == 'scroll')) {
+        if (!elem.getBoundingClientRect || elem === document.body) return getWindowScrollingElement();
+        if (gotSelf || includeSelf) return elem;
+        gotSelf = true;
+      }
+    }
+    /* jshint boss:true */
+
+  } while (elem = elem.parentNode);
+
+  return getWindowScrollingElement();
+}
+
+function extend(dst, src) {
+  if (dst && src) {
+    for (var key in src) {
+      if (src.hasOwnProperty(key)) {
+        dst[key] = src[key];
       }
     }
   }
-});
 
-/***/ }),
+  return dst;
+}
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditAbility2.vue?vue&type=script&lang=js&":
-/*!************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/EditAbility2.vue?vue&type=script&lang=js& ***!
-  \************************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+function isRectEqual(rect1, rect2) {
+  return Math.round(rect1.top) === Math.round(rect2.top) && Math.round(rect1.left) === Math.round(rect2.left) && Math.round(rect1.height) === Math.round(rect2.height) && Math.round(rect1.width) === Math.round(rect2.width);
+}
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_nsis_NsiChoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/components/nsis/NsiChoose */ "./resources/assets/src/components/nsis/NsiChoose.vue");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+var _throttleTimeout;
 
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: "edit-ability2",
-  metaInfo: {
-    title: "Редактирование умения"
-  },
-  props: {
-    ish_version_id: Number,
-    edit_elem: String
-  },
-  components: {
-    NsiChoose: _components_nsis_NsiChoose__WEBPACK_IMPORTED_MODULE_0__["default"]
-  },
-  data: function data() {
-    return {
-      new_ability: {
-        keyword: 'Уметь',
-        what: '',
-        "with": '',
-        where: '',
-        expert_answer: '',
-        is_by_expert: null,
-        valid: true,
-        nsis: []
-      },
-      errors: [],
-      isBusy: true
-    };
-  },
-  computed: {
-    name: function name() {
-      return this.combine_text(this.new_ability);
-    }
-  },
-  methods: {
-    handle_ok: function handle_ok(bvModalEvt) {
-      bvModalEvt.preventDefault();
+function throttle(callback, ms) {
+  return function () {
+    if (!_throttleTimeout) {
+      var args = arguments,
+          _this = this;
 
-      if (this.new_ability.what.length == 0 || this.new_ability["with"].length == 0 || this.new_ability.where.length == 0) {
-        this.new_ability.valid = false;
+      if (args.length === 1) {
+        callback.call(_this, args[0]);
       } else {
-        this.new_ability.valid = true;
-        this.$emit('update_ability', {
-          ability_name: this.name,
-          ability_data: this.new_ability
+        callback.apply(_this, args);
+      }
+
+      _throttleTimeout = setTimeout(function () {
+        _throttleTimeout = void 0;
+      }, ms);
+    }
+  };
+}
+
+function cancelThrottle() {
+  clearTimeout(_throttleTimeout);
+  _throttleTimeout = void 0;
+}
+
+function scrollBy(el, x, y) {
+  el.scrollLeft += x;
+  el.scrollTop += y;
+}
+
+function clone(el) {
+  var Polymer = window.Polymer;
+  var $ = window.jQuery || window.Zepto;
+
+  if (Polymer && Polymer.dom) {
+    return Polymer.dom(el).cloneNode(true);
+  } else if ($) {
+    return $(el).clone(true)[0];
+  } else {
+    return el.cloneNode(true);
+  }
+}
+
+function setRect(el, rect) {
+  css(el, 'position', 'absolute');
+  css(el, 'top', rect.top);
+  css(el, 'left', rect.left);
+  css(el, 'width', rect.width);
+  css(el, 'height', rect.height);
+}
+
+function unsetRect(el) {
+  css(el, 'position', '');
+  css(el, 'top', '');
+  css(el, 'left', '');
+  css(el, 'width', '');
+  css(el, 'height', '');
+}
+
+var expando = 'Sortable' + new Date().getTime();
+
+function AnimationStateManager() {
+  var animationStates = [],
+      animationCallbackId;
+  return {
+    captureAnimationState: function captureAnimationState() {
+      animationStates = [];
+      if (!this.options.animation) return;
+      var children = [].slice.call(this.el.children);
+      children.forEach(function (child) {
+        if (css(child, 'display') === 'none' || child === Sortable.ghost) return;
+        animationStates.push({
+          target: child,
+          rect: getRect(child)
         });
-      }
+
+        var fromRect = _objectSpread({}, animationStates[animationStates.length - 1].rect); // If animating: compensate for current animation
+
+
+        if (child.thisAnimationDuration) {
+          var childMatrix = matrix(child, true);
+
+          if (childMatrix) {
+            fromRect.top -= childMatrix.f;
+            fromRect.left -= childMatrix.e;
+          }
+        }
+
+        child.fromRect = fromRect;
+      });
     },
-    combine_text: function combine_text(elem) {
-      return elem.keyword + ' ' + elem.what + ' ' + elem["with"] + ' ' + elem.where;
+    addAnimationState: function addAnimationState(state) {
+      animationStates.push(state);
     },
-    change_nsi: function change_nsi(data) {
-      this.new_ability.nsis = data.nsi_data;
-    }
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    axios.get('/dpps/get_ability_info/' + this.edit_elem).then(function (response) {
-      return _this.new_ability = response.data;
-    })["finally"](this.isBusy = false);
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditCompetence2.vue?vue&type=script&lang=js&":
-/*!***************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/EditCompetence2.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'edit-competence2',
-  props: {
-    edit_elem: String
-  },
-  metaInfo: {
-    title: "Редактирование компетенцию"
-  },
-  data: function data() {
-    return {
-      new_competence: {
-        keyword: 'Способен',
-        what: '',
-        "with": ' ',
-        where: ' ',
-        valid: true,
-        elems: []
-      },
-      errors: [],
-      isBusy: true
-    };
-  },
-  computed: {
-    name: function name() {
-      return this.combine_text(this.new_competence);
-    }
-  },
-  methods: {
-    handle_ok: function handle_ok(bvModalEvt) {
-      bvModalEvt.preventDefault();
-
-      if (this.new_competence.what.length == 0 || this.new_competence["with"].length == 0 || this.new_competence.where.length == 0) {
-        this.new_competence.valid = false;
-      } else {
-        this.new_competence.valid = true;
-        this.$emit('update_competence', {
-          competence_name: this.name,
-          competence_data: this.new_competence
-        });
-      }
+    removeAnimationState: function removeAnimationState(target) {
+      animationStates.splice(indexOfObject(animationStates, {
+        target: target
+      }), 1);
     },
-    combine_text: function combine_text(elem) {
-      return elem.keyword + ' ' + elem.what + ' ' + elem["with"] + ' ' + elem.where;
-    }
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    axios.get('/dpps/get_competence_info/' + this.edit_elem).then(function (response) {
-      return _this.new_competence = response.data;
-    })["finally"](this.isBusy = false);
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditKnowledge2.vue?vue&type=script&lang=js&":
-/*!**************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/EditKnowledge2.vue?vue&type=script&lang=js& ***!
-  \**************************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_nsis_NsiChoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/components/nsis/NsiChoose */ "./resources/assets/src/components/nsis/NsiChoose.vue");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: "edit-knowledge2",
-  metaInfo: {
-    title: "Редактировать знание"
-  },
-  props: {
-    ish_version_id: Number,
-    edit_elem: String,
-    dtps: Array
-  },
-  components: {
-    NsiChoose: _components_nsis_NsiChoose__WEBPACK_IMPORTED_MODULE_0__["default"]
-  },
-  data: function data() {
-    return {
-      new_knowledge: {
-        keyword: 'Знать',
-        what: '',
-        "with": ' ',
-        where: ' ',
-        valid: true,
-        expert_answer: '',
-        is_by_expert: null,
-        nsis: []
-      },
-      errors: [],
-      isBusy: true
-    };
-  },
-  computed: {
-    name: function name() {
-      return this.combine_text(this.new_knowledge);
-    }
-  },
-  methods: {
-    handle_ok: function handle_ok(bvModalEvt) {
-      bvModalEvt.preventDefault();
-
-      if (this.new_knowledge.what.length == 0) {
-        this.new_knowledge.valid = false;
-      } else {
-        this.new_knowledge.valid = true;
-        this.$emit('update_knowledge', {
-          knowledge_name: this.name,
-          knowledge_data: this.new_knowledge,
-          parent_node: this.parent_node
-        });
-      }
-    },
-    combine_text: function combine_text(elem) {
-      return elem.keyword + ' ' + elem.what + ' ' + elem["with"] + ' ' + elem.where;
-    },
-    change_nsi: function change_nsi(data) {
-      this.new_knowledge.nsis = data.nsi_data;
-    }
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    axios.get('/dpps/get_knowledge_info/' + this.edit_elem).then(function (response) {
-      return _this.new_knowledge = response.data;
-    })["finally"](this.isBusy = false);
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditSkill2.vue?vue&type=script&lang=js&":
-/*!**********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/EditSkill2.vue?vue&type=script&lang=js& ***!
-  \**********************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_nsis_NsiChoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/components/nsis/NsiChoose */ "./resources/assets/src/components/nsis/NsiChoose.vue");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: "edit-skill2",
-  metaInfo: {
-    title: "Редактирование навыка"
-  },
-  props: {
-    ish_version_id: Number,
-    edit_elem: String
-  },
-  components: {
-    NsiChoose: _components_nsis_NsiChoose__WEBPACK_IMPORTED_MODULE_0__["default"]
-  },
-  data: function data() {
-    return {
-      new_skill: {
-        keyword: 'Владеть навыком',
-        what: '',
-        "with": '',
-        where: '',
-        valid: true,
-        expert_answer: '',
-        is_by_expert: null,
-        nsis: []
-      },
-      errors: [],
-      isBusy: true
-    };
-  },
-  computed: {
-    name: function name() {
-      return this.combine_text(this.new_skill);
-    }
-  },
-  methods: {
-    handle_ok: function handle_ok(bvModalEvt) {
-      bvModalEvt.preventDefault();
-
-      if (this.new_skill.what.length == 0 || this.new_skill["with"].length == 0 || this.new_skill.where.length == 0) {
-        this.new_skill.valid = false;
-      } else {
-        this.new_skill.valid = true;
-        this.$emit('update_skill', {
-          skill_name: this.name,
-          skill_data: this.new_skill
-        });
-      }
-    },
-    combine_text: function combine_text(elem) {
-      return elem.keyword + ' ' + elem.what + ' ' + elem["with"] + ' ' + elem.where;
-    },
-    change_nsi: function change_nsi(data) {
-      this.new_skill.nsis = data.nsi_data;
-    },
-    generate_id: function generate_id() {
-      return "f".concat((~~(Math.random() * 1e8)).toString(16));
-    }
-  },
-  mounted: function mounted() {
-    var _this = this;
-
-    axios.get('/dpps/get_skill_info/' + this.edit_elem).then(function (response) {
-      return _this.new_skill = response.data;
-    })["finally"](this.isBusy = false);
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewAbility2.vue?vue&type=script&lang=js&":
-/*!***********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/NewAbility2.vue?vue&type=script&lang=js& ***!
-  \***********************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_nsis_NsiChoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/components/nsis/NsiChoose */ "./resources/assets/src/components/nsis/NsiChoose.vue");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: "new-ability2",
-  metaInfo: {
-    title: "Добавить новое умение"
-  },
-  props: {
-    parent_node: String,
-    ish_version_id: Number
-  },
-  components: {
-    NsiChoose: _components_nsis_NsiChoose__WEBPACK_IMPORTED_MODULE_0__["default"]
-  },
-  data: function data() {
-    return {
-      new_ability: {
-        keyword: 'Уметь',
-        what: '',
-        "with": '',
-        where: '',
-        valid: true,
-        expert_answer: '',
-        is_by_expert: null,
-        nsis: []
-      },
-      errors: [],
-      isBusy: true
-    };
-  },
-  computed: {
-    name: function name() {
-      return this.combine_text(this.new_ability);
-    }
-  },
-  methods: {
-    handle_ok: function handle_ok(bvModalEvt) {
-      bvModalEvt.preventDefault();
-
-      if (this.new_ability.what.length == 0 || this.new_ability["with"].length == 0 || this.new_ability.where.length == 0) {
-        this.new_ability.valid = false;
-      } else {
-        this.new_ability.valid = true;
-        this.$emit('add_ability', {
-          ability_name: this.name,
-          ability_data: this.new_ability,
-          parent_node: this.parent_node
-        });
-      }
-    },
-    combine_text: function combine_text(elem) {
-      return elem.keyword + ' ' + elem.what + ' ' + elem["with"] + ' ' + elem.where;
-    },
-    change_nsi: function change_nsi(data) {
-      this.new_ability.nsis = data.nsi_data;
-    }
-  },
-  mounted: function mounted() {
-    this.isBusy = false;
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewCompetence2.vue?vue&type=script&lang=js&":
-/*!**************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/NewCompetence2.vue?vue&type=script&lang=js& ***!
-  \**************************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'new-competence2',
-  props: {
-    elems: Array
-  },
-  metaInfo: {
-    title: "Сформировать компетенцию"
-  },
-  data: function data() {
-    return {
-      new_competence: {
-        keyword: 'Способен',
-        what: '',
-        "with": ' ',
-        where: ' ',
-        valid: true,
-        elems: []
-      },
-      errors: [],
-      isBusy: true
-    };
-  },
-  computed: {
-    name: function name() {
-      return this.combine_text(this.new_competence);
-    }
-  },
-  methods: {
-    handle_ok: function handle_ok(bvModalEvt) {
-      bvModalEvt.preventDefault();
-
-      if (this.new_competence.what.length == 0 || this.new_competence["with"].length == 0 || this.new_competence.where.length == 0) {
-        this.new_competence.valid = false;
-      } else {
-        this.new_competence.valid = true;
-        this.$emit('add_competence', {
-          competence_name: this.name,
-          competence_data: this.new_competence
-        });
-      }
-    },
-    combine_text: function combine_text(elem) {
-      return elem.keyword + ' ' + elem.what + ' ' + elem["with"] + ' ' + elem.where;
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewKnowledge2.vue?vue&type=script&lang=js&":
-/*!*************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/NewKnowledge2.vue?vue&type=script&lang=js& ***!
-  \*************************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_nsis_NsiChoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/components/nsis/NsiChoose */ "./resources/assets/src/components/nsis/NsiChoose.vue");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: "new-knowledge2",
-  metaInfo: {
-    title: "Добавить новое знание"
-  },
-  props: {
-    parent_node: String,
-    ish_version_id: Number,
-    dtps: Array
-  },
-  components: {
-    NsiChoose: _components_nsis_NsiChoose__WEBPACK_IMPORTED_MODULE_0__["default"]
-  },
-  data: function data() {
-    return {
-      new_knowledge: {
-        keyword: 'Знать',
-        what: '',
-        "with": ' ',
-        where: ' ',
-        dtp: '',
-        valid: true,
-        expert_answer: '',
-        is_by_expert: null,
-        nsis: []
-      },
-      errors: [],
-      isBusy: true
-    };
-  },
-  computed: {
-    name: function name() {
-      return this.combine_text(this.new_knowledge);
-    }
-  },
-  methods: {
-    handle_ok: function handle_ok(bvModalEvt) {
-      bvModalEvt.preventDefault();
-
-      if (this.new_knowledge.what.length == 0) {
-        this.new_knowledge.valid = false;
-      } else {
-        this.new_knowledge.valid = true;
-        this.$emit('add_knowledge', {
-          knowledge_name: this.name,
-          knowledge_data: this.new_knowledge,
-          parent_node: this.parent_node
-        });
-      }
-    },
-    combine_text: function combine_text(elem) {
-      return elem.keyword + ' ' + elem.what + ' ' + elem["with"] + ' ' + elem.where;
-    },
-    change_nsi: function change_nsi(data) {
-      this.new_knowledge.nsis = data.nsi_data;
-    }
-  },
-  mounted: function mounted() {
-    this.isBusy = false;
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewOC.vue?vue&type=script&lang=js&":
-/*!*****************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/NewOC.vue?vue&type=script&lang=js& ***!
-  \*****************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @balkangraph/orgchart.js/orgchart */ "./node_modules/@balkangraph/orgchart.js/orgchart.js");
-/* harmony import */ var _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _NewSkill2__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NewSkill2 */ "./resources/assets/src/components/dpps/NewSkill2.vue");
-/* harmony import */ var _NewAbility2__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NewAbility2 */ "./resources/assets/src/components/dpps/NewAbility2.vue");
-/* harmony import */ var _NewKnowledge2__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./NewKnowledge2 */ "./resources/assets/src/components/dpps/NewKnowledge2.vue");
-/* harmony import */ var _NewCompetence2__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./NewCompetence2 */ "./resources/assets/src/components/dpps/NewCompetence2.vue");
-/* harmony import */ var _AddParent2__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./AddParent2 */ "./resources/assets/src/components/dpps/AddParent2.vue");
-/* harmony import */ var _EditSkill2__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./EditSkill2 */ "./resources/assets/src/components/dpps/EditSkill2.vue");
-/* harmony import */ var _EditAbility2__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./EditAbility2 */ "./resources/assets/src/components/dpps/EditAbility2.vue");
-/* harmony import */ var _EditKnowledge2__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./EditKnowledge2 */ "./resources/assets/src/components/dpps/EditKnowledge2.vue");
-/* harmony import */ var _EditCompetence2__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./EditCompetence2 */ "./resources/assets/src/components/dpps/EditCompetence2.vue");
-/* harmony import */ var _OrderChildren__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./OrderChildren */ "./resources/assets/src/components/dpps/OrderChildren.vue");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-
-
-
-
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: "zun2",
-  metaInfo: {
-    title: "Проектирование результатов"
-  },
-  data: function data() {
-    return {
-      ns: "s",
-      as: "a",
-      ks: "k",
-      cs: "c",
-      edit_elem: {
-        id: "0"
-      },
-      edit_type: "",
-      nodes: [],
-      links: [],
-      parent_node: null,
-      unattached_elems: [],
-      stage: {},
-      parts: [],
-      errors: [],
-      isBusy: true
-    };
-  },
-  components: {
-    OrgChart: _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a,
-    NewSkill2: _NewSkill2__WEBPACK_IMPORTED_MODULE_1__["default"],
-    NewAbility2: _NewAbility2__WEBPACK_IMPORTED_MODULE_2__["default"],
-    NewKnowledge2: _NewKnowledge2__WEBPACK_IMPORTED_MODULE_3__["default"],
-    NewCompetence2: _NewCompetence2__WEBPACK_IMPORTED_MODULE_4__["default"],
-    AddParent2: _AddParent2__WEBPACK_IMPORTED_MODULE_5__["default"],
-    EditSkill2: _EditSkill2__WEBPACK_IMPORTED_MODULE_6__["default"],
-    EditAbility2: _EditAbility2__WEBPACK_IMPORTED_MODULE_7__["default"],
-    EditKnowledge2: _EditKnowledge2__WEBPACK_IMPORTED_MODULE_8__["default"],
-    EditCompetence2: _EditCompetence2__WEBPACK_IMPORTED_MODULE_9__["default"],
-    OrderChildren: _OrderChildren__WEBPACK_IMPORTED_MODULE_10__["default"]
-  },
-  methods: {
-    get_zun_versions_data: function get_zun_versions_data() {
+    animateAll: function animateAll(callback) {
       var _this = this;
 
-      axios.get("/dpps/" + this.$route.params.dpp + "/get_links/" + this.stage.zun_version_id).then(function (response) {
-        return _this.links = response.data;
-      });
-      axios.get("/dpps/" + this.$route.params.dpp + "/get_typology").then(function (response) {
-        return _this.parts = response.data;
-      });
-      axios.get("/dpps/" + this.$route.params.dpp + "/get_zun_version_data2/" + this.stage.zun_version_id).then(function (response) {
-        return _this.nodes = response.data;
-      })["finally"](function () {
-        return _this.oc(_this.$refs.tree, _this.nodes);
-      });
-    },
-    oc: function oc(domEl, x) {
-      //  OrgChart.templates.ula.exportMenuButton = '<div style="position:absolute;right:{p}px;top:{p}px; width:40px;height:50px;cursor:pointer" control-export-menu=""  ><i class="fas fa-file-export"></i></div>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.comp_template = Object.assign({}, _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.ula);
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.comp_template.size = [400, 170];
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.comp_template.node = '<rect x="0" y="0" fill= "#040347" width="400" height="160"  rx="5" ry="5"/>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.comp_template.link = '<path stroke="#000000" stroke-width="1px" fill="none" link-id="[{id}][{child-id}]" d="M{xa},{ya} C{xb},{yb} {xc},{yc} {xd},{yd}" />';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.comp_template.field_1 = '<foreignObject x="10" y="5" width="375" height="20">' + '<span class="print_type text-white" style="margin:0px; line-height: 100%; font-weight:bolder;">{val}</span></foreignObject>'; //<span class="btn btn-danger btn-xs"><strong>!</strong></span>
-
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.comp_template.field_0 = '<foreignObject x="10" y="35" width="375" height="125">' + '<p class="text-white" style="margin:0px; line-height: 100%;"> {val}</p></foreignObject>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.comp_template.nodeMenuButton = '<foreignObject x="365" y="0" width="30" height="25" style="cursor:pointer;">' + '<i class="ion ion-ios-more" control-node-menu-id="{id}" style="color: white; font-size: 30px;"></i></foreignObject>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.skil_template = Object.assign({}, _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.ula);
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.skil_template.size = [400, 170];
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.skil_template.link = '<path stroke="#000000" stroke-width="2px" fill="none" link-id="[{id}][{child-id}]" d="M{xa},{ya} C{xb},{yb} {xc},{yc} {xd},{yd}" />';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.skil_template.node = '<rect x="0" y="0" fill= "#040347" width="400" height="160"  rx="5" ry="5"/>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.skil_template.field_1 = '<foreignObject x="10" y="5" width="390" height="50">' + '<span class="print_type text-white" style="margin:0px; line-height: 100%; font-weight:bolder;">{val}</span></foreignObject>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.skil_template.field_0 = '<foreignObject x="10" y="35" width="390" height="125">' + '<p class="text-white" style="margin:0px; line-height: 100%;"> {val}</p></foreignObject>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.skil_template.nodeMenuButton = '<foreignObject x="365" y="0" width="30" height="25" style="cursor:pointer;">' + '<i class="ion ion-ios-more" control-node-menu-id="{id}" style="color: white; font-size: 30px;"></i></foreignObject>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.abil_template = Object.assign({}, _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.ula);
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.abil_template.size = [410, 170];
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.abil_template.link = '<path stroke="#000000" stroke-width="2px" fill="none" link-id="[{id}][{child-id}]" d="M{xa},{ya} C{xb},{yb} {xc},{yc} {xd},{yd}" />';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.abil_template.node = '<rect x="0" y="0" fill= "#040347" width="400" height="160"  rx="5" ry="5"/>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.abil_template.field_1 = '<foreignObject x="10" y="5" width="390" height="50">' + '<span class="print_type text-white" style="margin:0px; line-height: 100%; font-weight:bolder;">{val}</span></foreignObject>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.abil_template.field_0 = '<foreignObject x="10" y="35" width="390" height="125">' + '<p class="text-white" style="margin:0px; line-height: 100%;"> {val}</p></foreignObject>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.abil_template.nodeMenuButton = '<foreignObject x="365" y="0" width="30" height="25" style="cursor:pointer;">' + '<i class="ion ion-ios-more" control-node-menu-id="{id}" style="color: white; font-size: 30px;"></i></foreignObject>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.know_template = Object.assign({}, _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.ula);
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.know_template.size = [400, 110];
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.know_template.nodeMenuButton = '<foreignObject x="365" y="0" width="30" height="25" control-node-menu-id="{id}" style="cursor:pointer;">' + '<i class="ion ion-ios-more"  style="color: white; font-size: 30px;"></i></foreignObject>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.know_template.link = '<path stroke="#000000" stroke-width="2px" fill="none" link-id="[{id}][{child-id}]" d="M{xa},{ya} C{xb},{yb} {xc},{yc} {xd},{yd}" />';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.know_template.node = '<rect x="0" y="0" fill= "#040347" width="400" height="100"  rx="5" ry="5"/>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.know_template.field_1 = '<foreignObject x="10" y="5" width="390" height="50">' + '<span class="print_type text-white" style="margin:0px; line-height: 100%; font-weight:bolder;">{val}</span></foreignObject>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.know_template.field_0 = '<foreignObject x="10" y="35" width="390" height="70">' + '<p class="text-white" style="margin:0px; line-height: 100%;"> {val}</p></foreignObject>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.through_template = Object.assign({}, _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.ula);
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.through_template.size = [400, 110];
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.through_template.node = '<rect x="0" y="0" fill= "#B15124" width="400" height="100"  rx="5" ry="5"/>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.through_template.field_1 = "";
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.through_template.field_0 = '<foreignObject x="100" y="40" width="390" height="70">' + '<p class="" style="font-size:20px; color: white; line-height: 100%;"> {val}</p></foreignObject>';
-      _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.templates.through_template.nodeMenuButton = '<foreignObject x="365" y="0" width="30" height="25" control-node-menu-id="{id}" style="cursor:pointer;">' + '<i class="ion ion-ios-more"  style="color: white; font-size: 30px;"></i></foreignObject>';
-
-      for (var i = 0; i < this.nodes.length; i++) {
-        var node = this.nodes[i];
-
-        switch (node.type) {
-          case "Компетенция":
-            node.tags = ["competence"];
-            break;
-
-          case "Навык":
-            node.tags = ["skill"];
-            break;
-
-          case "Умение":
-            node.tags = ["ability"];
-            break;
-
-          case "Знание":
-            node.tags = ["knowledge"];
-            break;
-
-          case "Сквозные знания":
-            node.tags = ["through"];
-            break;
-        }
+      if (!this.options.animation) {
+        clearTimeout(animationCallbackId);
+        if (typeof callback === 'function') callback();
+        return;
       }
 
-      for (var i = 0; i < this.nodes.length; i++) {
-        if (this.nodes[i].valid == 0) {
-          this.nodes[i].type = "<span class='btn btn-danger btn-xs'><strong style='font-size:16px;'>!</strong></span> " + this.nodes[i].type;
-        }
-      }
+      var animating = false,
+          animationTime = 0;
+      animationStates.forEach(function (state) {
+        var time = 0,
+            target = state.target,
+            fromRect = target.fromRect,
+            toRect = getRect(target),
+            prevFromRect = target.prevFromRect,
+            prevToRect = target.prevToRect,
+            animatingRect = state.rect,
+            targetMatrix = matrix(target, true);
 
-      self = this;
-      this.chart = new _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a(domEl, {
-        nodes: x,
-        template: "ula",
-        enableDragDrop: true,
-        nodeMouseClick: null,
-        slinks: this.links,
-        showXScroll: _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.scroll.visible,
-        showYScroll: _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.scroll.visible,
-        lazyLoading: false,
-        orderBy: "position",
-        zoom: {
-          speed: 30,
-          smooth: 10
-        },
-        nodeBinding: {
-          field_0: "name",
-          field_1: "type"
-        },
-        scaleInitial: _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.match.boundary,
-        nodeMenu: {},
-        toolbar: {
-          layout: true,
-          zoom: true,
-          fit: true,
-          expandAll: false
-        },
-        layout: _balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.treeRightOffset,
-        //orientation: 3,
-        tags: {
-          competence: {
-            nodeMenu: {
-              create_skill: {
-                text: "Добавить навык",
-                icon: '<i class="fas fa-user-plus"></i>',
-                onClick: function onClick(node) {
-                  self.create_skill(node);
-                }
-              },
-              create_ability: {
-                text: "Добавить умение",
-                icon: '<i class="fas fa-user-plus"></i>',
-                onClick: function onClick(node) {
-                  self.create_ability(node);
-                }
-              },
-              edit_competence: {
-                text: "Редактировать",
-                icon: '<i class="fas fa-edit"></i>',
-                onClick: function onClick(node) {
-                  self.edit_competence(node);
-                }
-              },
-              delete_competence: {
-                text: "Удалить компетенцию",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.delete_competence(node);
-                }
-              },
-              order_children: {
-                text: "Упорядочить дочерние компоненты",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.order_children(node);
-                }
-              },
-              export_node: {
-                text: "Экспорт",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.export_node(node);
-                }
-              }
-            },
-            template: "comp_template"
-          },
-          skill: {
-            nodeMenu: {
-              create_ability: {
-                text: "Добавить умение",
-                icon: '<i class="fas fa-user-plus"></i>',
-                onClick: function onClick(node) {
-                  self.create_ability(node);
-                }
-              },
-              edit_skill: {
-                text: "Редактировать навык",
-                icon: '<i class="fas fa-user-plus"></i>',
-                onClick: function onClick(node) {
-                  self.edit_skill(node);
-                }
-              },
-              delete_skill: {
-                text: "Удалить навык",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.delete_skill(node);
-                }
-              },
-              disconnect: {
-                text: "Отсоединить",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.disconnect(node);
-                }
-              },
-              order_children: {
-                text: "Упорядочить умения",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.order_children(node);
-                }
-              },
-              export_node: {
-                text: "Экспорт",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.export_node(node);
-                }
-              }
-            },
-            template: "skil_template"
-          },
-          ability: {
-            nodeMenu: {
-              create_knowledge: {
-                text: "Добавить знание",
-                icon: '<i class="fas fa-user-plus"></i>',
-                onClick: function onClick(node) {
-                  self.create_knowledge(node);
-                }
-              },
-              edit_ability: {
-                text: "Редактировать умение",
-                icon: '<i class="fas fa-user-plus"></i>',
-                onClick: function onClick(node) {
-                  self.edit_ability(node);
-                }
-              },
-              delete_ability: {
-                text: "Удалить умение",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.delete_ability(node);
-                }
-              },
-              disconnect: {
-                text: "Отсоединить",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.disconnect(node);
-                }
-              },
-              order_children: {
-                text: "Упорядочить знания",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.order_children(node);
-                }
-              },
-              export_node: {
-                text: "Экспорт",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.export_node(node);
-                }
-              }
-            },
-            template: "abil_template"
-          },
-          knowledge: {
-            nodeMenu: {
-              edit_knowledge: {
-                text: "Редактировать знание",
-                icon: '<i class="fas fa-user-plus"></i>',
-                onClick: function onClick(node) {
-                  self.edit_knowledge(node);
-                }
-              },
-              delete_knowledge: {
-                text: "Удалить знание",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.delete_knowledge(node);
-                }
-              },
-              add_parent: {
-                text: "Добавить дополнительную связь",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.add_parent(node);
-                }
-              },
-              disconnect: {
-                text: "Отсоединить",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.disconnect(node);
-                }
-              }
-            },
-            template: "know_template"
-          },
-          through: {
-            nodeMenu: {
-              create_knowledge: {
-                text: "Добавить знание",
-                icon: '<i class="fas fa-user-plus"></i>',
-                onClick: function onClick(node) {
-                  self.create_knowledge(node);
-                }
-              },
-              order_children: {
-                text: "Упорядочить знания",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.order_children(node);
-                }
-              },
-              export_node: {
-                text: "Экспорт",
-                icon: '<i class="fas fa-user-minus"></i>',
-                onClick: function onClick(node) {
-                  self.export_node(node);
-                }
-              }
-            },
-            template: "through_template"
+        if (targetMatrix) {
+          // Compensate for current animation
+          toRect.top -= targetMatrix.f;
+          toRect.left -= targetMatrix.e;
+        }
+
+        target.toRect = toRect;
+
+        if (target.thisAnimationDuration) {
+          // Could also check if animatingRect is between fromRect and toRect
+          if (isRectEqual(prevFromRect, toRect) && !isRectEqual(fromRect, toRect) && // Make sure animatingRect is on line between toRect & fromRect
+          (animatingRect.top - toRect.top) / (animatingRect.left - toRect.left) === (fromRect.top - toRect.top) / (fromRect.left - toRect.left)) {
+            // If returning to same place as started from animation and on same axis
+            time = calculateRealTime(animatingRect, prevFromRect, prevToRect, _this.options);
           }
-        }
-      });
-      this.isBusy = false;
-      this.chart.on("exportstart", function (sender, args) {
-        //args.content += document.getElementById('myStyles').outerHTML;
-        //console.log(args.content)
-        args.content += "" + "<style>" + ".node.competence rect {fIll:#fff; stroke: #000;stroke-width: 2;}" + ".node.skill rect {fIll:#fff; stroke: #000;stroke-width: 2;}" + ".node.ability rect {fIll:#fff; stroke: #000;stroke-width: 2;}" + ".node.knowledge rect {fIll:#fff; stroke: #000;stroke-width: 2;}" + "p {color: #000; line-height: 100%;}" + "</style>";
-      });
-      this.chart.on("drop", function (sender, draggedNodeId, droppedNodeId) {
-        var dragged = self.nodes.find(function (el) {
-          return el.id == draggedNodeId;
-        });
-        var dropped = self.nodes.find(function (el) {
-          return el.id == droppedNodeId;
-        });
-        var dra_type = dragged.type.replace("<span class='btn btn-danger btn-xs'><strong style='font-size:16px;'>!</strong></span> ", "");
-        var dro_type = dropped.type.replace("<span class='btn btn-danger btn-xs'><strong style='font-size:16px;'>!</strong></span> ", "");
+        } // if fromRect != toRect: animate
 
-        if (dra_type == dro_type) {
-          alert("Ошибка! Невозможно добавить элемент к элементу того же типа");
-          return false;
-        }
 
-        if (dra_type == "Компетенция") {
-          alert("Ошибка! Компетенцию нельзя присоединить к другому элементу");
-          return false;
-        }
+        if (!isRectEqual(toRect, fromRect)) {
+          target.prevFromRect = fromRect;
+          target.prevToRect = toRect;
 
-        if (dro_type == "Знание") {
-          alert("Ошибка! Невозможно добавить элемент к элементу типа «Знание»");
-          return false;
-        }
-
-        if (dro_type == "Сквозные знания" && dra_type != "Знание") {
-          alert("Ошибка! Сквозным может быть только знание");
-          return false;
-        }
-
-        if (dro_type == "Навык" && dra_type == "Знание") {
-          alert("Ошибка! Знание не может принадлежать навыку");
-          return false;
-        }
-
-        if (dra_type == "Сквозные знания") {
-          alert("Ошибка! Невозможно переместить сквозные знания");
-          return false;
-        }
-
-        if (dro_type == "Компетенция") {
-          var children = self.nodes.filter(function (el) {
-            return el.pid == dropped.id;
-          });
-          var skills = children.filter(function (child) {
-            return child.type.includes("Навык");
-          });
-          var abilities = children.filter(function (child) {
-            return child.type.includes("Умение");
-          });
-
-          if (dra_type == "Умение") {
-            if (skills.length > 0) {
-              alert("Ошибка! Невозможно присоединить умение к компетенции, так как она уже содержит навыки.");
-              return false;
-            }
+          if (!time) {
+            time = _this.options.animation;
           }
 
-          if (dra_type == "Навык") {
-            if (abilities.length > 0) {
-              alert("Ошибка! Невозможно присоединить навык к компетенции, так как она уже содержит умения.");
-              return false;
-            }
-          }
-
-          if (dra_type == "Знание") {
-            alert("Ошибка! Невозможно присоединить знание к компетенции.");
-            return false;
-          }
+          _this.animate(target, animatingRect, toRect, time);
         }
 
-        if (dra_type == "Навык") {
-          if (dro_type == "Умение") {
-            alert("Ошибка! Невозможно присоединить навык к умению");
-            return false;
-          }
+        if (time) {
+          animating = true;
+          animationTime = Math.max(animationTime, time);
+          clearTimeout(target.animationResetTimer);
+          target.animationResetTimer = setTimeout(function () {
+            target.animationTime = 0;
+            target.prevFromRect = null;
+            target.fromRect = null;
+            target.prevToRect = null;
+            target.thisAnimationDuration = null;
+          }, time);
+          target.thisAnimationDuration = time;
         }
-
-        axios.post("/dpps/" + self.$route.params.dpp + "/move_elem", {
-          elem_type: dra_type,
-          elem_id: dragged.id,
-          to_type: dro_type,
-          to_id: dropped.id
-        });
-        return true;
       });
-    },
-    create_skill: function create_skill(node) {
-      this.parent_node = node;
-      var children = self.nodes.filter(function (el) {
-        return el.pid == node;
-      });
-      var abilities = children.filter(function (child) {
-        return child.type.includes("Умение");
-      });
+      clearTimeout(animationCallbackId);
 
-      if (abilities.length > 0) {
-        alert("Ошибка! Невозможно добавить навык к компетенции, так как она уже содержит умения.");
-        return false;
-      }
-
-      this.$bvModal.show("modal-newskill");
-    },
-    add_skill: function add_skill(data) {
-      self = this;
-      axios.post("/dpps/" + this.$route.params.dpp + "/add_skill", {
-        zun_version: this.stage.zun_version_id,
-        skill_data: data.skill_data,
-        parent_node: data.parent_node,
-        skill_name: data.skill_name
-      }).then(function (response) {
-        if (response.data.valid == true) {
-          var new_type = "Навык";
-        } else {
-          var new_type = "<span class='btn btn-danger btn-xs'><strong style='font-size:16px;'>!</strong></span> Навык";
-        }
-
-        self.chart.addNode({
-          id: response.data.new_id,
-          pid: response.data.new_parent,
-          name: response.data.name,
-          valid: response.data.valid,
-          type: new_type,
-          tags: ["skill"]
-        });
-        self.chart.center(response.data.new_id); //self.chart.draw(OrgChart.action.init);
-      })["finally"](function () {
-        //self.chart.draw(OrgChart.action.init);
-        //self.oc(self.$refs.tree, self.nodes)
-        self.$bvModal.hide("modal-newskill");
-        self.ns = self.ns + 1;
-      });
-    },
-    delete_skill: function delete_skill(node) {
-      var _this2 = this;
-
-      self = this;
-      var elem = this.nodes.find(function (el) {
-        return el.id == node;
-      });
-      var children = this.nodes.filter(function (el) {
-        return el.pid == elem.id;
-      });
-
-      if (children.length > 0) {
-        alert("Невозможно удалить навык, так как к нему привязаны другие элементы. Сначала необходимо удалить их или перенести.");
+      if (!animating) {
+        if (typeof callback === 'function') callback();
       } else {
-        this.$bvModal.msgBoxConfirm("Действительно хотите удалить навык «" + elem.name + "»?").then(function (value) {
-          if (value === true) {
-            axios.post("/dpps/" + _this2.$route.params.dpp + "/remove_skill", {
-              skill_id: node
-            }).then(function (response) {
-              return _this2.chart.removeNode(node);
-            })["finally"](function () {//self.oc(self.$refs.tree, self.nodes)
-            });
-          }
-        });
+        animationCallbackId = setTimeout(function () {
+          if (typeof callback === 'function') callback();
+        }, animationTime);
       }
+
+      animationStates = [];
     },
-    edit_skill: function edit_skill(node) {
-      var _this3 = this;
+    animate: function animate(target, currentRect, toRect, duration) {
+      if (duration) {
+        css(target, 'transition', '');
+        css(target, 'transform', '');
+        var elMatrix = matrix(this.el),
+            scaleX = elMatrix && elMatrix.a,
+            scaleY = elMatrix && elMatrix.d,
+            translateX = (currentRect.left - toRect.left) / (scaleX || 1),
+            translateY = (currentRect.top - toRect.top) / (scaleY || 1);
+        target.animatingX = !!translateX;
+        target.animatingY = !!translateY;
+        css(target, 'transform', 'translate3d(' + translateX + 'px,' + translateY + 'px,0)');
+        repaint(target); // repaint
 
-      this.edit_elem = this.nodes.find(function (el) {
-        return el.id == node;
-      });
-      this.edit_type = "skill";
-      this.$nextTick(function () {
-        _this3.$bvModal.show("modal-editskill");
-      });
+        css(target, 'transition', 'transform ' + duration + 'ms' + (this.options.easing ? ' ' + this.options.easing : ''));
+        css(target, 'transform', 'translate3d(0,0,0)');
+        typeof target.animated === 'number' && clearTimeout(target.animated);
+        target.animated = setTimeout(function () {
+          css(target, 'transition', '');
+          css(target, 'transform', '');
+          target.animated = false;
+          target.animatingX = false;
+          target.animatingY = false;
+        }, duration);
+      }
+    }
+  };
+}
+
+function repaint(target) {
+  return target.offsetWidth;
+}
+
+function calculateRealTime(animatingRect, fromRect, toRect, options) {
+  return Math.sqrt(Math.pow(fromRect.top - animatingRect.top, 2) + Math.pow(fromRect.left - animatingRect.left, 2)) / Math.sqrt(Math.pow(fromRect.top - toRect.top, 2) + Math.pow(fromRect.left - toRect.left, 2)) * options.animation;
+}
+
+var plugins = [];
+var defaults = {
+  initializeByDefault: true
+};
+var PluginManager = {
+  mount: function mount(plugin) {
+    // Set default static properties
+    for (var option in defaults) {
+      if (defaults.hasOwnProperty(option) && !(option in plugin)) {
+        plugin[option] = defaults[option];
+      }
+    }
+
+    plugins.push(plugin);
+  },
+  pluginEvent: function pluginEvent(eventName, sortable, evt) {
+    var _this = this;
+
+    this.eventCanceled = false;
+
+    evt.cancel = function () {
+      _this.eventCanceled = true;
+    };
+
+    var eventNameGlobal = eventName + 'Global';
+    plugins.forEach(function (plugin) {
+      if (!sortable[plugin.pluginName]) return; // Fire global events if it exists in this sortable
+
+      if (sortable[plugin.pluginName][eventNameGlobal]) {
+        sortable[plugin.pluginName][eventNameGlobal](_objectSpread({
+          sortable: sortable
+        }, evt));
+      } // Only fire plugin event if plugin is enabled in this sortable,
+      // and plugin has event defined
+
+
+      if (sortable.options[plugin.pluginName] && sortable[plugin.pluginName][eventName]) {
+        sortable[plugin.pluginName][eventName](_objectSpread({
+          sortable: sortable
+        }, evt));
+      }
+    });
+  },
+  initializePlugins: function initializePlugins(sortable, el, defaults, options) {
+    plugins.forEach(function (plugin) {
+      var pluginName = plugin.pluginName;
+      if (!sortable.options[pluginName] && !plugin.initializeByDefault) return;
+      var initialized = new plugin(sortable, el, sortable.options);
+      initialized.sortable = sortable;
+      initialized.options = sortable.options;
+      sortable[pluginName] = initialized; // Add default options from plugin
+
+      _extends(defaults, initialized.defaults);
+    });
+
+    for (var option in sortable.options) {
+      if (!sortable.options.hasOwnProperty(option)) continue;
+      var modified = this.modifyOption(sortable, option, sortable.options[option]);
+
+      if (typeof modified !== 'undefined') {
+        sortable.options[option] = modified;
+      }
+    }
+  },
+  getEventProperties: function getEventProperties(name, sortable) {
+    var eventProperties = {};
+    plugins.forEach(function (plugin) {
+      if (typeof plugin.eventProperties !== 'function') return;
+
+      _extends(eventProperties, plugin.eventProperties.call(sortable[plugin.pluginName], name));
+    });
+    return eventProperties;
+  },
+  modifyOption: function modifyOption(sortable, name, value) {
+    var modifiedValue;
+    plugins.forEach(function (plugin) {
+      // Plugin must exist on the Sortable
+      if (!sortable[plugin.pluginName]) return; // If static option listener exists for this option, call in the context of the Sortable's instance of this plugin
+
+      if (plugin.optionListeners && typeof plugin.optionListeners[name] === 'function') {
+        modifiedValue = plugin.optionListeners[name].call(sortable[plugin.pluginName], value);
+      }
+    });
+    return modifiedValue;
+  }
+};
+
+function dispatchEvent(_ref) {
+  var sortable = _ref.sortable,
+      rootEl = _ref.rootEl,
+      name = _ref.name,
+      targetEl = _ref.targetEl,
+      cloneEl = _ref.cloneEl,
+      toEl = _ref.toEl,
+      fromEl = _ref.fromEl,
+      oldIndex = _ref.oldIndex,
+      newIndex = _ref.newIndex,
+      oldDraggableIndex = _ref.oldDraggableIndex,
+      newDraggableIndex = _ref.newDraggableIndex,
+      originalEvent = _ref.originalEvent,
+      putSortable = _ref.putSortable,
+      extraEventProperties = _ref.extraEventProperties;
+  sortable = sortable || rootEl && rootEl[expando];
+  if (!sortable) return;
+  var evt,
+      options = sortable.options,
+      onName = 'on' + name.charAt(0).toUpperCase() + name.substr(1); // Support for new CustomEvent feature
+
+  if (window.CustomEvent && !IE11OrLess && !Edge) {
+    evt = new CustomEvent(name, {
+      bubbles: true,
+      cancelable: true
+    });
+  } else {
+    evt = document.createEvent('Event');
+    evt.initEvent(name, true, true);
+  }
+
+  evt.to = toEl || rootEl;
+  evt.from = fromEl || rootEl;
+  evt.item = targetEl || rootEl;
+  evt.clone = cloneEl;
+  evt.oldIndex = oldIndex;
+  evt.newIndex = newIndex;
+  evt.oldDraggableIndex = oldDraggableIndex;
+  evt.newDraggableIndex = newDraggableIndex;
+  evt.originalEvent = originalEvent;
+  evt.pullMode = putSortable ? putSortable.lastPutMode : undefined;
+
+  var allEventProperties = _objectSpread({}, extraEventProperties, PluginManager.getEventProperties(name, sortable));
+
+  for (var option in allEventProperties) {
+    evt[option] = allEventProperties[option];
+  }
+
+  if (rootEl) {
+    rootEl.dispatchEvent(evt);
+  }
+
+  if (options[onName]) {
+    options[onName].call(sortable, evt);
+  }
+}
+
+var pluginEvent = function pluginEvent(eventName, sortable) {
+  var _ref = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
+      originalEvent = _ref.evt,
+      data = _objectWithoutProperties(_ref, ["evt"]);
+
+  PluginManager.pluginEvent.bind(Sortable)(eventName, sortable, _objectSpread({
+    dragEl: dragEl,
+    parentEl: parentEl,
+    ghostEl: ghostEl,
+    rootEl: rootEl,
+    nextEl: nextEl,
+    lastDownEl: lastDownEl,
+    cloneEl: cloneEl,
+    cloneHidden: cloneHidden,
+    dragStarted: moved,
+    putSortable: putSortable,
+    activeSortable: Sortable.active,
+    originalEvent: originalEvent,
+    oldIndex: oldIndex,
+    oldDraggableIndex: oldDraggableIndex,
+    newIndex: newIndex,
+    newDraggableIndex: newDraggableIndex,
+    hideGhostForTarget: _hideGhostForTarget,
+    unhideGhostForTarget: _unhideGhostForTarget,
+    cloneNowHidden: function cloneNowHidden() {
+      cloneHidden = true;
     },
-    update_skill: function update_skill(data) {
-      self = this;
-      axios.post("/dpps/" + this.$route.params.dpp + "/update_skill", {
-        skill_data: data.skill_data,
-        skill_name: data.skill_name
-      }).then(function (response) {
-        // self.chart.addNode({ id: response.data.new_id, pid: response.data.new_parent, name: response.data.name, type: "Навык",tags:["skill"] })
-        var upd_node = self.nodes.find(function (node) {
-          return node.id == response.data.new_id;
-        });
-        upd_node.name = response.data.name;
-        upd_node.valid = response.data.valid;
-
-        if (response.data.valid == true) {
-          upd_node.type = "Навык";
-        } else {
-          upd_node.type = "<span class='btn btn-danger btn-xs'><strong style='font-size:16px;'>!</strong></span> Навык";
-        }
-
-        self.chart.center(response.data.new_id); //self.chart.draw(OrgChart.action.init);
-      })["finally"](function () {
-        //self.chart.draw(OrgChart.action.init);
-        //self.oc(self.$refs.tree, self.nodes)
-        self.$bvModal.hide("modal-editskill");
-      });
+    cloneNowShown: function cloneNowShown() {
+      cloneHidden = false;
     },
-    create_ability: function create_ability(node) {
-      this.parent_node = node;
-      var children = self.nodes.filter(function (el) {
-        return el.pid == node;
+    dispatchSortableEvent: function dispatchSortableEvent(name) {
+      _dispatchEvent({
+        sortable: sortable,
+        name: name,
+        originalEvent: originalEvent
       });
-      var skills = children.filter(function (child) {
-        return child.type.includes("Навык");
-      });
+    }
+  }, data));
+};
 
-      if (skills.length > 0) {
-        alert("Ошибка! Невозможно добавить умение к компетенции, так как она уже содержит навыки.");
+function _dispatchEvent(info) {
+  dispatchEvent(_objectSpread({
+    putSortable: putSortable,
+    cloneEl: cloneEl,
+    targetEl: dragEl,
+    rootEl: rootEl,
+    oldIndex: oldIndex,
+    oldDraggableIndex: oldDraggableIndex,
+    newIndex: newIndex,
+    newDraggableIndex: newDraggableIndex
+  }, info));
+}
+
+var dragEl,
+    parentEl,
+    ghostEl,
+    rootEl,
+    nextEl,
+    lastDownEl,
+    cloneEl,
+    cloneHidden,
+    oldIndex,
+    newIndex,
+    oldDraggableIndex,
+    newDraggableIndex,
+    activeGroup,
+    putSortable,
+    awaitingDragStarted = false,
+    ignoreNextClick = false,
+    sortables = [],
+    tapEvt,
+    touchEvt,
+    lastDx,
+    lastDy,
+    tapDistanceLeft,
+    tapDistanceTop,
+    moved,
+    lastTarget,
+    lastDirection,
+    pastFirstInvertThresh = false,
+    isCircumstantialInvert = false,
+    targetMoveDistance,
+    // For positioning ghost absolutely
+ghostRelativeParent,
+    ghostRelativeParentInitialScroll = [],
+    // (left, top)
+_silent = false,
+    savedInputChecked = [];
+/** @const */
+
+var documentExists = typeof document !== 'undefined',
+    PositionGhostAbsolutely = IOS,
+    CSSFloatProperty = Edge || IE11OrLess ? 'cssFloat' : 'float',
+    // This will not pass for IE9, because IE9 DnD only works on anchors
+supportDraggable = documentExists && !ChromeForAndroid && !IOS && 'draggable' in document.createElement('div'),
+    supportCssPointerEvents = function () {
+  if (!documentExists) return; // false when <= IE11
+
+  if (IE11OrLess) {
+    return false;
+  }
+
+  var el = document.createElement('x');
+  el.style.cssText = 'pointer-events:auto';
+  return el.style.pointerEvents === 'auto';
+}(),
+    _detectDirection = function _detectDirection(el, options) {
+  var elCSS = css(el),
+      elWidth = parseInt(elCSS.width) - parseInt(elCSS.paddingLeft) - parseInt(elCSS.paddingRight) - parseInt(elCSS.borderLeftWidth) - parseInt(elCSS.borderRightWidth),
+      child1 = getChild(el, 0, options),
+      child2 = getChild(el, 1, options),
+      firstChildCSS = child1 && css(child1),
+      secondChildCSS = child2 && css(child2),
+      firstChildWidth = firstChildCSS && parseInt(firstChildCSS.marginLeft) + parseInt(firstChildCSS.marginRight) + getRect(child1).width,
+      secondChildWidth = secondChildCSS && parseInt(secondChildCSS.marginLeft) + parseInt(secondChildCSS.marginRight) + getRect(child2).width;
+
+  if (elCSS.display === 'flex') {
+    return elCSS.flexDirection === 'column' || elCSS.flexDirection === 'column-reverse' ? 'vertical' : 'horizontal';
+  }
+
+  if (elCSS.display === 'grid') {
+    return elCSS.gridTemplateColumns.split(' ').length <= 1 ? 'vertical' : 'horizontal';
+  }
+
+  if (child1 && firstChildCSS["float"] && firstChildCSS["float"] !== 'none') {
+    var touchingSideChild2 = firstChildCSS["float"] === 'left' ? 'left' : 'right';
+    return child2 && (secondChildCSS.clear === 'both' || secondChildCSS.clear === touchingSideChild2) ? 'vertical' : 'horizontal';
+  }
+
+  return child1 && (firstChildCSS.display === 'block' || firstChildCSS.display === 'flex' || firstChildCSS.display === 'table' || firstChildCSS.display === 'grid' || firstChildWidth >= elWidth && elCSS[CSSFloatProperty] === 'none' || child2 && elCSS[CSSFloatProperty] === 'none' && firstChildWidth + secondChildWidth > elWidth) ? 'vertical' : 'horizontal';
+},
+    _dragElInRowColumn = function _dragElInRowColumn(dragRect, targetRect, vertical) {
+  var dragElS1Opp = vertical ? dragRect.left : dragRect.top,
+      dragElS2Opp = vertical ? dragRect.right : dragRect.bottom,
+      dragElOppLength = vertical ? dragRect.width : dragRect.height,
+      targetS1Opp = vertical ? targetRect.left : targetRect.top,
+      targetS2Opp = vertical ? targetRect.right : targetRect.bottom,
+      targetOppLength = vertical ? targetRect.width : targetRect.height;
+  return dragElS1Opp === targetS1Opp || dragElS2Opp === targetS2Opp || dragElS1Opp + dragElOppLength / 2 === targetS1Opp + targetOppLength / 2;
+},
+
+/**
+ * Detects first nearest empty sortable to X and Y position using emptyInsertThreshold.
+ * @param  {Number} x      X position
+ * @param  {Number} y      Y position
+ * @return {HTMLElement}   Element of the first found nearest Sortable
+ */
+_detectNearestEmptySortable = function _detectNearestEmptySortable(x, y) {
+  var ret;
+  sortables.some(function (sortable) {
+    if (lastChild(sortable)) return;
+    var rect = getRect(sortable),
+        threshold = sortable[expando].options.emptyInsertThreshold,
+        insideHorizontally = x >= rect.left - threshold && x <= rect.right + threshold,
+        insideVertically = y >= rect.top - threshold && y <= rect.bottom + threshold;
+
+    if (threshold && insideHorizontally && insideVertically) {
+      return ret = sortable;
+    }
+  });
+  return ret;
+},
+    _prepareGroup = function _prepareGroup(options) {
+  function toFn(value, pull) {
+    return function (to, from, dragEl, evt) {
+      var sameGroup = to.options.group.name && from.options.group.name && to.options.group.name === from.options.group.name;
+
+      if (value == null && (pull || sameGroup)) {
+        // Default pull value
+        // Default pull and put value if same group
+        return true;
+      } else if (value == null || value === false) {
         return false;
+      } else if (pull && value === 'clone') {
+        return value;
+      } else if (typeof value === 'function') {
+        return toFn(value(to, from, dragEl, evt), pull)(to, from, dragEl, evt);
+      } else {
+        var otherGroup = (pull ? to : from).options.group.name;
+        return value === true || typeof value === 'string' && value === otherGroup || value.join && value.indexOf(otherGroup) > -1;
+      }
+    };
+  }
+
+  var group = {};
+  var originalGroup = options.group;
+
+  if (!originalGroup || _typeof(originalGroup) != 'object') {
+    originalGroup = {
+      name: originalGroup
+    };
+  }
+
+  group.name = originalGroup.name;
+  group.checkPull = toFn(originalGroup.pull, true);
+  group.checkPut = toFn(originalGroup.put);
+  group.revertClone = originalGroup.revertClone;
+  options.group = group;
+},
+    _hideGhostForTarget = function _hideGhostForTarget() {
+  if (!supportCssPointerEvents && ghostEl) {
+    css(ghostEl, 'display', 'none');
+  }
+},
+    _unhideGhostForTarget = function _unhideGhostForTarget() {
+  if (!supportCssPointerEvents && ghostEl) {
+    css(ghostEl, 'display', '');
+  }
+}; // #1184 fix - Prevent click event on fallback if dragged but item not changed position
+
+
+if (documentExists) {
+  document.addEventListener('click', function (evt) {
+    if (ignoreNextClick) {
+      evt.preventDefault();
+      evt.stopPropagation && evt.stopPropagation();
+      evt.stopImmediatePropagation && evt.stopImmediatePropagation();
+      ignoreNextClick = false;
+      return false;
+    }
+  }, true);
+}
+
+var nearestEmptyInsertDetectEvent = function nearestEmptyInsertDetectEvent(evt) {
+  if (dragEl) {
+    evt = evt.touches ? evt.touches[0] : evt;
+
+    var nearest = _detectNearestEmptySortable(evt.clientX, evt.clientY);
+
+    if (nearest) {
+      // Create imitation event
+      var event = {};
+
+      for (var i in evt) {
+        if (evt.hasOwnProperty(i)) {
+          event[i] = evt[i];
+        }
       }
 
-      this.$bvModal.show("modal-newability");
+      event.target = event.rootEl = nearest;
+      event.preventDefault = void 0;
+      event.stopPropagation = void 0;
+
+      nearest[expando]._onDragOver(event);
+    }
+  }
+};
+
+var _checkOutsideTargetEl = function _checkOutsideTargetEl(evt) {
+  if (dragEl) {
+    dragEl.parentNode[expando]._isOutsideThisEl(evt.target);
+  }
+};
+/**
+ * @class  Sortable
+ * @param  {HTMLElement}  el
+ * @param  {Object}       [options]
+ */
+
+
+function Sortable(el, options) {
+  if (!(el && el.nodeType && el.nodeType === 1)) {
+    throw "Sortable: `el` must be an HTMLElement, not ".concat({}.toString.call(el));
+  }
+
+  this.el = el; // root element
+
+  this.options = options = _extends({}, options); // Export instance
+
+  el[expando] = this;
+  var defaults = {
+    group: null,
+    sort: true,
+    disabled: false,
+    store: null,
+    handle: null,
+    draggable: /^[uo]l$/i.test(el.nodeName) ? '>li' : '>*',
+    swapThreshold: 1,
+    // percentage; 0 <= x <= 1
+    invertSwap: false,
+    // invert always
+    invertedSwapThreshold: null,
+    // will be set to same as swapThreshold if default
+    removeCloneOnHide: true,
+    direction: function direction() {
+      return _detectDirection(el, this.options);
     },
-    add_ability: function add_ability(data) {
-      self = this;
-      var parent = self.nodes.find(function (node) {
-        return node.id == data.parent_node;
+    ghostClass: 'sortable-ghost',
+    chosenClass: 'sortable-chosen',
+    dragClass: 'sortable-drag',
+    ignore: 'a, img',
+    filter: null,
+    preventOnFilter: true,
+    animation: 0,
+    easing: null,
+    setData: function setData(dataTransfer, dragEl) {
+      dataTransfer.setData('Text', dragEl.textContent);
+    },
+    dropBubble: false,
+    dragoverBubble: false,
+    dataIdAttr: 'data-id',
+    delay: 0,
+    delayOnTouchOnly: false,
+    touchStartThreshold: (Number.parseInt ? Number : window).parseInt(window.devicePixelRatio, 10) || 1,
+    forceFallback: false,
+    fallbackClass: 'sortable-fallback',
+    fallbackOnBody: false,
+    fallbackTolerance: 0,
+    fallbackOffset: {
+      x: 0,
+      y: 0
+    },
+    supportPointer: Sortable.supportPointer !== false && 'PointerEvent' in window,
+    emptyInsertThreshold: 5
+  };
+  PluginManager.initializePlugins(this, el, defaults); // Set default options
+
+  for (var name in defaults) {
+    !(name in options) && (options[name] = defaults[name]);
+  }
+
+  _prepareGroup(options); // Bind all private methods
+
+
+  for (var fn in this) {
+    if (fn.charAt(0) === '_' && typeof this[fn] === 'function') {
+      this[fn] = this[fn].bind(this);
+    }
+  } // Setup drag mode
+
+
+  this.nativeDraggable = options.forceFallback ? false : supportDraggable;
+
+  if (this.nativeDraggable) {
+    // Touch start threshold cannot be greater than the native dragstart threshold
+    this.options.touchStartThreshold = 1;
+  } // Bind events
+
+
+  if (options.supportPointer) {
+    on(el, 'pointerdown', this._onTapStart);
+  } else {
+    on(el, 'mousedown', this._onTapStart);
+    on(el, 'touchstart', this._onTapStart);
+  }
+
+  if (this.nativeDraggable) {
+    on(el, 'dragover', this);
+    on(el, 'dragenter', this);
+  }
+
+  sortables.push(this.el); // Restore sorting
+
+  options.store && options.store.get && this.sort(options.store.get(this) || []); // Add animation state manager
+
+  _extends(this, AnimationStateManager());
+}
+
+Sortable.prototype =
+/** @lends Sortable.prototype */
+{
+  constructor: Sortable,
+  _isOutsideThisEl: function _isOutsideThisEl(target) {
+    if (!this.el.contains(target) && target !== this.el) {
+      lastTarget = null;
+    }
+  },
+  _getDirection: function _getDirection(evt, target) {
+    return typeof this.options.direction === 'function' ? this.options.direction.call(this, evt, target, dragEl) : this.options.direction;
+  },
+  _onTapStart: function _onTapStart(
+  /** Event|TouchEvent */
+  evt) {
+    if (!evt.cancelable) return;
+
+    var _this = this,
+        el = this.el,
+        options = this.options,
+        preventOnFilter = options.preventOnFilter,
+        type = evt.type,
+        touch = evt.touches && evt.touches[0] || evt.pointerType && evt.pointerType === 'touch' && evt,
+        target = (touch || evt).target,
+        originalTarget = evt.target.shadowRoot && (evt.path && evt.path[0] || evt.composedPath && evt.composedPath()[0]) || target,
+        filter = options.filter;
+
+    _saveInputCheckedState(el); // Don't trigger start event when an element is been dragged, otherwise the evt.oldindex always wrong when set option.group.
+
+
+    if (dragEl) {
+      return;
+    }
+
+    if (/mousedown|pointerdown/.test(type) && evt.button !== 0 || options.disabled) {
+      return; // only left button and enabled
+    } // cancel dnd if original target is content editable
+
+
+    if (originalTarget.isContentEditable) {
+      return;
+    }
+
+    target = closest(target, options.draggable, el, false);
+
+    if (target && target.animated) {
+      return;
+    }
+
+    if (lastDownEl === target) {
+      // Ignoring duplicate `down`
+      return;
+    } // Get the index of the dragged element within its parent
+
+
+    oldIndex = index(target);
+    oldDraggableIndex = index(target, options.draggable); // Check filter
+
+    if (typeof filter === 'function') {
+      if (filter.call(this, evt, target, this)) {
+        _dispatchEvent({
+          sortable: _this,
+          rootEl: originalTarget,
+          name: 'filter',
+          targetEl: target,
+          toEl: el,
+          fromEl: el
+        });
+
+        pluginEvent('filter', _this, {
+          evt: evt
+        });
+        preventOnFilter && evt.cancelable && evt.preventDefault();
+        return; // cancel dnd
+      }
+    } else if (filter) {
+      filter = filter.split(',').some(function (criteria) {
+        criteria = closest(originalTarget, criteria.trim(), el, false);
+
+        if (criteria) {
+          _dispatchEvent({
+            sortable: _this,
+            rootEl: criteria,
+            name: 'filter',
+            targetEl: target,
+            fromEl: el,
+            toEl: el
+          });
+
+          pluginEvent('filter', _this, {
+            evt: evt
+          });
+          return true;
+        }
       });
-      console.log(parent);
+
+      if (filter) {
+        preventOnFilter && evt.cancelable && evt.preventDefault();
+        return; // cancel dnd
+      }
+    }
+
+    if (options.handle && !closest(originalTarget, options.handle, el, false)) {
+      return;
+    } // Prepare `dragstart`
+
+
+    this._prepareDragStart(evt, touch, target);
+  },
+  _prepareDragStart: function _prepareDragStart(
+  /** Event */
+  evt,
+  /** Touch */
+  touch,
+  /** HTMLElement */
+  target) {
+    var _this = this,
+        el = _this.el,
+        options = _this.options,
+        ownerDocument = el.ownerDocument,
+        dragStartFn;
+
+    if (target && !dragEl && target.parentNode === el) {
+      var dragRect = getRect(target);
+      rootEl = el;
+      dragEl = target;
+      parentEl = dragEl.parentNode;
+      nextEl = dragEl.nextSibling;
+      lastDownEl = target;
+      activeGroup = options.group;
+      Sortable.dragged = dragEl;
+      tapEvt = {
+        target: dragEl,
+        clientX: (touch || evt).clientX,
+        clientY: (touch || evt).clientY
+      };
+      tapDistanceLeft = tapEvt.clientX - dragRect.left;
+      tapDistanceTop = tapEvt.clientY - dragRect.top;
+      this._lastX = (touch || evt).clientX;
+      this._lastY = (touch || evt).clientY;
+      dragEl.style['will-change'] = 'all';
+
+      dragStartFn = function dragStartFn() {
+        pluginEvent('delayEnded', _this, {
+          evt: evt
+        });
+
+        if (Sortable.eventCanceled) {
+          _this._onDrop();
+
+          return;
+        } // Delayed drag has been triggered
+        // we can re-enable the events: touchmove/mousemove
+
+
+        _this._disableDelayedDragEvents();
+
+        if (!FireFox && _this.nativeDraggable) {
+          dragEl.draggable = true;
+        } // Bind the events: dragstart/dragend
+
+
+        _this._triggerDragStart(evt, touch); // Drag start event
+
+
+        _dispatchEvent({
+          sortable: _this,
+          name: 'choose',
+          originalEvent: evt
+        }); // Chosen item
+
+
+        toggleClass(dragEl, options.chosenClass, true);
+      }; // Disable "draggable"
+
+
+      options.ignore.split(',').forEach(function (criteria) {
+        find(dragEl, criteria.trim(), _disableDraggable);
+      });
+      on(ownerDocument, 'dragover', nearestEmptyInsertDetectEvent);
+      on(ownerDocument, 'mousemove', nearestEmptyInsertDetectEvent);
+      on(ownerDocument, 'touchmove', nearestEmptyInsertDetectEvent);
+      on(ownerDocument, 'mouseup', _this._onDrop);
+      on(ownerDocument, 'touchend', _this._onDrop);
+      on(ownerDocument, 'touchcancel', _this._onDrop); // Make dragEl draggable (must be before delay for FireFox)
+
+      if (FireFox && this.nativeDraggable) {
+        this.options.touchStartThreshold = 4;
+        dragEl.draggable = true;
+      }
+
+      pluginEvent('delayStart', this, {
+        evt: evt
+      }); // Delay is impossible for native DnD in Edge or IE
+
+      if (options.delay && (!options.delayOnTouchOnly || touch) && (!this.nativeDraggable || !(Edge || IE11OrLess))) {
+        if (Sortable.eventCanceled) {
+          this._onDrop();
+
+          return;
+        } // If the user moves the pointer or let go the click or touch
+        // before the delay has been reached:
+        // disable the delayed drag
+
+
+        on(ownerDocument, 'mouseup', _this._disableDelayedDrag);
+        on(ownerDocument, 'touchend', _this._disableDelayedDrag);
+        on(ownerDocument, 'touchcancel', _this._disableDelayedDrag);
+        on(ownerDocument, 'mousemove', _this._delayedDragTouchMoveHandler);
+        on(ownerDocument, 'touchmove', _this._delayedDragTouchMoveHandler);
+        options.supportPointer && on(ownerDocument, 'pointermove', _this._delayedDragTouchMoveHandler);
+        _this._dragStartTimer = setTimeout(dragStartFn, options.delay);
+      } else {
+        dragStartFn();
+      }
+    }
+  },
+  _delayedDragTouchMoveHandler: function _delayedDragTouchMoveHandler(
+  /** TouchEvent|PointerEvent **/
+  e) {
+    var touch = e.touches ? e.touches[0] : e;
+
+    if (Math.max(Math.abs(touch.clientX - this._lastX), Math.abs(touch.clientY - this._lastY)) >= Math.floor(this.options.touchStartThreshold / (this.nativeDraggable && window.devicePixelRatio || 1))) {
+      this._disableDelayedDrag();
+    }
+  },
+  _disableDelayedDrag: function _disableDelayedDrag() {
+    dragEl && _disableDraggable(dragEl);
+    clearTimeout(this._dragStartTimer);
+
+    this._disableDelayedDragEvents();
+  },
+  _disableDelayedDragEvents: function _disableDelayedDragEvents() {
+    var ownerDocument = this.el.ownerDocument;
+    off(ownerDocument, 'mouseup', this._disableDelayedDrag);
+    off(ownerDocument, 'touchend', this._disableDelayedDrag);
+    off(ownerDocument, 'touchcancel', this._disableDelayedDrag);
+    off(ownerDocument, 'mousemove', this._delayedDragTouchMoveHandler);
+    off(ownerDocument, 'touchmove', this._delayedDragTouchMoveHandler);
+    off(ownerDocument, 'pointermove', this._delayedDragTouchMoveHandler);
+  },
+  _triggerDragStart: function _triggerDragStart(
+  /** Event */
+  evt,
+  /** Touch */
+  touch) {
+    touch = touch || evt.pointerType == 'touch' && evt;
+
+    if (!this.nativeDraggable || touch) {
+      if (this.options.supportPointer) {
+        on(document, 'pointermove', this._onTouchMove);
+      } else if (touch) {
+        on(document, 'touchmove', this._onTouchMove);
+      } else {
+        on(document, 'mousemove', this._onTouchMove);
+      }
+    } else {
+      on(dragEl, 'dragend', this);
+      on(rootEl, 'dragstart', this._onDragStart);
+    }
+
+    try {
+      if (document.selection) {
+        // Timeout neccessary for IE9
+        _nextTick(function () {
+          document.selection.empty();
+        });
+      } else {
+        window.getSelection().removeAllRanges();
+      }
+    } catch (err) {}
+  },
+  _dragStarted: function _dragStarted(fallback, evt) {
+
+    awaitingDragStarted = false;
+
+    if (rootEl && dragEl) {
+      pluginEvent('dragStarted', this, {
+        evt: evt
+      });
+
+      if (this.nativeDraggable) {
+        on(document, 'dragover', _checkOutsideTargetEl);
+      }
+
+      var options = this.options; // Apply effect
+
+      !fallback && toggleClass(dragEl, options.dragClass, false);
+      toggleClass(dragEl, options.ghostClass, true);
+      Sortable.active = this;
+      fallback && this._appendGhost(); // Drag start event
+
+      _dispatchEvent({
+        sortable: this,
+        name: 'start',
+        originalEvent: evt
+      });
+    } else {
+      this._nulling();
+    }
+  },
+  _emulateDragOver: function _emulateDragOver() {
+    if (touchEvt) {
+      this._lastX = touchEvt.clientX;
+      this._lastY = touchEvt.clientY;
+
+      _hideGhostForTarget();
+
+      var target = document.elementFromPoint(touchEvt.clientX, touchEvt.clientY);
+      var parent = target;
+
+      while (target && target.shadowRoot) {
+        target = target.shadowRoot.elementFromPoint(touchEvt.clientX, touchEvt.clientY);
+        if (target === parent) break;
+        parent = target;
+      }
+
+      dragEl.parentNode[expando]._isOutsideThisEl(target);
 
       if (parent) {
-        if (parent.tags == "skill") {
-          var parent_type = "skill";
-        }
-
-        if (parent.tags == "competence") {
-          var parent_type = "competence";
-        }
-      } else {
-        var parent_type = "no";
-      }
-
-      axios.post("/dpps/" + this.$route.params.dpp + "/add_ability", {
-        zun_version: this.stage.zun_version_id,
-        ability_data: data.ability_data,
-        parent_node: data.parent_node,
-        parent_type: parent_type,
-        ability_name: data.ability_name
-      }).then(function (response) {
-        if (response.data.valid == true) {
-          var new_type = "Навык";
-        } else {
-          var new_type = "<span class='btn btn-danger btn-xs'><strong style='font-size:16px;'>!</strong></span> Умение";
-        }
-
-        self.chart.addNode({
-          id: response.data.new_id,
-          pid: response.data.new_parent,
-          name: response.data.name,
-          valid: response.data.valid,
-          type: new_type,
-          tags: ["ability"]
-        });
-        self.chart.center(response.data.new_id);
-      })["finally"](function () {
-        // self.oc(self.$refs.tree, self.nodes)
-        self.$bvModal.hide("modal-newability");
-        self.as = self.as + 1;
-      });
-    },
-    edit_ability: function edit_ability(node) {
-      var _this4 = this;
-
-      this.edit_elem = this.nodes.find(function (el) {
-        return el.id == node;
-      });
-      this.edit_type = "ability";
-      this.$nextTick(function () {
-        _this4.$bvModal.show("modal-editability");
-      });
-    },
-    update_ability: function update_ability(data) {
-      self = this;
-      axios.post("/dpps/" + this.$route.params.dpp + "/update_ability", {
-        ability_data: data.ability_data,
-        ability_name: data.ability_name
-      }).then(function (response) {
-        // self.chart.addNode({ id: response.data.new_id, pid: response.data.new_parent, name: response.data.name, type: "Навык",tags:["skill"] })
-        var upd_node = self.nodes.find(function (node) {
-          return node.id == response.data.new_id;
-        });
-        upd_node.name = response.data.name;
-        upd_node.valid = response.data.valid;
-
-        if (response.data.valid == true) {
-          upd_node.type = "Умение";
-        } else {
-          upd_node.type = "<span class='btn btn-danger btn-xs'><strong style='font-size:16px;'>!</strong></span> Умение";
-        }
-
-        self.chart.center(response.data.new_id);
-      })["finally"](function () {
-        //self.chart.draw(OrgChart.action.init);
-        //self.oc(self.$refs.tree, self.nodes)
-        self.$bvModal.hide("modal-editability");
-      });
-    },
-    delete_ability: function delete_ability(node) {
-      var _this5 = this;
-
-      self = this;
-      var elem = this.nodes.find(function (el) {
-        return el.id == node;
-      });
-      var children = this.nodes.filter(function (el) {
-        return el.pid == elem.id;
-      });
-
-      if (children.length > 0) {
-        alert("Невозможно удалить умение, так как к нему привязаны другие элементы. Сначала необходимо удалить их или перенести.");
-      } else {
-        this.$bvModal.msgBoxConfirm("Действительно хотите удалить умение «" + elem.name + "»?").then(function (value) {
-          if (value === true) {
-            axios.post("/dpps/" + _this5.$route.params.dpp + "/remove_ability", {
-              ability_id: node
-            }).then(function (response) {
-              return _this5.chart.removeNode(node);
-            })["finally"](function () {//self.oc(self.$refs.tree, self.nodes)
+        do {
+          if (parent[expando]) {
+            var inserted = void 0;
+            inserted = parent[expando]._onDragOver({
+              clientX: touchEvt.clientX,
+              clientY: touchEvt.clientY,
+              target: target,
+              rootEl: parent
             });
-          }
-        });
-      }
-    },
-    create_knowledge: function create_knowledge(node) {
-      this.parent_node = node;
-      this.$bvModal.show("modal-newknowledge");
-    },
-    add_knowledge: function add_knowledge(data) {
-      self = this;
-      axios.post("/dpps/" + this.$route.params.dpp + "/add_knowledge", {
-        zun_version: this.stage.zun_version_id,
-        knowledge_data: data.knowledge_data,
-        parent_node: data.parent_node,
-        knowledge_name: data.knowledge_name
-      }).then(function (response) {
-        if (response.data.valid == true) {
-          var new_type = "Знание";
-        } else {
-          var new_type = "<span class='btn btn-danger btn-xs'><strong style='font-size:16px;'>!</strong></span> Знание";
-        }
 
-        self.chart.addNode({
-          id: response.data.new_id,
-          pid: response.data.new_parent,
-          name: response.data.name,
-          type: new_type,
-          valid: response.data.valid,
-          tags: ["knowledge"]
-        });
-        self.chart.center(response.data.new_id);
-      })["finally"](function () {
-        //self.oc(self.$refs.tree, self.nodes)
-        self.$bvModal.hide("modal-newknowledge");
-        self.ks = self.ks + 1;
-      });
-      axios.get("/dpps/" + this.$route.params.dpp + "/get_typology").then(function (response) {
-        return self.parts = response.data;
-      });
-    },
-    delete_knowledge: function delete_knowledge(node) {
-      var _this6 = this;
-
-      self = this;
-      var elem = this.nodes.find(function (el) {
-        return el.id == node;
-      });
-      var children = this.nodes.filter(function (el) {
-        return el.pid == elem.id;
-      });
-
-      if (children.length > 0) {
-        alert("Невозможно удалить умение, так как к нему привязаны другие элементы. Сначала необходимо удалить их или перенести.");
-      } else {
-        this.$bvModal.msgBoxConfirm("Действительно хотите удалить знание «" + elem.name + "»?").then(function (value) {
-          if (value === true) {
-            axios.post("/dpps/" + _this6.$route.params.dpp + "/remove_knowledge", {
-              knowledge_id: node
-            }).then(function (response) {
-              return _this6.chart.removeNode(node);
-            })["finally"](function () {//self.oc(self.$refs.tree, self.nodes)
-            });
-          }
-        });
-      }
-    },
-    edit_knowledge: function edit_knowledge(node) {
-      var _this7 = this;
-
-      this.edit_elem = this.nodes.find(function (el) {
-        return el.id == node;
-      });
-      this.edit_type = "knowledge";
-      this.$nextTick(function () {
-        _this7.$bvModal.show("modal-editknowledge");
-      });
-    },
-    update_knowledge: function update_knowledge(data) {
-      self = this;
-      axios.post("/dpps/" + this.$route.params.dpp + "/update_knowledge", {
-        knowledge_data: data.knowledge_data,
-        knowledge_name: data.knowledge_name
-      }).then(function (response) {
-        // self.chart.addNode({ id: response.data.new_id, pid: response.data.new_parent, name: response.data.name, type: "Навык",tags:["skill"] })
-        var upd_node = self.nodes.find(function (node) {
-          return node.id == response.data.new_id;
-        });
-        upd_node.name = response.data.name;
-        upd_node.valid = response.data.valid;
-
-        if (response.data.valid == true) {
-          upd_node.type = "Знание";
-        } else {
-          upd_node.type = "<span class='btn btn-danger btn-xs'><strong style='font-size:16px;'>!</strong></span> Знание";
-        }
-
-        self.chart.center(response.data.new_id);
-      })["finally"](function () {
-        self.$bvModal.hide("modal-editknowledge");
-      });
-      axios.get("/dpps/" + this.$route.params.dpp + "/get_typology").then(function (response) {
-        return self.parts = response.data;
-      });
-    },
-    disconnect: function disconnect(node) {
-      self = this;
-      var elem = self.nodes.find(function (el) {
-        return el.id == node;
-      });
-      elem.type = elem.type.replace("<span class='btn btn-danger btn-xs'><strong style='font-size:16px;'>!</strong></span> ", "");
-      axios.post("/dpps/" + this.$route.params.dpp + "/disconnect", {
-        elem: elem
-      }).then(function (response) {
-        return elem.pid = null;
-      })["finally"](function () {
-        self.chart.draw(_balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.action.init);
-        self.chart.center(node);
-      });
-    },
-    generate_id: function generate_id() {
-      return "f".concat((~~(Math.random() * 1e8)).toString(16));
-    },
-    set_width: function set_width(el) {
-      console.log(el);
-      return 400;
-    },
-    make_competence: function make_competence() {
-      var elems = this.nodes.filter(function (node) {
-        return node.pid == null || node.pid == "c" || node.pid == "s";
-      });
-      elems = elems.filter(function (node) {
-        return node.type != "Сквозные знания";
-      });
-      elems = elems.filter(function (node) {
-        return node.type != "Компетенция";
-      });
-      this.unattached_elems = elems;
-      this.$bvModal.show("modal-newcompetence");
-    },
-    add_competence: function add_competence(data) {
-      self = this;
-      axios.post("/dpps/" + this.$route.params.dpp + "/add_competence", {
-        zun_version: this.stage.zun_version_id,
-        competence_data: data.competence_data,
-        competence_name: data.competence_name
-      }).then(function (response) {
-        self.chart.addNode({
-          id: response.data.new_id,
-          pid: null,
-          name: response.data.name,
-          valid: true,
-          type: "Компетенция",
-          tags: ["competence"]
-        });
-
-        for (var i = 0; i < data.competence_data.elems.length; i++) {
-          console.log(data.competence_data.elems[i]);
-          var old_elem = self.nodes.find(function (node) {
-            return node.id == data.competence_data.elems[i];
-          });
-          self.chart.updateNode({
-            id: old_elem.id,
-            type: old_elem.type,
-            tags: old_elem.tags,
-            name: old_elem.name,
-            pid: response.data.new_id
-          });
-        }
-
-        self.chart.center(response.data.new_id);
-        self.$bvModal.hide("modal-newcompetence");
-      });
-    },
-    delete_competence: function delete_competence(node) {
-      var _this8 = this;
-
-      self = this;
-      var elem = this.nodes.find(function (el) {
-        return el.id == node;
-      });
-      var children = this.nodes.filter(function (el) {
-        return el.pid == elem.id;
-      });
-
-      if (children.length > 0) {
-        alert("Невозможно удалить компетенцию, так как к ней привязаны другие элементы. Сначала необходимо удалить их или перенести.");
-      } else {
-        this.$bvModal.msgBoxConfirm("Действительно хотите удалить компетенцию «" + elem.name + "»?").then(function (value) {
-          if (value === true) {
-            axios.post("/dpps/" + _this8.$route.params.dpp + "/remove_competence", {
-              competence_id: node
-            }).then(function (response) {
-              return _this8.chart.removeNode(node);
-            })["finally"](function () {//self.oc(self.$refs.tree, self.nodes)
-            });
-          }
-        });
-      }
-    },
-    edit_competence: function edit_competence(node) {
-      var _this9 = this;
-
-      this.edit_elem = this.nodes.find(function (el) {
-        return el.id == node;
-      });
-      this.edit_type = "competence";
-      this.$nextTick(function () {
-        _this9.$bvModal.show("modal-editcompetence");
-      });
-    },
-    update_competence: function update_competence(data) {
-      self = this;
-      axios.post("/dpps/" + this.$route.params.dpp + "/update_competence", {
-        competence_data: data.competence_data,
-        competence_name: data.competence_name
-      }).then(function (response) {
-        var upd_node = self.nodes.find(function (node) {
-          return node.id == response.data.new_id;
-        });
-        upd_node.name = response.data.name;
-        self.chart.center(response.data.new_id);
-      })["finally"](function () {
-        self.$bvModal.hide("modal-editcompetence");
-      });
-    },
-    add_parent: function add_parent(node) {
-      var _this10 = this;
-
-      this.edit_elem = this.nodes.find(function (el) {
-        return el.id == node;
-      });
-      this.edit_type = "parent";
-      this.$nextTick(function () {
-        _this10.$bvModal.show("modal-addparent");
-      }); //this.edit_elem.id = node
-      //this.chart.addSlink(node, 'a62', '', "blue")
-    },
-    draw_parent: function draw_parent(data) {
-      var self = this;
-      axios.post("/dpps/" + this.$route.params.dpp + "/add_knowledge_link", {
-        knowledge_id: this.edit_elem.id,
-        ability_id: data
-      }).then(function (response) {
-        self.chart.addSlink(self.edit_elem.id, data, "", "blue");
-        self.$bvModal.hide("modal-addparent");
-        self.chart.draw(_balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.action.init);
-      });
-    },
-    order_children: function order_children(node) {
-      var _this11 = this;
-
-      this.edit_elem = this.nodes.find(function (el) {
-        return el.id == node;
-      });
-      this.$nextTick(function () {
-        _this11.$bvModal.show("modal-orderchildren");
-      });
-    },
-    update_order: function update_order(data) {
-      var _this12 = this;
-
-      self = this;
-      axios.post("/dpps/" + this.$route.params.dpp + "/update_order", {
-        edit_elem: this.edit_elem,
-        children: data
-      }).then(function (response) {
-        for (var i = 0; i < data.length; i++) {
-          self.nodes.find(function (node) {
-            if (node.name == data[i].name) {
-              node.position = i + 1;
+            if (inserted && !this.options.dragoverBubble) {
+              break;
             }
-          });
-        }
-      })["finally"](function () {
-        return _this12.chart.draw(_balkangraph_orgchart_js_orgchart__WEBPACK_IMPORTED_MODULE_0___default.a.action.init);
-      });
-      self.$nextTick(function () {
-        self.edit_elem = {
-          id: 0
-        };
-        self.$bvModal.hide("modal-orderchildren");
-      });
-    },
-    check_stage: function check_stage() {
-      this.errors = [];
+          }
 
-      for (var i = 0; i < this.parts.length; i++) {
-        if (this.parts[i].knowledges.length == 0) {
-          this.errors.push("К типовому разделу содержания «" + this.parts[i].name + " не прикреплено ни одного знания»");
+          target = parent; // store last element
         }
+        /* jshint boss:true */
+        while (parent = parent.parentNode);
       }
 
-      for (i = 0; i < this.nodes.length; i++) {
-        if (this.nodes[i].valid == false) {
-          this.errors.push("Не заполнен элемент «" + this.nodes[i].name + "»");
+      _unhideGhostForTarget();
+    }
+  },
+  _onTouchMove: function _onTouchMove(
+  /**TouchEvent*/
+  evt) {
+    if (tapEvt) {
+      var options = this.options,
+          fallbackTolerance = options.fallbackTolerance,
+          fallbackOffset = options.fallbackOffset,
+          touch = evt.touches ? evt.touches[0] : evt,
+          ghostMatrix = ghostEl && matrix(ghostEl, true),
+          scaleX = ghostEl && ghostMatrix && ghostMatrix.a,
+          scaleY = ghostEl && ghostMatrix && ghostMatrix.d,
+          relativeScrollOffset = PositionGhostAbsolutely && ghostRelativeParent && getRelativeScrollOffset(ghostRelativeParent),
+          dx = (touch.clientX - tapEvt.clientX + fallbackOffset.x) / (scaleX || 1) + (relativeScrollOffset ? relativeScrollOffset[0] - ghostRelativeParentInitialScroll[0] : 0) / (scaleX || 1),
+          dy = (touch.clientY - tapEvt.clientY + fallbackOffset.y) / (scaleY || 1) + (relativeScrollOffset ? relativeScrollOffset[1] - ghostRelativeParentInitialScroll[1] : 0) / (scaleY || 1); // only set the status to dragging, when we are actually dragging
+
+      if (!Sortable.active && !awaitingDragStarted) {
+        if (fallbackTolerance && Math.max(Math.abs(touch.clientX - this._lastX), Math.abs(touch.clientY - this._lastY)) < fallbackTolerance) {
+          return;
         }
+
+        this._onDragStart(evt, true);
       }
-    },
-    go_forward: function go_forward() {
-      var _this13 = this;
 
-      var self = this;
-      axios.post("/dpps/" + this.$route.params.dpp + "/" + this.stage.id + "/go_next").then(function () {
-        return _this13.$router.push("/my_dpps/" + _this13.$route.params.dpp + "/overview/1");
-      });
-    },
-    export_node: function export_node(node) {
-      this.chart.exportPNG({
-        filename: "MyOrgChart.png",
-        nodeId: node,
-        openInNewTab: false,
-        expandChildren: true,
-        margin: [10, 20, 10, 20],
-        header: 'Экспорт'
-      });
-    }
-  },
-  mounted: function mounted() {
-    var _this14 = this;
+      if (ghostEl) {
+        if (ghostMatrix) {
+          ghostMatrix.e += dx - (lastDx || 0);
+          ghostMatrix.f += dy - (lastDy || 0);
+        } else {
+          ghostMatrix = {
+            a: 1,
+            b: 0,
+            c: 0,
+            d: 1,
+            e: dx,
+            f: dy
+          };
+        }
 
-    axios.get("/dpps/" + this.$route.params.dpp + "/get_stage_data/" + this.$route.params.stage).then(function (response) {
-      return _this14.stage = response.data;
-    })["finally"](function () {
-      return _this14.get_zun_versions_data();
-    });
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewSkill2.vue?vue&type=script&lang=js&":
-/*!*********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/NewSkill2.vue?vue&type=script&lang=js& ***!
-  \*********************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_nsis_NsiChoose__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/components/nsis/NsiChoose */ "./resources/assets/src/components/nsis/NsiChoose.vue");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: "new-skill2",
-  metaInfo: {
-    title: "Добавить новый навык"
-  },
-  props: {
-    parent_node: String,
-    ish_version_id: Number
-  },
-  components: {
-    NsiChoose: _components_nsis_NsiChoose__WEBPACK_IMPORTED_MODULE_0__["default"]
-  },
-  data: function data() {
-    return {
-      new_skill: {
-        keyword: 'Владеть навыком',
-        what: '',
-        "with": '',
-        where: '',
-        expert_answer: '',
-        is_by_expert: null,
-        valid: true,
-        nsis: []
-      },
-      errors: [],
-      isBusy: true
-    };
-  },
-  computed: {
-    name: function name() {
-      return this.combine_text(this.new_skill);
-    }
-  },
-  methods: {
-    handle_ok: function handle_ok(bvModalEvt) {
-      bvModalEvt.preventDefault();
-
-      if (this.new_skill.what.length == 0 || this.new_skill["with"].length == 0 || this.new_skill.where.length == 0) {
-        this.new_skill.valid = false;
-      } else {
-        this.new_skill.valid = true;
-        this.$emit('add_skill', {
-          skill_name: this.name,
-          skill_data: this.new_skill,
-          parent_node: this.parent_node
-        });
+        var cssMatrix = "matrix(".concat(ghostMatrix.a, ",").concat(ghostMatrix.b, ",").concat(ghostMatrix.c, ",").concat(ghostMatrix.d, ",").concat(ghostMatrix.e, ",").concat(ghostMatrix.f, ")");
+        css(ghostEl, 'webkitTransform', cssMatrix);
+        css(ghostEl, 'mozTransform', cssMatrix);
+        css(ghostEl, 'msTransform', cssMatrix);
+        css(ghostEl, 'transform', cssMatrix);
+        lastDx = dx;
+        lastDy = dy;
+        touchEvt = touch;
       }
-    },
-    combine_text: function combine_text(elem) {
-      return elem.keyword + ' ' + elem.what + ' ' + elem["with"] + ' ' + elem.where;
-    },
-    change_nsi: function change_nsi(data) {
-      this.new_skill.nsis = data.nsi_data;
-    },
-    generate_id: function generate_id() {
-      return "f".concat((~~(Math.random() * 1e8)).toString(16));
+
+      evt.cancelable && evt.preventDefault();
     }
   },
-  mounted: function mounted() {
-    this.isBusy = false;
-  }
-});
+  _appendGhost: function _appendGhost() {
+    // Bug if using scale(): https://stackoverflow.com/questions/2637058
+    // Not being adjusted for
+    if (!ghostEl) {
+      var container = this.options.fallbackOnBody ? document.body : rootEl,
+          rect = getRect(dragEl, true, PositionGhostAbsolutely, true, container),
+          options = this.options; // Position absolutely
 
-/***/ }),
+      if (PositionGhostAbsolutely) {
+        // Get relatively positioned parent
+        ghostRelativeParent = container;
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/OrderChildren.vue?vue&type=script&lang=js&":
-/*!*************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/OrderChildren.vue?vue&type=script&lang=js& ***!
-  \*************************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+        while (css(ghostRelativeParent, 'position') === 'static' && css(ghostRelativeParent, 'transform') === 'none' && ghostRelativeParent !== document) {
+          ghostRelativeParent = ghostRelativeParent.parentNode;
+        }
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vuedraggable_src_vuedraggable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuedraggable/src/vuedraggable */ "./node_modules/vuedraggable/src/vuedraggable.js");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+        if (ghostRelativeParent !== document.body && ghostRelativeParent !== document.documentElement) {
+          if (ghostRelativeParent === document) ghostRelativeParent = getWindowScrollingElement();
+          rect.top += ghostRelativeParent.scrollTop;
+          rect.left += ghostRelativeParent.scrollLeft;
+        } else {
+          ghostRelativeParent = getWindowScrollingElement();
+        }
 
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: "order-children",
-  props: {
-    edit_elem: Object,
-    zun_version: Number
-  },
-  components: {
-    draggable: vuedraggable_src_vuedraggable__WEBPACK_IMPORTED_MODULE_0__["default"]
-  },
-  data: function data() {
-    return {
-      elem: {},
-      children: []
-    };
-  },
-  methods: {
-    handle_ok: function handle_ok(bvModalEvt) {
-      bvModalEvt.preventDefault();
-      this.$emit('update_order', this.children);
+        ghostRelativeParentInitialScroll = getRelativeScrollOffset(ghostRelativeParent);
+      }
+
+      ghostEl = dragEl.cloneNode(true);
+      toggleClass(ghostEl, options.ghostClass, false);
+      toggleClass(ghostEl, options.fallbackClass, true);
+      toggleClass(ghostEl, options.dragClass, true);
+      css(ghostEl, 'transition', '');
+      css(ghostEl, 'transform', '');
+      css(ghostEl, 'box-sizing', 'border-box');
+      css(ghostEl, 'margin', 0);
+      css(ghostEl, 'top', rect.top);
+      css(ghostEl, 'left', rect.left);
+      css(ghostEl, 'width', rect.width);
+      css(ghostEl, 'height', rect.height);
+      css(ghostEl, 'opacity', '0.8');
+      css(ghostEl, 'position', PositionGhostAbsolutely ? 'absolute' : 'fixed');
+      css(ghostEl, 'zIndex', '100000');
+      css(ghostEl, 'pointerEvents', 'none');
+      Sortable.ghost = ghostEl;
+      container.appendChild(ghostEl); // Set transform-origin
+
+      css(ghostEl, 'transform-origin', tapDistanceLeft / parseInt(ghostEl.style.width) * 100 + '% ' + tapDistanceTop / parseInt(ghostEl.style.height) * 100 + '%');
     }
   },
-  mounted: function mounted() {
+  _onDragStart: function _onDragStart(
+  /**Event*/
+  evt,
+  /**boolean*/
+  fallback) {
     var _this = this;
 
-    axios.post("/dpps/" + this.zun_version + "/get_children", {
-      elem_id: this.edit_elem.id,
-      elem_type: this.edit_elem.tags[0]
-    }).then(function (response) {
-      return _this.children = response.data;
+    var dataTransfer = evt.dataTransfer;
+    var options = _this.options;
+    pluginEvent('dragStart', this, {
+      evt: evt
+    });
+
+    if (Sortable.eventCanceled) {
+      this._onDrop();
+
+      return;
+    }
+
+    pluginEvent('setupClone', this);
+
+    if (!Sortable.eventCanceled) {
+      cloneEl = clone(dragEl);
+      cloneEl.draggable = false;
+      cloneEl.style['will-change'] = '';
+
+      this._hideClone();
+
+      toggleClass(cloneEl, this.options.chosenClass, false);
+      Sortable.clone = cloneEl;
+    } // #1143: IFrame support workaround
+
+
+    _this.cloneId = _nextTick(function () {
+      pluginEvent('clone', _this);
+      if (Sortable.eventCanceled) return;
+
+      if (!_this.options.removeCloneOnHide) {
+        rootEl.insertBefore(cloneEl, dragEl);
+      }
+
+      _this._hideClone();
+
+      _dispatchEvent({
+        sortable: _this,
+        name: 'clone'
+      });
+    });
+    !fallback && toggleClass(dragEl, options.dragClass, true); // Set proper drop events
+
+    if (fallback) {
+      ignoreNextClick = true;
+      _this._loopId = setInterval(_this._emulateDragOver, 50);
+    } else {
+      // Undo what was set in _prepareDragStart before drag started
+      off(document, 'mouseup', _this._onDrop);
+      off(document, 'touchend', _this._onDrop);
+      off(document, 'touchcancel', _this._onDrop);
+
+      if (dataTransfer) {
+        dataTransfer.effectAllowed = 'move';
+        options.setData && options.setData.call(_this, dataTransfer, dragEl);
+      }
+
+      on(document, 'drop', _this); // #1276 fix:
+
+      css(dragEl, 'transform', 'translateZ(0)');
+    }
+
+    awaitingDragStarted = true;
+    _this._dragStartId = _nextTick(_this._dragStarted.bind(_this, fallback, evt));
+    on(document, 'selectstart', _this);
+    moved = true;
+
+    if (Safari) {
+      css(document.body, 'user-select', 'none');
+    }
+  },
+  // Returns true - if no further action is needed (either inserted or another condition)
+  _onDragOver: function _onDragOver(
+  /**Event*/
+  evt) {
+    var el = this.el,
+        target = evt.target,
+        dragRect,
+        targetRect,
+        revert,
+        options = this.options,
+        group = options.group,
+        activeSortable = Sortable.active,
+        isOwner = activeGroup === group,
+        canSort = options.sort,
+        fromSortable = putSortable || activeSortable,
+        vertical,
+        _this = this,
+        completedFired = false;
+
+    if (_silent) return;
+
+    function dragOverEvent(name, extra) {
+      pluginEvent(name, _this, _objectSpread({
+        evt: evt,
+        isOwner: isOwner,
+        axis: vertical ? 'vertical' : 'horizontal',
+        revert: revert,
+        dragRect: dragRect,
+        targetRect: targetRect,
+        canSort: canSort,
+        fromSortable: fromSortable,
+        target: target,
+        completed: completed,
+        onMove: function onMove(target, after) {
+          return _onMove(rootEl, el, dragEl, dragRect, target, getRect(target), evt, after);
+        },
+        changed: changed
+      }, extra));
+    } // Capture animation state
+
+
+    function capture() {
+      dragOverEvent('dragOverAnimationCapture');
+
+      _this.captureAnimationState();
+
+      if (_this !== fromSortable) {
+        fromSortable.captureAnimationState();
+      }
+    } // Return invocation when dragEl is inserted (or completed)
+
+
+    function completed(insertion) {
+      dragOverEvent('dragOverCompleted', {
+        insertion: insertion
+      });
+
+      if (insertion) {
+        // Clones must be hidden before folding animation to capture dragRectAbsolute properly
+        if (isOwner) {
+          activeSortable._hideClone();
+        } else {
+          activeSortable._showClone(_this);
+        }
+
+        if (_this !== fromSortable) {
+          // Set ghost class to new sortable's ghost class
+          toggleClass(dragEl, putSortable ? putSortable.options.ghostClass : activeSortable.options.ghostClass, false);
+          toggleClass(dragEl, options.ghostClass, true);
+        }
+
+        if (putSortable !== _this && _this !== Sortable.active) {
+          putSortable = _this;
+        } else if (_this === Sortable.active && putSortable) {
+          putSortable = null;
+        } // Animation
+
+
+        if (fromSortable === _this) {
+          _this._ignoreWhileAnimating = target;
+        }
+
+        _this.animateAll(function () {
+          dragOverEvent('dragOverAnimationComplete');
+          _this._ignoreWhileAnimating = null;
+        });
+
+        if (_this !== fromSortable) {
+          fromSortable.animateAll();
+          fromSortable._ignoreWhileAnimating = null;
+        }
+      } // Null lastTarget if it is not inside a previously swapped element
+
+
+      if (target === dragEl && !dragEl.animated || target === el && !target.animated) {
+        lastTarget = null;
+      } // no bubbling and not fallback
+
+
+      if (!options.dragoverBubble && !evt.rootEl && target !== document) {
+        dragEl.parentNode[expando]._isOutsideThisEl(evt.target); // Do not detect for empty insert if already inserted
+
+
+        !insertion && nearestEmptyInsertDetectEvent(evt);
+      }
+
+      !options.dragoverBubble && evt.stopPropagation && evt.stopPropagation();
+      return completedFired = true;
+    } // Call when dragEl has been inserted
+
+
+    function changed() {
+      newIndex = index(dragEl);
+      newDraggableIndex = index(dragEl, options.draggable);
+
+      _dispatchEvent({
+        sortable: _this,
+        name: 'change',
+        toEl: el,
+        newIndex: newIndex,
+        newDraggableIndex: newDraggableIndex,
+        originalEvent: evt
+      });
+    }
+
+    if (evt.preventDefault !== void 0) {
+      evt.cancelable && evt.preventDefault();
+    }
+
+    target = closest(target, options.draggable, el, true);
+    dragOverEvent('dragOver');
+    if (Sortable.eventCanceled) return completedFired;
+
+    if (dragEl.contains(evt.target) || target.animated && target.animatingX && target.animatingY || _this._ignoreWhileAnimating === target) {
+      return completed(false);
+    }
+
+    ignoreNextClick = false;
+
+    if (activeSortable && !options.disabled && (isOwner ? canSort || (revert = !rootEl.contains(dragEl)) // Reverting item into the original list
+    : putSortable === this || (this.lastPutMode = activeGroup.checkPull(this, activeSortable, dragEl, evt)) && group.checkPut(this, activeSortable, dragEl, evt))) {
+      vertical = this._getDirection(evt, target) === 'vertical';
+      dragRect = getRect(dragEl);
+      dragOverEvent('dragOverValid');
+      if (Sortable.eventCanceled) return completedFired;
+
+      if (revert) {
+        parentEl = rootEl; // actualization
+
+        capture();
+
+        this._hideClone();
+
+        dragOverEvent('revert');
+
+        if (!Sortable.eventCanceled) {
+          if (nextEl) {
+            rootEl.insertBefore(dragEl, nextEl);
+          } else {
+            rootEl.appendChild(dragEl);
+          }
+        }
+
+        return completed(true);
+      }
+
+      var elLastChild = lastChild(el, options.draggable);
+
+      if (!elLastChild || _ghostIsLast(evt, vertical, this) && !elLastChild.animated) {
+        // If already at end of list: Do not insert
+        if (elLastChild === dragEl) {
+          return completed(false);
+        } // assign target only if condition is true
+
+
+        if (elLastChild && el === evt.target) {
+          target = elLastChild;
+        }
+
+        if (target) {
+          targetRect = getRect(target);
+        }
+
+        if (_onMove(rootEl, el, dragEl, dragRect, target, targetRect, evt, !!target) !== false) {
+          capture();
+          el.appendChild(dragEl);
+          parentEl = el; // actualization
+
+          changed();
+          return completed(true);
+        }
+      } else if (target.parentNode === el) {
+        targetRect = getRect(target);
+        var direction = 0,
+            targetBeforeFirstSwap,
+            differentLevel = dragEl.parentNode !== el,
+            differentRowCol = !_dragElInRowColumn(dragEl.animated && dragEl.toRect || dragRect, target.animated && target.toRect || targetRect, vertical),
+            side1 = vertical ? 'top' : 'left',
+            scrolledPastTop = isScrolledPast(target, 'top', 'top') || isScrolledPast(dragEl, 'top', 'top'),
+            scrollBefore = scrolledPastTop ? scrolledPastTop.scrollTop : void 0;
+
+        if (lastTarget !== target) {
+          targetBeforeFirstSwap = targetRect[side1];
+          pastFirstInvertThresh = false;
+          isCircumstantialInvert = !differentRowCol && options.invertSwap || differentLevel;
+        }
+
+        direction = _getSwapDirection(evt, target, targetRect, vertical, differentRowCol ? 1 : options.swapThreshold, options.invertedSwapThreshold == null ? options.swapThreshold : options.invertedSwapThreshold, isCircumstantialInvert, lastTarget === target);
+        var sibling;
+
+        if (direction !== 0) {
+          // Check if target is beside dragEl in respective direction (ignoring hidden elements)
+          var dragIndex = index(dragEl);
+
+          do {
+            dragIndex -= direction;
+            sibling = parentEl.children[dragIndex];
+          } while (sibling && (css(sibling, 'display') === 'none' || sibling === ghostEl));
+        } // If dragEl is already beside target: Do not insert
+
+
+        if (direction === 0 || sibling === target) {
+          return completed(false);
+        }
+
+        lastTarget = target;
+        lastDirection = direction;
+        var nextSibling = target.nextElementSibling,
+            after = false;
+        after = direction === 1;
+
+        var moveVector = _onMove(rootEl, el, dragEl, dragRect, target, targetRect, evt, after);
+
+        if (moveVector !== false) {
+          if (moveVector === 1 || moveVector === -1) {
+            after = moveVector === 1;
+          }
+
+          _silent = true;
+          setTimeout(_unsilent, 30);
+          capture();
+
+          if (after && !nextSibling) {
+            el.appendChild(dragEl);
+          } else {
+            target.parentNode.insertBefore(dragEl, after ? nextSibling : target);
+          } // Undo chrome's scroll adjustment (has no effect on other browsers)
+
+
+          if (scrolledPastTop) {
+            scrollBy(scrolledPastTop, 0, scrollBefore - scrolledPastTop.scrollTop);
+          }
+
+          parentEl = dragEl.parentNode; // actualization
+          // must be done before animation
+
+          if (targetBeforeFirstSwap !== undefined && !isCircumstantialInvert) {
+            targetMoveDistance = Math.abs(targetBeforeFirstSwap - getRect(target)[side1]);
+          }
+
+          changed();
+          return completed(true);
+        }
+      }
+
+      if (el.contains(dragEl)) {
+        return completed(false);
+      }
+    }
+
+    return false;
+  },
+  _ignoreWhileAnimating: null,
+  _offMoveEvents: function _offMoveEvents() {
+    off(document, 'mousemove', this._onTouchMove);
+    off(document, 'touchmove', this._onTouchMove);
+    off(document, 'pointermove', this._onTouchMove);
+    off(document, 'dragover', nearestEmptyInsertDetectEvent);
+    off(document, 'mousemove', nearestEmptyInsertDetectEvent);
+    off(document, 'touchmove', nearestEmptyInsertDetectEvent);
+  },
+  _offUpEvents: function _offUpEvents() {
+    var ownerDocument = this.el.ownerDocument;
+    off(ownerDocument, 'mouseup', this._onDrop);
+    off(ownerDocument, 'touchend', this._onDrop);
+    off(ownerDocument, 'pointerup', this._onDrop);
+    off(ownerDocument, 'touchcancel', this._onDrop);
+    off(document, 'selectstart', this);
+  },
+  _onDrop: function _onDrop(
+  /**Event*/
+  evt) {
+    var el = this.el,
+        options = this.options; // Get the index of the dragged element within its parent
+
+    newIndex = index(dragEl);
+    newDraggableIndex = index(dragEl, options.draggable);
+    pluginEvent('drop', this, {
+      evt: evt
+    });
+    parentEl = dragEl && dragEl.parentNode; // Get again after plugin event
+
+    newIndex = index(dragEl);
+    newDraggableIndex = index(dragEl, options.draggable);
+
+    if (Sortable.eventCanceled) {
+      this._nulling();
+
+      return;
+    }
+
+    awaitingDragStarted = false;
+    isCircumstantialInvert = false;
+    pastFirstInvertThresh = false;
+    clearInterval(this._loopId);
+    clearTimeout(this._dragStartTimer);
+
+    _cancelNextTick(this.cloneId);
+
+    _cancelNextTick(this._dragStartId); // Unbind events
+
+
+    if (this.nativeDraggable) {
+      off(document, 'drop', this);
+      off(el, 'dragstart', this._onDragStart);
+    }
+
+    this._offMoveEvents();
+
+    this._offUpEvents();
+
+    if (Safari) {
+      css(document.body, 'user-select', '');
+    }
+
+    css(dragEl, 'transform', '');
+
+    if (evt) {
+      if (moved) {
+        evt.cancelable && evt.preventDefault();
+        !options.dropBubble && evt.stopPropagation();
+      }
+
+      ghostEl && ghostEl.parentNode && ghostEl.parentNode.removeChild(ghostEl);
+
+      if (rootEl === parentEl || putSortable && putSortable.lastPutMode !== 'clone') {
+        // Remove clone(s)
+        cloneEl && cloneEl.parentNode && cloneEl.parentNode.removeChild(cloneEl);
+      }
+
+      if (dragEl) {
+        if (this.nativeDraggable) {
+          off(dragEl, 'dragend', this);
+        }
+
+        _disableDraggable(dragEl);
+
+        dragEl.style['will-change'] = ''; // Remove classes
+        // ghostClass is added in dragStarted
+
+        if (moved && !awaitingDragStarted) {
+          toggleClass(dragEl, putSortable ? putSortable.options.ghostClass : this.options.ghostClass, false);
+        }
+
+        toggleClass(dragEl, this.options.chosenClass, false); // Drag stop event
+
+        _dispatchEvent({
+          sortable: this,
+          name: 'unchoose',
+          toEl: parentEl,
+          newIndex: null,
+          newDraggableIndex: null,
+          originalEvent: evt
+        });
+
+        if (rootEl !== parentEl) {
+          if (newIndex >= 0) {
+            // Add event
+            _dispatchEvent({
+              rootEl: parentEl,
+              name: 'add',
+              toEl: parentEl,
+              fromEl: rootEl,
+              originalEvent: evt
+            }); // Remove event
+
+
+            _dispatchEvent({
+              sortable: this,
+              name: 'remove',
+              toEl: parentEl,
+              originalEvent: evt
+            }); // drag from one list and drop into another
+
+
+            _dispatchEvent({
+              rootEl: parentEl,
+              name: 'sort',
+              toEl: parentEl,
+              fromEl: rootEl,
+              originalEvent: evt
+            });
+
+            _dispatchEvent({
+              sortable: this,
+              name: 'sort',
+              toEl: parentEl,
+              originalEvent: evt
+            });
+          }
+
+          putSortable && putSortable.save();
+        } else {
+          if (newIndex !== oldIndex) {
+            if (newIndex >= 0) {
+              // drag & drop within the same list
+              _dispatchEvent({
+                sortable: this,
+                name: 'update',
+                toEl: parentEl,
+                originalEvent: evt
+              });
+
+              _dispatchEvent({
+                sortable: this,
+                name: 'sort',
+                toEl: parentEl,
+                originalEvent: evt
+              });
+            }
+          }
+        }
+
+        if (Sortable.active) {
+          /* jshint eqnull:true */
+          if (newIndex == null || newIndex === -1) {
+            newIndex = oldIndex;
+            newDraggableIndex = oldDraggableIndex;
+          }
+
+          _dispatchEvent({
+            sortable: this,
+            name: 'end',
+            toEl: parentEl,
+            originalEvent: evt
+          }); // Save sorting
+
+
+          this.save();
+        }
+      }
+    }
+
+    this._nulling();
+  },
+  _nulling: function _nulling() {
+    pluginEvent('nulling', this);
+    rootEl = dragEl = parentEl = ghostEl = nextEl = cloneEl = lastDownEl = cloneHidden = tapEvt = touchEvt = moved = newIndex = newDraggableIndex = oldIndex = oldDraggableIndex = lastTarget = lastDirection = putSortable = activeGroup = Sortable.dragged = Sortable.ghost = Sortable.clone = Sortable.active = null;
+    savedInputChecked.forEach(function (el) {
+      el.checked = true;
+    });
+    savedInputChecked.length = lastDx = lastDy = 0;
+  },
+  handleEvent: function handleEvent(
+  /**Event*/
+  evt) {
+    switch (evt.type) {
+      case 'drop':
+      case 'dragend':
+        this._onDrop(evt);
+
+        break;
+
+      case 'dragenter':
+      case 'dragover':
+        if (dragEl) {
+          this._onDragOver(evt);
+
+          _globalDragOver(evt);
+        }
+
+        break;
+
+      case 'selectstart':
+        evt.preventDefault();
+        break;
+    }
+  },
+
+  /**
+   * Serializes the item into an array of string.
+   * @returns {String[]}
+   */
+  toArray: function toArray() {
+    var order = [],
+        el,
+        children = this.el.children,
+        i = 0,
+        n = children.length,
+        options = this.options;
+
+    for (; i < n; i++) {
+      el = children[i];
+
+      if (closest(el, options.draggable, this.el, false)) {
+        order.push(el.getAttribute(options.dataIdAttr) || _generateId(el));
+      }
+    }
+
+    return order;
+  },
+
+  /**
+   * Sorts the elements according to the array.
+   * @param  {String[]}  order  order of the items
+   */
+  sort: function sort(order) {
+    var items = {},
+        rootEl = this.el;
+    this.toArray().forEach(function (id, i) {
+      var el = rootEl.children[i];
+
+      if (closest(el, this.options.draggable, rootEl, false)) {
+        items[id] = el;
+      }
+    }, this);
+    order.forEach(function (id) {
+      if (items[id]) {
+        rootEl.removeChild(items[id]);
+        rootEl.appendChild(items[id]);
+      }
+    });
+  },
+
+  /**
+   * Save the current sorting
+   */
+  save: function save() {
+    var store = this.options.store;
+    store && store.set && store.set(this);
+  },
+
+  /**
+   * For each element in the set, get the first element that matches the selector by testing the element itself and traversing up through its ancestors in the DOM tree.
+   * @param   {HTMLElement}  el
+   * @param   {String}       [selector]  default: `options.draggable`
+   * @returns {HTMLElement|null}
+   */
+  closest: function closest$1(el, selector) {
+    return closest(el, selector || this.options.draggable, this.el, false);
+  },
+
+  /**
+   * Set/get option
+   * @param   {string} name
+   * @param   {*}      [value]
+   * @returns {*}
+   */
+  option: function option(name, value) {
+    var options = this.options;
+
+    if (value === void 0) {
+      return options[name];
+    } else {
+      var modifiedValue = PluginManager.modifyOption(this, name, value);
+
+      if (typeof modifiedValue !== 'undefined') {
+        options[name] = modifiedValue;
+      } else {
+        options[name] = value;
+      }
+
+      if (name === 'group') {
+        _prepareGroup(options);
+      }
+    }
+  },
+
+  /**
+   * Destroy
+   */
+  destroy: function destroy() {
+    pluginEvent('destroy', this);
+    var el = this.el;
+    el[expando] = null;
+    off(el, 'mousedown', this._onTapStart);
+    off(el, 'touchstart', this._onTapStart);
+    off(el, 'pointerdown', this._onTapStart);
+
+    if (this.nativeDraggable) {
+      off(el, 'dragover', this);
+      off(el, 'dragenter', this);
+    } // Remove draggable attributes
+
+
+    Array.prototype.forEach.call(el.querySelectorAll('[draggable]'), function (el) {
+      el.removeAttribute('draggable');
+    });
+
+    this._onDrop();
+
+    this._disableDelayedDragEvents();
+
+    sortables.splice(sortables.indexOf(this.el), 1);
+    this.el = el = null;
+  },
+  _hideClone: function _hideClone() {
+    if (!cloneHidden) {
+      pluginEvent('hideClone', this);
+      if (Sortable.eventCanceled) return;
+      css(cloneEl, 'display', 'none');
+
+      if (this.options.removeCloneOnHide && cloneEl.parentNode) {
+        cloneEl.parentNode.removeChild(cloneEl);
+      }
+
+      cloneHidden = true;
+    }
+  },
+  _showClone: function _showClone(putSortable) {
+    if (putSortable.lastPutMode !== 'clone') {
+      this._hideClone();
+
+      return;
+    }
+
+    if (cloneHidden) {
+      pluginEvent('showClone', this);
+      if (Sortable.eventCanceled) return; // show clone at dragEl or original position
+
+      if (rootEl.contains(dragEl) && !this.options.group.revertClone) {
+        rootEl.insertBefore(cloneEl, dragEl);
+      } else if (nextEl) {
+        rootEl.insertBefore(cloneEl, nextEl);
+      } else {
+        rootEl.appendChild(cloneEl);
+      }
+
+      if (this.options.group.revertClone) {
+        this.animate(dragEl, cloneEl);
+      }
+
+      css(cloneEl, 'display', '');
+      cloneHidden = false;
+    }
+  }
+};
+
+function _globalDragOver(
+/**Event*/
+evt) {
+  if (evt.dataTransfer) {
+    evt.dataTransfer.dropEffect = 'move';
+  }
+
+  evt.cancelable && evt.preventDefault();
+}
+
+function _onMove(fromEl, toEl, dragEl, dragRect, targetEl, targetRect, originalEvent, willInsertAfter) {
+  var evt,
+      sortable = fromEl[expando],
+      onMoveFn = sortable.options.onMove,
+      retVal; // Support for new CustomEvent feature
+
+  if (window.CustomEvent && !IE11OrLess && !Edge) {
+    evt = new CustomEvent('move', {
+      bubbles: true,
+      cancelable: true
+    });
+  } else {
+    evt = document.createEvent('Event');
+    evt.initEvent('move', true, true);
+  }
+
+  evt.to = toEl;
+  evt.from = fromEl;
+  evt.dragged = dragEl;
+  evt.draggedRect = dragRect;
+  evt.related = targetEl || toEl;
+  evt.relatedRect = targetRect || getRect(toEl);
+  evt.willInsertAfter = willInsertAfter;
+  evt.originalEvent = originalEvent;
+  fromEl.dispatchEvent(evt);
+
+  if (onMoveFn) {
+    retVal = onMoveFn.call(sortable, evt, originalEvent);
+  }
+
+  return retVal;
+}
+
+function _disableDraggable(el) {
+  el.draggable = false;
+}
+
+function _unsilent() {
+  _silent = false;
+}
+
+function _ghostIsLast(evt, vertical, sortable) {
+  var rect = getRect(lastChild(sortable.el, sortable.options.draggable));
+  var spacer = 10;
+  return vertical ? evt.clientX > rect.right + spacer || evt.clientX <= rect.right && evt.clientY > rect.bottom && evt.clientX >= rect.left : evt.clientX > rect.right && evt.clientY > rect.top || evt.clientX <= rect.right && evt.clientY > rect.bottom + spacer;
+}
+
+function _getSwapDirection(evt, target, targetRect, vertical, swapThreshold, invertedSwapThreshold, invertSwap, isLastTarget) {
+  var mouseOnAxis = vertical ? evt.clientY : evt.clientX,
+      targetLength = vertical ? targetRect.height : targetRect.width,
+      targetS1 = vertical ? targetRect.top : targetRect.left,
+      targetS2 = vertical ? targetRect.bottom : targetRect.right,
+      invert = false;
+
+  if (!invertSwap) {
+    // Never invert or create dragEl shadow when target movemenet causes mouse to move past the end of regular swapThreshold
+    if (isLastTarget && targetMoveDistance < targetLength * swapThreshold) {
+      // multiplied only by swapThreshold because mouse will already be inside target by (1 - threshold) * targetLength / 2
+      // check if past first invert threshold on side opposite of lastDirection
+      if (!pastFirstInvertThresh && (lastDirection === 1 ? mouseOnAxis > targetS1 + targetLength * invertedSwapThreshold / 2 : mouseOnAxis < targetS2 - targetLength * invertedSwapThreshold / 2)) {
+        // past first invert threshold, do not restrict inverted threshold to dragEl shadow
+        pastFirstInvertThresh = true;
+      }
+
+      if (!pastFirstInvertThresh) {
+        // dragEl shadow (target move distance shadow)
+        if (lastDirection === 1 ? mouseOnAxis < targetS1 + targetMoveDistance // over dragEl shadow
+        : mouseOnAxis > targetS2 - targetMoveDistance) {
+          return -lastDirection;
+        }
+      } else {
+        invert = true;
+      }
+    } else {
+      // Regular
+      if (mouseOnAxis > targetS1 + targetLength * (1 - swapThreshold) / 2 && mouseOnAxis < targetS2 - targetLength * (1 - swapThreshold) / 2) {
+        return _getInsertDirection(target);
+      }
+    }
+  }
+
+  invert = invert || invertSwap;
+
+  if (invert) {
+    // Invert of regular
+    if (mouseOnAxis < targetS1 + targetLength * invertedSwapThreshold / 2 || mouseOnAxis > targetS2 - targetLength * invertedSwapThreshold / 2) {
+      return mouseOnAxis > targetS1 + targetLength / 2 ? 1 : -1;
+    }
+  }
+
+  return 0;
+}
+/**
+ * Gets the direction dragEl must be swapped relative to target in order to make it
+ * seem that dragEl has been "inserted" into that element's position
+ * @param  {HTMLElement} target       The target whose position dragEl is being inserted at
+ * @return {Number}                   Direction dragEl must be swapped
+ */
+
+
+function _getInsertDirection(target) {
+  if (index(dragEl) < index(target)) {
+    return 1;
+  } else {
+    return -1;
+  }
+}
+/**
+ * Generate id
+ * @param   {HTMLElement} el
+ * @returns {String}
+ * @private
+ */
+
+
+function _generateId(el) {
+  var str = el.tagName + el.className + el.src + el.href + el.textContent,
+      i = str.length,
+      sum = 0;
+
+  while (i--) {
+    sum += str.charCodeAt(i);
+  }
+
+  return sum.toString(36);
+}
+
+function _saveInputCheckedState(root) {
+  savedInputChecked.length = 0;
+  var inputs = root.getElementsByTagName('input');
+  var idx = inputs.length;
+
+  while (idx--) {
+    var el = inputs[idx];
+    el.checked && savedInputChecked.push(el);
+  }
+}
+
+function _nextTick(fn) {
+  return setTimeout(fn, 0);
+}
+
+function _cancelNextTick(id) {
+  return clearTimeout(id);
+} // Fixed #973:
+
+
+if (documentExists) {
+  on(document, 'touchmove', function (evt) {
+    if ((Sortable.active || awaitingDragStarted) && evt.cancelable) {
+      evt.preventDefault();
+    }
+  });
+} // Export utils
+
+
+Sortable.utils = {
+  on: on,
+  off: off,
+  css: css,
+  find: find,
+  is: function is(el, selector) {
+    return !!closest(el, selector, el, false);
+  },
+  extend: extend,
+  throttle: throttle,
+  closest: closest,
+  toggleClass: toggleClass,
+  clone: clone,
+  index: index,
+  nextTick: _nextTick,
+  cancelNextTick: _cancelNextTick,
+  detectDirection: _detectDirection,
+  getChild: getChild
+};
+/**
+ * Get the Sortable instance of an element
+ * @param  {HTMLElement} element The element
+ * @return {Sortable|undefined}         The instance of Sortable
+ */
+
+Sortable.get = function (element) {
+  return element[expando];
+};
+/**
+ * Mount a plugin to Sortable
+ * @param  {...SortablePlugin|SortablePlugin[]} plugins       Plugins being mounted
+ */
+
+
+Sortable.mount = function () {
+  for (var _len = arguments.length, plugins = new Array(_len), _key = 0; _key < _len; _key++) {
+    plugins[_key] = arguments[_key];
+  }
+
+  if (plugins[0].constructor === Array) plugins = plugins[0];
+  plugins.forEach(function (plugin) {
+    if (!plugin.prototype || !plugin.prototype.constructor) {
+      throw "Sortable: Mounted plugin must be a constructor function, not ".concat({}.toString.call(plugin));
+    }
+
+    if (plugin.utils) Sortable.utils = _objectSpread({}, Sortable.utils, plugin.utils);
+    PluginManager.mount(plugin);
+  });
+};
+/**
+ * Create sortable instance
+ * @param {HTMLElement}  el
+ * @param {Object}      [options]
+ */
+
+
+Sortable.create = function (el, options) {
+  return new Sortable(el, options);
+}; // Export
+
+
+Sortable.version = version;
+
+var autoScrolls = [],
+    scrollEl,
+    scrollRootEl,
+    scrolling = false,
+    lastAutoScrollX,
+    lastAutoScrollY,
+    touchEvt$1,
+    pointerElemChangedInterval;
+
+function AutoScrollPlugin() {
+  function AutoScroll() {
+    this.defaults = {
+      scroll: true,
+      scrollSensitivity: 30,
+      scrollSpeed: 10,
+      bubbleScroll: true
+    }; // Bind all private methods
+
+    for (var fn in this) {
+      if (fn.charAt(0) === '_' && typeof this[fn] === 'function') {
+        this[fn] = this[fn].bind(this);
+      }
+    }
+  }
+
+  AutoScroll.prototype = {
+    dragStarted: function dragStarted(_ref) {
+      var originalEvent = _ref.originalEvent;
+
+      if (this.sortable.nativeDraggable) {
+        on(document, 'dragover', this._handleAutoScroll);
+      } else {
+        if (this.options.supportPointer) {
+          on(document, 'pointermove', this._handleFallbackAutoScroll);
+        } else if (originalEvent.touches) {
+          on(document, 'touchmove', this._handleFallbackAutoScroll);
+        } else {
+          on(document, 'mousemove', this._handleFallbackAutoScroll);
+        }
+      }
+    },
+    dragOverCompleted: function dragOverCompleted(_ref2) {
+      var originalEvent = _ref2.originalEvent;
+
+      // For when bubbling is canceled and using fallback (fallback 'touchmove' always reached)
+      if (!this.options.dragOverBubble && !originalEvent.rootEl) {
+        this._handleAutoScroll(originalEvent);
+      }
+    },
+    drop: function drop() {
+      if (this.sortable.nativeDraggable) {
+        off(document, 'dragover', this._handleAutoScroll);
+      } else {
+        off(document, 'pointermove', this._handleFallbackAutoScroll);
+        off(document, 'touchmove', this._handleFallbackAutoScroll);
+        off(document, 'mousemove', this._handleFallbackAutoScroll);
+      }
+
+      clearPointerElemChangedInterval();
+      clearAutoScrolls();
+      cancelThrottle();
+    },
+    nulling: function nulling() {
+      touchEvt$1 = scrollRootEl = scrollEl = scrolling = pointerElemChangedInterval = lastAutoScrollX = lastAutoScrollY = null;
+      autoScrolls.length = 0;
+    },
+    _handleFallbackAutoScroll: function _handleFallbackAutoScroll(evt) {
+      this._handleAutoScroll(evt, true);
+    },
+    _handleAutoScroll: function _handleAutoScroll(evt, fallback) {
+      var _this = this;
+
+      var x = (evt.touches ? evt.touches[0] : evt).clientX,
+          y = (evt.touches ? evt.touches[0] : evt).clientY,
+          elem = document.elementFromPoint(x, y);
+      touchEvt$1 = evt; // IE does not seem to have native autoscroll,
+      // Edge's autoscroll seems too conditional,
+      // MACOS Safari does not have autoscroll,
+      // Firefox and Chrome are good
+
+      if (fallback || Edge || IE11OrLess || Safari) {
+        autoScroll(evt, this.options, elem, fallback); // Listener for pointer element change
+
+        var ogElemScroller = getParentAutoScrollElement(elem, true);
+
+        if (scrolling && (!pointerElemChangedInterval || x !== lastAutoScrollX || y !== lastAutoScrollY)) {
+          pointerElemChangedInterval && clearPointerElemChangedInterval(); // Detect for pointer elem change, emulating native DnD behaviour
+
+          pointerElemChangedInterval = setInterval(function () {
+            var newElem = getParentAutoScrollElement(document.elementFromPoint(x, y), true);
+
+            if (newElem !== ogElemScroller) {
+              ogElemScroller = newElem;
+              clearAutoScrolls();
+            }
+
+            autoScroll(evt, _this.options, newElem, fallback);
+          }, 10);
+          lastAutoScrollX = x;
+          lastAutoScrollY = y;
+        }
+      } else {
+        // if DnD is enabled (and browser has good autoscrolling), first autoscroll will already scroll, so get parent autoscroll of first autoscroll
+        if (!this.options.bubbleScroll || getParentAutoScrollElement(elem, true) === getWindowScrollingElement()) {
+          clearAutoScrolls();
+          return;
+        }
+
+        autoScroll(evt, this.options, getParentAutoScrollElement(elem, false), false);
+      }
+    }
+  };
+  return _extends(AutoScroll, {
+    pluginName: 'scroll',
+    initializeByDefault: true
+  });
+}
+
+function clearAutoScrolls() {
+  autoScrolls.forEach(function (autoScroll) {
+    clearInterval(autoScroll.pid);
+  });
+  autoScrolls = [];
+}
+
+function clearPointerElemChangedInterval() {
+  clearInterval(pointerElemChangedInterval);
+}
+
+var autoScroll = throttle(function (evt, options, rootEl, isFallback) {
+  // Bug: https://bugzilla.mozilla.org/show_bug.cgi?id=505521
+  if (!options.scroll) return;
+  var x = (evt.touches ? evt.touches[0] : evt).clientX,
+      y = (evt.touches ? evt.touches[0] : evt).clientY,
+      sens = options.scrollSensitivity,
+      speed = options.scrollSpeed,
+      winScroller = getWindowScrollingElement();
+  var scrollThisInstance = false,
+      scrollCustomFn; // New scroll root, set scrollEl
+
+  if (scrollRootEl !== rootEl) {
+    scrollRootEl = rootEl;
+    clearAutoScrolls();
+    scrollEl = options.scroll;
+    scrollCustomFn = options.scrollFn;
+
+    if (scrollEl === true) {
+      scrollEl = getParentAutoScrollElement(rootEl, true);
+    }
+  }
+
+  var layersOut = 0;
+  var currentParent = scrollEl;
+
+  do {
+    var el = currentParent,
+        rect = getRect(el),
+        top = rect.top,
+        bottom = rect.bottom,
+        left = rect.left,
+        right = rect.right,
+        width = rect.width,
+        height = rect.height,
+        canScrollX = void 0,
+        canScrollY = void 0,
+        scrollWidth = el.scrollWidth,
+        scrollHeight = el.scrollHeight,
+        elCSS = css(el),
+        scrollPosX = el.scrollLeft,
+        scrollPosY = el.scrollTop;
+
+    if (el === winScroller) {
+      canScrollX = width < scrollWidth && (elCSS.overflowX === 'auto' || elCSS.overflowX === 'scroll' || elCSS.overflowX === 'visible');
+      canScrollY = height < scrollHeight && (elCSS.overflowY === 'auto' || elCSS.overflowY === 'scroll' || elCSS.overflowY === 'visible');
+    } else {
+      canScrollX = width < scrollWidth && (elCSS.overflowX === 'auto' || elCSS.overflowX === 'scroll');
+      canScrollY = height < scrollHeight && (elCSS.overflowY === 'auto' || elCSS.overflowY === 'scroll');
+    }
+
+    var vx = canScrollX && (Math.abs(right - x) <= sens && scrollPosX + width < scrollWidth) - (Math.abs(left - x) <= sens && !!scrollPosX);
+    var vy = canScrollY && (Math.abs(bottom - y) <= sens && scrollPosY + height < scrollHeight) - (Math.abs(top - y) <= sens && !!scrollPosY);
+
+    if (!autoScrolls[layersOut]) {
+      for (var i = 0; i <= layersOut; i++) {
+        if (!autoScrolls[i]) {
+          autoScrolls[i] = {};
+        }
+      }
+    }
+
+    if (autoScrolls[layersOut].vx != vx || autoScrolls[layersOut].vy != vy || autoScrolls[layersOut].el !== el) {
+      autoScrolls[layersOut].el = el;
+      autoScrolls[layersOut].vx = vx;
+      autoScrolls[layersOut].vy = vy;
+      clearInterval(autoScrolls[layersOut].pid);
+
+      if (vx != 0 || vy != 0) {
+        scrollThisInstance = true;
+        /* jshint loopfunc:true */
+
+        autoScrolls[layersOut].pid = setInterval(function () {
+          // emulate drag over during autoscroll (fallback), emulating native DnD behaviour
+          if (isFallback && this.layer === 0) {
+            Sortable.active._onTouchMove(touchEvt$1); // To move ghost if it is positioned absolutely
+
+          }
+
+          var scrollOffsetY = autoScrolls[this.layer].vy ? autoScrolls[this.layer].vy * speed : 0;
+          var scrollOffsetX = autoScrolls[this.layer].vx ? autoScrolls[this.layer].vx * speed : 0;
+
+          if (typeof scrollCustomFn === 'function') {
+            if (scrollCustomFn.call(Sortable.dragged.parentNode[expando], scrollOffsetX, scrollOffsetY, evt, touchEvt$1, autoScrolls[this.layer].el) !== 'continue') {
+              return;
+            }
+          }
+
+          scrollBy(autoScrolls[this.layer].el, scrollOffsetX, scrollOffsetY);
+        }.bind({
+          layer: layersOut
+        }), 24);
+      }
+    }
+
+    layersOut++;
+  } while (options.bubbleScroll && currentParent !== winScroller && (currentParent = getParentAutoScrollElement(currentParent, false)));
+
+  scrolling = scrollThisInstance; // in case another function catches scrolling as false in between when it is not
+}, 30);
+
+var drop = function drop(_ref) {
+  var originalEvent = _ref.originalEvent,
+      putSortable = _ref.putSortable,
+      dragEl = _ref.dragEl,
+      activeSortable = _ref.activeSortable,
+      dispatchSortableEvent = _ref.dispatchSortableEvent,
+      hideGhostForTarget = _ref.hideGhostForTarget,
+      unhideGhostForTarget = _ref.unhideGhostForTarget;
+  if (!originalEvent) return;
+  var toSortable = putSortable || activeSortable;
+  hideGhostForTarget();
+  var touch = originalEvent.changedTouches && originalEvent.changedTouches.length ? originalEvent.changedTouches[0] : originalEvent;
+  var target = document.elementFromPoint(touch.clientX, touch.clientY);
+  unhideGhostForTarget();
+
+  if (toSortable && !toSortable.el.contains(target)) {
+    dispatchSortableEvent('spill');
+    this.onSpill({
+      dragEl: dragEl,
+      putSortable: putSortable
     });
   }
+};
+
+function Revert() {}
+
+Revert.prototype = {
+  startIndex: null,
+  dragStart: function dragStart(_ref2) {
+    var oldDraggableIndex = _ref2.oldDraggableIndex;
+    this.startIndex = oldDraggableIndex;
+  },
+  onSpill: function onSpill(_ref3) {
+    var dragEl = _ref3.dragEl,
+        putSortable = _ref3.putSortable;
+    this.sortable.captureAnimationState();
+
+    if (putSortable) {
+      putSortable.captureAnimationState();
+    }
+
+    var nextSibling = getChild(this.sortable.el, this.startIndex, this.options);
+
+    if (nextSibling) {
+      this.sortable.el.insertBefore(dragEl, nextSibling);
+    } else {
+      this.sortable.el.appendChild(dragEl);
+    }
+
+    this.sortable.animateAll();
+
+    if (putSortable) {
+      putSortable.animateAll();
+    }
+  },
+  drop: drop
+};
+
+_extends(Revert, {
+  pluginName: 'revertOnSpill'
 });
+
+function Remove() {}
+
+Remove.prototype = {
+  onSpill: function onSpill(_ref4) {
+    var dragEl = _ref4.dragEl,
+        putSortable = _ref4.putSortable;
+    var parentSortable = putSortable || this.sortable;
+    parentSortable.captureAnimationState();
+    dragEl.parentNode && dragEl.parentNode.removeChild(dragEl);
+    parentSortable.animateAll();
+  },
+  drop: drop
+};
+
+_extends(Remove, {
+  pluginName: 'removeOnSpill'
+});
+
+var lastSwapEl;
+
+function SwapPlugin() {
+  function Swap() {
+    this.defaults = {
+      swapClass: 'sortable-swap-highlight'
+    };
+  }
+
+  Swap.prototype = {
+    dragStart: function dragStart(_ref) {
+      var dragEl = _ref.dragEl;
+      lastSwapEl = dragEl;
+    },
+    dragOverValid: function dragOverValid(_ref2) {
+      var completed = _ref2.completed,
+          target = _ref2.target,
+          onMove = _ref2.onMove,
+          activeSortable = _ref2.activeSortable,
+          changed = _ref2.changed,
+          cancel = _ref2.cancel;
+      if (!activeSortable.options.swap) return;
+      var el = this.sortable.el,
+          options = this.options;
+
+      if (target && target !== el) {
+        var prevSwapEl = lastSwapEl;
+
+        if (onMove(target) !== false) {
+          toggleClass(target, options.swapClass, true);
+          lastSwapEl = target;
+        } else {
+          lastSwapEl = null;
+        }
+
+        if (prevSwapEl && prevSwapEl !== lastSwapEl) {
+          toggleClass(prevSwapEl, options.swapClass, false);
+        }
+      }
+
+      changed();
+      completed(true);
+      cancel();
+    },
+    drop: function drop(_ref3) {
+      var activeSortable = _ref3.activeSortable,
+          putSortable = _ref3.putSortable,
+          dragEl = _ref3.dragEl;
+      var toSortable = putSortable || this.sortable;
+      var options = this.options;
+      lastSwapEl && toggleClass(lastSwapEl, options.swapClass, false);
+
+      if (lastSwapEl && (options.swap || putSortable && putSortable.options.swap)) {
+        if (dragEl !== lastSwapEl) {
+          toSortable.captureAnimationState();
+          if (toSortable !== activeSortable) activeSortable.captureAnimationState();
+          swapNodes(dragEl, lastSwapEl);
+          toSortable.animateAll();
+          if (toSortable !== activeSortable) activeSortable.animateAll();
+        }
+      }
+    },
+    nulling: function nulling() {
+      lastSwapEl = null;
+    }
+  };
+  return _extends(Swap, {
+    pluginName: 'swap',
+    eventProperties: function eventProperties() {
+      return {
+        swapItem: lastSwapEl
+      };
+    }
+  });
+}
+
+function swapNodes(n1, n2) {
+  var p1 = n1.parentNode,
+      p2 = n2.parentNode,
+      i1,
+      i2;
+  if (!p1 || !p2 || p1.isEqualNode(n2) || p2.isEqualNode(n1)) return;
+  i1 = index(n1);
+  i2 = index(n2);
+
+  if (p1.isEqualNode(p2) && i1 < i2) {
+    i2++;
+  }
+
+  p1.insertBefore(n2, p1.children[i1]);
+  p2.insertBefore(n1, p2.children[i2]);
+}
+
+var multiDragElements = [],
+    multiDragClones = [],
+    lastMultiDragSelect,
+    // for selection with modifier key down (SHIFT)
+multiDragSortable,
+    initialFolding = false,
+    // Initial multi-drag fold when drag started
+folding = false,
+    // Folding any other time
+dragStarted = false,
+    dragEl$1,
+    clonesFromRect,
+    clonesHidden;
+
+function MultiDragPlugin() {
+  function MultiDrag(sortable) {
+    // Bind all private methods
+    for (var fn in this) {
+      if (fn.charAt(0) === '_' && typeof this[fn] === 'function') {
+        this[fn] = this[fn].bind(this);
+      }
+    }
+
+    if (sortable.options.supportPointer) {
+      on(document, 'pointerup', this._deselectMultiDrag);
+    } else {
+      on(document, 'mouseup', this._deselectMultiDrag);
+      on(document, 'touchend', this._deselectMultiDrag);
+    }
+
+    on(document, 'keydown', this._checkKeyDown);
+    on(document, 'keyup', this._checkKeyUp);
+    this.defaults = {
+      selectedClass: 'sortable-selected',
+      multiDragKey: null,
+      setData: function setData(dataTransfer, dragEl) {
+        var data = '';
+
+        if (multiDragElements.length && multiDragSortable === sortable) {
+          multiDragElements.forEach(function (multiDragElement, i) {
+            data += (!i ? '' : ', ') + multiDragElement.textContent;
+          });
+        } else {
+          data = dragEl.textContent;
+        }
+
+        dataTransfer.setData('Text', data);
+      }
+    };
+  }
+
+  MultiDrag.prototype = {
+    multiDragKeyDown: false,
+    isMultiDrag: false,
+    delayStartGlobal: function delayStartGlobal(_ref) {
+      var dragged = _ref.dragEl;
+      dragEl$1 = dragged;
+    },
+    delayEnded: function delayEnded() {
+      this.isMultiDrag = ~multiDragElements.indexOf(dragEl$1);
+    },
+    setupClone: function setupClone(_ref2) {
+      var sortable = _ref2.sortable,
+          cancel = _ref2.cancel;
+      if (!this.isMultiDrag) return;
+
+      for (var i = 0; i < multiDragElements.length; i++) {
+        multiDragClones.push(clone(multiDragElements[i]));
+        multiDragClones[i].sortableIndex = multiDragElements[i].sortableIndex;
+        multiDragClones[i].draggable = false;
+        multiDragClones[i].style['will-change'] = '';
+        toggleClass(multiDragClones[i], this.options.selectedClass, false);
+        multiDragElements[i] === dragEl$1 && toggleClass(multiDragClones[i], this.options.chosenClass, false);
+      }
+
+      sortable._hideClone();
+
+      cancel();
+    },
+    clone: function clone(_ref3) {
+      var sortable = _ref3.sortable,
+          rootEl = _ref3.rootEl,
+          dispatchSortableEvent = _ref3.dispatchSortableEvent,
+          cancel = _ref3.cancel;
+      if (!this.isMultiDrag) return;
+
+      if (!this.options.removeCloneOnHide) {
+        if (multiDragElements.length && multiDragSortable === sortable) {
+          insertMultiDragClones(true, rootEl);
+          dispatchSortableEvent('clone');
+          cancel();
+        }
+      }
+    },
+    showClone: function showClone(_ref4) {
+      var cloneNowShown = _ref4.cloneNowShown,
+          rootEl = _ref4.rootEl,
+          cancel = _ref4.cancel;
+      if (!this.isMultiDrag) return;
+      insertMultiDragClones(false, rootEl);
+      multiDragClones.forEach(function (clone) {
+        css(clone, 'display', '');
+      });
+      cloneNowShown();
+      clonesHidden = false;
+      cancel();
+    },
+    hideClone: function hideClone(_ref5) {
+      var _this = this;
+
+      var sortable = _ref5.sortable,
+          cloneNowHidden = _ref5.cloneNowHidden,
+          cancel = _ref5.cancel;
+      if (!this.isMultiDrag) return;
+      multiDragClones.forEach(function (clone) {
+        css(clone, 'display', 'none');
+
+        if (_this.options.removeCloneOnHide && clone.parentNode) {
+          clone.parentNode.removeChild(clone);
+        }
+      });
+      cloneNowHidden();
+      clonesHidden = true;
+      cancel();
+    },
+    dragStartGlobal: function dragStartGlobal(_ref6) {
+      var sortable = _ref6.sortable;
+
+      if (!this.isMultiDrag && multiDragSortable) {
+        multiDragSortable.multiDrag._deselectMultiDrag();
+      }
+
+      multiDragElements.forEach(function (multiDragElement) {
+        multiDragElement.sortableIndex = index(multiDragElement);
+      }); // Sort multi-drag elements
+
+      multiDragElements = multiDragElements.sort(function (a, b) {
+        return a.sortableIndex - b.sortableIndex;
+      });
+      dragStarted = true;
+    },
+    dragStarted: function dragStarted(_ref7) {
+      var _this2 = this;
+
+      var sortable = _ref7.sortable;
+      if (!this.isMultiDrag) return;
+
+      if (this.options.sort) {
+        // Capture rects,
+        // hide multi drag elements (by positioning them absolute),
+        // set multi drag elements rects to dragRect,
+        // show multi drag elements,
+        // animate to rects,
+        // unset rects & remove from DOM
+        sortable.captureAnimationState();
+
+        if (this.options.animation) {
+          multiDragElements.forEach(function (multiDragElement) {
+            if (multiDragElement === dragEl$1) return;
+            css(multiDragElement, 'position', 'absolute');
+          });
+          var dragRect = getRect(dragEl$1, false, true, true);
+          multiDragElements.forEach(function (multiDragElement) {
+            if (multiDragElement === dragEl$1) return;
+            setRect(multiDragElement, dragRect);
+          });
+          folding = true;
+          initialFolding = true;
+        }
+      }
+
+      sortable.animateAll(function () {
+        folding = false;
+        initialFolding = false;
+
+        if (_this2.options.animation) {
+          multiDragElements.forEach(function (multiDragElement) {
+            unsetRect(multiDragElement);
+          });
+        } // Remove all auxiliary multidrag items from el, if sorting enabled
+
+
+        if (_this2.options.sort) {
+          removeMultiDragElements();
+        }
+      });
+    },
+    dragOver: function dragOver(_ref8) {
+      var target = _ref8.target,
+          completed = _ref8.completed,
+          cancel = _ref8.cancel;
+
+      if (folding && ~multiDragElements.indexOf(target)) {
+        completed(false);
+        cancel();
+      }
+    },
+    revert: function revert(_ref9) {
+      var fromSortable = _ref9.fromSortable,
+          rootEl = _ref9.rootEl,
+          sortable = _ref9.sortable,
+          dragRect = _ref9.dragRect;
+
+      if (multiDragElements.length > 1) {
+        // Setup unfold animation
+        multiDragElements.forEach(function (multiDragElement) {
+          sortable.addAnimationState({
+            target: multiDragElement,
+            rect: folding ? getRect(multiDragElement) : dragRect
+          });
+          unsetRect(multiDragElement);
+          multiDragElement.fromRect = dragRect;
+          fromSortable.removeAnimationState(multiDragElement);
+        });
+        folding = false;
+        insertMultiDragElements(!this.options.removeCloneOnHide, rootEl);
+      }
+    },
+    dragOverCompleted: function dragOverCompleted(_ref10) {
+      var sortable = _ref10.sortable,
+          isOwner = _ref10.isOwner,
+          insertion = _ref10.insertion,
+          activeSortable = _ref10.activeSortable,
+          parentEl = _ref10.parentEl,
+          putSortable = _ref10.putSortable;
+      var options = this.options;
+
+      if (insertion) {
+        // Clones must be hidden before folding animation to capture dragRectAbsolute properly
+        if (isOwner) {
+          activeSortable._hideClone();
+        }
+
+        initialFolding = false; // If leaving sort:false root, or already folding - Fold to new location
+
+        if (options.animation && multiDragElements.length > 1 && (folding || !isOwner && !activeSortable.options.sort && !putSortable)) {
+          // Fold: Set all multi drag elements's rects to dragEl's rect when multi-drag elements are invisible
+          var dragRectAbsolute = getRect(dragEl$1, false, true, true);
+          multiDragElements.forEach(function (multiDragElement) {
+            if (multiDragElement === dragEl$1) return;
+            setRect(multiDragElement, dragRectAbsolute); // Move element(s) to end of parentEl so that it does not interfere with multi-drag clones insertion if they are inserted
+            // while folding, and so that we can capture them again because old sortable will no longer be fromSortable
+
+            parentEl.appendChild(multiDragElement);
+          });
+          folding = true;
+        } // Clones must be shown (and check to remove multi drags) after folding when interfering multiDragElements are moved out
+
+
+        if (!isOwner) {
+          // Only remove if not folding (folding will remove them anyways)
+          if (!folding) {
+            removeMultiDragElements();
+          }
+
+          if (multiDragElements.length > 1) {
+            var clonesHiddenBefore = clonesHidden;
+
+            activeSortable._showClone(sortable); // Unfold animation for clones if showing from hidden
+
+
+            if (activeSortable.options.animation && !clonesHidden && clonesHiddenBefore) {
+              multiDragClones.forEach(function (clone) {
+                activeSortable.addAnimationState({
+                  target: clone,
+                  rect: clonesFromRect
+                });
+                clone.fromRect = clonesFromRect;
+                clone.thisAnimationDuration = null;
+              });
+            }
+          } else {
+            activeSortable._showClone(sortable);
+          }
+        }
+      }
+    },
+    dragOverAnimationCapture: function dragOverAnimationCapture(_ref11) {
+      var dragRect = _ref11.dragRect,
+          isOwner = _ref11.isOwner,
+          activeSortable = _ref11.activeSortable;
+      multiDragElements.forEach(function (multiDragElement) {
+        multiDragElement.thisAnimationDuration = null;
+      });
+
+      if (activeSortable.options.animation && !isOwner && activeSortable.multiDrag.isMultiDrag) {
+        clonesFromRect = _extends({}, dragRect);
+        var dragMatrix = matrix(dragEl$1, true);
+        clonesFromRect.top -= dragMatrix.f;
+        clonesFromRect.left -= dragMatrix.e;
+      }
+    },
+    dragOverAnimationComplete: function dragOverAnimationComplete() {
+      if (folding) {
+        folding = false;
+        removeMultiDragElements();
+      }
+    },
+    drop: function drop(_ref12) {
+      var evt = _ref12.originalEvent,
+          rootEl = _ref12.rootEl,
+          parentEl = _ref12.parentEl,
+          sortable = _ref12.sortable,
+          dispatchSortableEvent = _ref12.dispatchSortableEvent,
+          oldIndex = _ref12.oldIndex,
+          putSortable = _ref12.putSortable;
+      var toSortable = putSortable || this.sortable;
+      if (!evt) return;
+      var options = this.options,
+          children = parentEl.children; // Multi-drag selection
+
+      if (!dragStarted) {
+        if (options.multiDragKey && !this.multiDragKeyDown) {
+          this._deselectMultiDrag();
+        }
+
+        toggleClass(dragEl$1, options.selectedClass, !~multiDragElements.indexOf(dragEl$1));
+
+        if (!~multiDragElements.indexOf(dragEl$1)) {
+          multiDragElements.push(dragEl$1);
+          dispatchEvent({
+            sortable: sortable,
+            rootEl: rootEl,
+            name: 'select',
+            targetEl: dragEl$1,
+            originalEvt: evt
+          }); // Modifier activated, select from last to dragEl
+
+          if (evt.shiftKey && lastMultiDragSelect && sortable.el.contains(lastMultiDragSelect)) {
+            var lastIndex = index(lastMultiDragSelect),
+                currentIndex = index(dragEl$1);
+
+            if (~lastIndex && ~currentIndex && lastIndex !== currentIndex) {
+              // Must include lastMultiDragSelect (select it), in case modified selection from no selection
+              // (but previous selection existed)
+              var n, i;
+
+              if (currentIndex > lastIndex) {
+                i = lastIndex;
+                n = currentIndex;
+              } else {
+                i = currentIndex;
+                n = lastIndex + 1;
+              }
+
+              for (; i < n; i++) {
+                if (~multiDragElements.indexOf(children[i])) continue;
+                toggleClass(children[i], options.selectedClass, true);
+                multiDragElements.push(children[i]);
+                dispatchEvent({
+                  sortable: sortable,
+                  rootEl: rootEl,
+                  name: 'select',
+                  targetEl: children[i],
+                  originalEvt: evt
+                });
+              }
+            }
+          } else {
+            lastMultiDragSelect = dragEl$1;
+          }
+
+          multiDragSortable = toSortable;
+        } else {
+          multiDragElements.splice(multiDragElements.indexOf(dragEl$1), 1);
+          lastMultiDragSelect = null;
+          dispatchEvent({
+            sortable: sortable,
+            rootEl: rootEl,
+            name: 'deselect',
+            targetEl: dragEl$1,
+            originalEvt: evt
+          });
+        }
+      } // Multi-drag drop
+
+
+      if (dragStarted && this.isMultiDrag) {
+        // Do not "unfold" after around dragEl if reverted
+        if ((parentEl[expando].options.sort || parentEl !== rootEl) && multiDragElements.length > 1) {
+          var dragRect = getRect(dragEl$1),
+              multiDragIndex = index(dragEl$1, ':not(.' + this.options.selectedClass + ')');
+          if (!initialFolding && options.animation) dragEl$1.thisAnimationDuration = null;
+          toSortable.captureAnimationState();
+
+          if (!initialFolding) {
+            if (options.animation) {
+              dragEl$1.fromRect = dragRect;
+              multiDragElements.forEach(function (multiDragElement) {
+                multiDragElement.thisAnimationDuration = null;
+
+                if (multiDragElement !== dragEl$1) {
+                  var rect = folding ? getRect(multiDragElement) : dragRect;
+                  multiDragElement.fromRect = rect; // Prepare unfold animation
+
+                  toSortable.addAnimationState({
+                    target: multiDragElement,
+                    rect: rect
+                  });
+                }
+              });
+            } // Multi drag elements are not necessarily removed from the DOM on drop, so to reinsert
+            // properly they must all be removed
+
+
+            removeMultiDragElements();
+            multiDragElements.forEach(function (multiDragElement) {
+              if (children[multiDragIndex]) {
+                parentEl.insertBefore(multiDragElement, children[multiDragIndex]);
+              } else {
+                parentEl.appendChild(multiDragElement);
+              }
+
+              multiDragIndex++;
+            }); // If initial folding is done, the elements may have changed position because they are now
+            // unfolding around dragEl, even though dragEl may not have his index changed, so update event
+            // must be fired here as Sortable will not.
+
+            if (oldIndex === index(dragEl$1)) {
+              var update = false;
+              multiDragElements.forEach(function (multiDragElement) {
+                if (multiDragElement.sortableIndex !== index(multiDragElement)) {
+                  update = true;
+                  return;
+                }
+              });
+
+              if (update) {
+                dispatchSortableEvent('update');
+              }
+            }
+          } // Must be done after capturing individual rects (scroll bar)
+
+
+          multiDragElements.forEach(function (multiDragElement) {
+            unsetRect(multiDragElement);
+          });
+          toSortable.animateAll();
+        }
+
+        multiDragSortable = toSortable;
+      } // Remove clones if necessary
+
+
+      if (rootEl === parentEl || putSortable && putSortable.lastPutMode !== 'clone') {
+        multiDragClones.forEach(function (clone) {
+          clone.parentNode && clone.parentNode.removeChild(clone);
+        });
+      }
+    },
+    nullingGlobal: function nullingGlobal() {
+      this.isMultiDrag = dragStarted = false;
+      multiDragClones.length = 0;
+    },
+    destroyGlobal: function destroyGlobal() {
+      this._deselectMultiDrag();
+
+      off(document, 'pointerup', this._deselectMultiDrag);
+      off(document, 'mouseup', this._deselectMultiDrag);
+      off(document, 'touchend', this._deselectMultiDrag);
+      off(document, 'keydown', this._checkKeyDown);
+      off(document, 'keyup', this._checkKeyUp);
+    },
+    _deselectMultiDrag: function _deselectMultiDrag(evt) {
+      if (typeof dragStarted !== "undefined" && dragStarted) return; // Only deselect if selection is in this sortable
+
+      if (multiDragSortable !== this.sortable) return; // Only deselect if target is not item in this sortable
+
+      if (evt && closest(evt.target, this.options.draggable, this.sortable.el, false)) return; // Only deselect if left click
+
+      if (evt && evt.button !== 0) return;
+
+      while (multiDragElements.length) {
+        var el = multiDragElements[0];
+        toggleClass(el, this.options.selectedClass, false);
+        multiDragElements.shift();
+        dispatchEvent({
+          sortable: this.sortable,
+          rootEl: this.sortable.el,
+          name: 'deselect',
+          targetEl: el,
+          originalEvt: evt
+        });
+      }
+    },
+    _checkKeyDown: function _checkKeyDown(evt) {
+      if (evt.key === this.options.multiDragKey) {
+        this.multiDragKeyDown = true;
+      }
+    },
+    _checkKeyUp: function _checkKeyUp(evt) {
+      if (evt.key === this.options.multiDragKey) {
+        this.multiDragKeyDown = false;
+      }
+    }
+  };
+  return _extends(MultiDrag, {
+    // Static methods & properties
+    pluginName: 'multiDrag',
+    utils: {
+      /**
+       * Selects the provided multi-drag item
+       * @param  {HTMLElement} el    The element to be selected
+       */
+      select: function select(el) {
+        var sortable = el.parentNode[expando];
+        if (!sortable || !sortable.options.multiDrag || ~multiDragElements.indexOf(el)) return;
+
+        if (multiDragSortable && multiDragSortable !== sortable) {
+          multiDragSortable.multiDrag._deselectMultiDrag();
+
+          multiDragSortable = sortable;
+        }
+
+        toggleClass(el, sortable.options.selectedClass, true);
+        multiDragElements.push(el);
+      },
+
+      /**
+       * Deselects the provided multi-drag item
+       * @param  {HTMLElement} el    The element to be deselected
+       */
+      deselect: function deselect(el) {
+        var sortable = el.parentNode[expando],
+            index = multiDragElements.indexOf(el);
+        if (!sortable || !sortable.options.multiDrag || !~index) return;
+        toggleClass(el, sortable.options.selectedClass, false);
+        multiDragElements.splice(index, 1);
+      }
+    },
+    eventProperties: function eventProperties() {
+      var _this3 = this;
+
+      var oldIndicies = [],
+          newIndicies = [];
+      multiDragElements.forEach(function (multiDragElement) {
+        oldIndicies.push({
+          multiDragElement: multiDragElement,
+          index: multiDragElement.sortableIndex
+        }); // multiDragElements will already be sorted if folding
+
+        var newIndex;
+
+        if (folding && multiDragElement !== dragEl$1) {
+          newIndex = -1;
+        } else if (folding) {
+          newIndex = index(multiDragElement, ':not(.' + _this3.options.selectedClass + ')');
+        } else {
+          newIndex = index(multiDragElement);
+        }
+
+        newIndicies.push({
+          multiDragElement: multiDragElement,
+          index: newIndex
+        });
+      });
+      return {
+        items: _toConsumableArray(multiDragElements),
+        clones: [].concat(multiDragClones),
+        oldIndicies: oldIndicies,
+        newIndicies: newIndicies
+      };
+    },
+    optionListeners: {
+      multiDragKey: function multiDragKey(key) {
+        key = key.toLowerCase();
+
+        if (key === 'ctrl') {
+          key = 'Control';
+        } else if (key.length > 1) {
+          key = key.charAt(0).toUpperCase() + key.substr(1);
+        }
+
+        return key;
+      }
+    }
+  });
+}
+
+function insertMultiDragElements(clonesInserted, rootEl) {
+  multiDragElements.forEach(function (multiDragElement, i) {
+    var target = rootEl.children[multiDragElement.sortableIndex + (clonesInserted ? Number(i) : 0)];
+
+    if (target) {
+      rootEl.insertBefore(multiDragElement, target);
+    } else {
+      rootEl.appendChild(multiDragElement);
+    }
+  });
+}
+/**
+ * Insert multi-drag clones
+ * @param  {[Boolean]} elementsInserted  Whether the multi-drag elements are inserted
+ * @param  {HTMLElement} rootEl
+ */
+
+
+function insertMultiDragClones(elementsInserted, rootEl) {
+  multiDragClones.forEach(function (clone, i) {
+    var target = rootEl.children[clone.sortableIndex + (elementsInserted ? Number(i) : 0)];
+
+    if (target) {
+      rootEl.insertBefore(clone, target);
+    } else {
+      rootEl.appendChild(clone);
+    }
+  });
+}
+
+function removeMultiDragElements() {
+  multiDragElements.forEach(function (multiDragElement) {
+    if (multiDragElement === dragEl$1) return;
+    multiDragElement.parentNode && multiDragElement.parentNode.removeChild(multiDragElement);
+  });
+}
+
+Sortable.mount(new AutoScrollPlugin());
+Sortable.mount(Remove, Revert);
+
+/* harmony default export */ __webpack_exports__["default"] = (Sortable);
+
+
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/nsis/NsiChoose.vue?vue&type=script&lang=js&":
-/*!*********************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/nsis/NsiChoose.vue?vue&type=script&lang=js& ***!
-  \*********************************************************************************************************************************************************************************/
+/***/ "./node_modules/vuedraggable/src/util/helper.js":
+/*!******************************************************!*\
+  !*** ./node_modules/vuedraggable/src/util/helper.js ***!
+  \******************************************************/
+/*! exports provided: insertNodeAt, camelize, console, removeNode */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* WEBPACK VAR INJECTION */(function(global) {/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "insertNodeAt", function() { return insertNodeAt; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "camelize", function() { return camelize; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "console", function() { return console; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "removeNode", function() { return removeNode; });
+function getConsole() {
+  if (typeof window !== "undefined") {
+    return window.console;
+  }
+
+  return global.console;
+}
+
+var console = getConsole();
+
+function cached(fn) {
+  var cache = Object.create(null);
+  return function cachedFn(str) {
+    var hit = cache[str];
+    return hit || (cache[str] = fn(str));
+  };
+}
+
+var regex = /-(\w)/g;
+var camelize = cached(function (str) {
+  return str.replace(regex, function (_, c) {
+    return c ? c.toUpperCase() : "";
+  });
+});
+
+function removeNode(node) {
+  if (node.parentElement !== null) {
+    node.parentElement.removeChild(node);
+  }
+}
+
+function insertNodeAt(fatherNode, node, position) {
+  var refNode = position === 0 ? fatherNode.children[0] : fatherNode.children[position - 1].nextSibling;
+  fatherNode.insertBefore(node, refNode);
+}
+
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(/*! ./../../../webpack/buildin/global.js */ "./node_modules/webpack/buildin/global.js")))
+
+/***/ }),
+
+/***/ "./node_modules/vuedraggable/src/vuedraggable.js":
+/*!*******************************************************!*\
+  !*** ./node_modules/vuedraggable/src/vuedraggable.js ***!
+  \*******************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _NewNsi__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./NewNsi */ "./resources/assets/src/components/nsis/NewNsi.vue");
-/* harmony import */ var _EditNsi__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EditNsi */ "./resources/assets/src/components/nsis/EditNsi.vue");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+/* harmony import */ var sortablejs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! sortablejs */ "./node_modules/sortablejs/modular/sortable.esm.js");
+/* harmony import */ var _util_helper__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./util/helper */ "./node_modules/vuedraggable/src/util/helper.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
 
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: 'nsi-choose',
-  props: {
-    ish_version_id: Number,
-    selected: Array
-  },
-  components: {
-    NewNsi: _NewNsi__WEBPACK_IMPORTED_MODULE_0__["default"],
-    EditNsi: _EditNsi__WEBPACK_IMPORTED_MODULE_1__["default"]
-  },
-  data: function data() {
-    return {
-      nn: 'n',
-      types: [],
-      nsis: [],
-      isBusy: true,
-      show_edit_window: false,
-      nsi_to_edit: 0 //selected: [],
 
-    };
+
+function buildAttribute(object, propName, value) {
+  if (value === undefined) {
+    return object;
+  }
+
+  object = object || {};
+  object[propName] = value;
+  return object;
+}
+
+function computeVmIndex(vnodes, element) {
+  return vnodes.map(function (elt) {
+    return elt.elm;
+  }).indexOf(element);
+}
+
+function _computeIndexes(slots, children, isTransition, footerOffset) {
+  if (!slots) {
+    return [];
+  }
+
+  var elmFromNodes = slots.map(function (elt) {
+    return elt.elm;
+  });
+  var footerIndex = children.length - footerOffset;
+
+  var rawIndexes = _toConsumableArray(children).map(function (elt, idx) {
+    return idx >= footerIndex ? elmFromNodes.length : elmFromNodes.indexOf(elt);
+  });
+
+  return isTransition ? rawIndexes.filter(function (ind) {
+    return ind !== -1;
+  }) : rawIndexes;
+}
+
+function emit(evtName, evtData) {
+  var _this = this;
+
+  this.$nextTick(function () {
+    return _this.$emit(evtName.toLowerCase(), evtData);
+  });
+}
+
+function delegateAndEmit(evtName) {
+  var _this2 = this;
+
+  return function (evtData) {
+    if (_this2.realList !== null) {
+      _this2["onDrag" + evtName](evtData);
+    }
+
+    emit.call(_this2, evtName, evtData);
+  };
+}
+
+function isTransitionName(name) {
+  return ["transition-group", "TransitionGroup"].includes(name);
+}
+
+function isTransition(slots) {
+  if (!slots || slots.length !== 1) {
+    return false;
+  }
+
+  var _slots = _slicedToArray(slots, 1),
+      componentOptions = _slots[0].componentOptions;
+
+  if (!componentOptions) {
+    return false;
+  }
+
+  return isTransitionName(componentOptions.tag);
+}
+
+function getSlot(slot, scopedSlot, key) {
+  return slot[key] || (scopedSlot[key] ? scopedSlot[key]() : undefined);
+}
+
+function computeChildrenAndOffsets(children, slot, scopedSlot) {
+  var headerOffset = 0;
+  var footerOffset = 0;
+  var header = getSlot(slot, scopedSlot, "header");
+
+  if (header) {
+    headerOffset = header.length;
+    children = children ? [].concat(_toConsumableArray(header), _toConsumableArray(children)) : _toConsumableArray(header);
+  }
+
+  var footer = getSlot(slot, scopedSlot, "footer");
+
+  if (footer) {
+    footerOffset = footer.length;
+    children = children ? [].concat(_toConsumableArray(children), _toConsumableArray(footer)) : _toConsumableArray(footer);
+  }
+
+  return {
+    children: children,
+    headerOffset: headerOffset,
+    footerOffset: footerOffset
+  };
+}
+
+function getComponentAttributes($attrs, componentData) {
+  var attributes = null;
+
+  var update = function update(name, value) {
+    attributes = buildAttribute(attributes, name, value);
+  };
+
+  var attrs = Object.keys($attrs).filter(function (key) {
+    return key === "id" || key.startsWith("data-");
+  }).reduce(function (res, key) {
+    res[key] = $attrs[key];
+    return res;
+  }, {});
+  update("attrs", attrs);
+
+  if (!componentData) {
+    return attributes;
+  }
+
+  var on = componentData.on,
+      props = componentData.props,
+      componentDataAttrs = componentData.attrs;
+  update("on", on);
+  update("props", props);
+  Object.assign(attributes.attrs, componentDataAttrs);
+  return attributes;
+}
+
+var eventsListened = ["Start", "Add", "Remove", "Update", "End"];
+var eventsToEmit = ["Choose", "Unchoose", "Sort", "Filter", "Clone"];
+var readonlyProperties = ["Move"].concat(eventsListened, eventsToEmit).map(function (evt) {
+  return "on" + evt;
+});
+var draggingElement = null;
+var props = {
+  options: Object,
+  list: {
+    type: Array,
+    required: false,
+    default: null
   },
-  computed: {
-    npas: function npas() {
-      return this.nsis.filter(function (nsi) {
-        return nsi.type_id == 1;
-      });
-    },
-    ychs: function ychs() {
-      return this.nsis.filter(function (nsi) {
-        return nsi.type_id == 2;
-      });
-    },
-    irs: function irs() {
-      return this.nsis.filter(function (nsi) {
-        return nsi.type_id == 3;
-      });
-    },
-    ebss: function ebss() {
-      return this.nsis.filter(function (nsi) {
-        return nsi.type_id == 4;
-      });
+  value: {
+    type: Array,
+    required: false,
+    default: null
+  },
+  noTransitionOnDrag: {
+    type: Boolean,
+    default: false
+  },
+  clone: {
+    type: Function,
+    default: function _default(original) {
+      return original;
     }
   },
-  methods: {
-    add_nsi: function add_nsi(data) {
-      var self2 = this;
-      axios.post('/nsis/add_nsi', {
-        'nsi_data': data.nsi_data,
-        'ish_version_id': this.ish_version_id
-      }).then(function (response) {
-        alert('Источник добавлен!');
-        self2.nn++;
-        self2.nsis.push(response.data);
-      });
-    },
-    update_nsi: function update_nsi(data) {
-      var self2 = this;
-      axios.post('/nsis/update_nsi', {
-        'nsi_data': data.nsi_data
-      }).then(function (response) {
-        alert('Источник обновлен!');
-        self2.nsis = self2.nsis.filter(function (nsi) {
-          return nsi.id != data.nsi_data.id;
-        });
-        self2.nsis.push(response.data);
-        self2.$bvModal.hide("modal-editnsi");
-      });
-    },
-    remove_nsi: function remove_nsi(id) {
-      var _this = this;
+  element: {
+    type: String,
+    default: "div"
+  },
+  tag: {
+    type: String,
+    default: null
+  },
+  move: {
+    type: Function,
+    default: null
+  },
+  componentData: {
+    type: Object,
+    required: false,
+    default: null
+  }
+};
+var draggableComponent = {
+  name: "draggable",
+  inheritAttrs: false,
+  props: props,
+  data: function data() {
+    return {
+      transitionMode: false,
+      noneFunctionalComponentMode: false
+    };
+  },
+  render: function render(h) {
+    var slots = this.$slots.default;
+    this.transitionMode = isTransition(slots);
 
-      this.$bvModal.msgBoxConfirm('Действительно хотите источник?').then(function (value) {
-        if (value == true) {
-          axios.post('/nsis/remove_nsi', {
-            'nsi_id': id
-          }).then(function (response) {
-            return _this.nsis = _this.nsis.filter(function (nsi) {
-              return nsi.id != response.data;
-            });
-          });
-        }
-      });
-    },
-    edit_nsi: function edit_nsi(id) {
-      var _this2 = this;
+    var _computeChildrenAndOf = computeChildrenAndOffsets(slots, this.$slots, this.$scopedSlots),
+        children = _computeChildrenAndOf.children,
+        headerOffset = _computeChildrenAndOf.headerOffset,
+        footerOffset = _computeChildrenAndOf.footerOffset;
 
-      this.nsi_to_edit = id;
-      this.show_edit_window = true;
-      this.$nextTick(function () {
-        _this2.$bvModal.show("modal-editnsi");
-      });
-    },
-    change_nsi: function change_nsi(item) {
-      this.$emit('change_nsi', {
-        nsi_data: this.selected
-      });
+    this.headerOffset = headerOffset;
+    this.footerOffset = footerOffset;
+    var attributes = getComponentAttributes(this.$attrs, this.componentData);
+    return h(this.getTag(), attributes, children);
+  },
+  created: function created() {
+    if (this.list !== null && this.value !== null) {
+      _util_helper__WEBPACK_IMPORTED_MODULE_1__["console"].error("Value and list props are mutually exclusive! Please set one or another.");
+    }
+
+    if (this.element !== "div") {
+      _util_helper__WEBPACK_IMPORTED_MODULE_1__["console"].warn("Element props is deprecated please use tag props instead. See https://github.com/SortableJS/Vue.Draggable/blob/master/documentation/migrate.md#element-props");
+    }
+
+    if (this.options !== undefined) {
+      _util_helper__WEBPACK_IMPORTED_MODULE_1__["console"].warn("Options props is deprecated, add sortable options directly as vue.draggable item, or use v-bind. See https://github.com/SortableJS/Vue.Draggable/blob/master/documentation/migrate.md#options-props");
     }
   },
   mounted: function mounted() {
     var _this3 = this;
 
-    var self2 = this;
-    axios.get('/nsis/nsi_types').then(function (response) {
-      return _this3.types = response.data;
+    this.noneFunctionalComponentMode = this.getTag().toLowerCase() !== this.$el.nodeName.toLowerCase() && !this.getIsFunctional();
+
+    if (this.noneFunctionalComponentMode && this.transitionMode) {
+      throw new Error("Transition-group inside component is not supported. Please alter tag value or remove transition-group. Current tag value: ".concat(this.getTag()));
+    }
+
+    var optionsAdded = {};
+    eventsListened.forEach(function (elt) {
+      optionsAdded["on" + elt] = delegateAndEmit.call(_this3, elt);
     });
-    axios.get('/nsis/' + this.ish_version_id).then(function (response) {
-      return _this3.nsis = response.data;
+    eventsToEmit.forEach(function (elt) {
+      optionsAdded["on" + elt] = emit.bind(_this3, elt);
     });
+    var attributes = Object.keys(this.$attrs).reduce(function (res, key) {
+      res[Object(_util_helper__WEBPACK_IMPORTED_MODULE_1__["camelize"])(key)] = _this3.$attrs[key];
+      return res;
+    }, {});
+    var options = Object.assign({}, this.options, attributes, optionsAdded, {
+      onMove: function onMove(evt, originalEvent) {
+        return _this3.onDragMove(evt, originalEvent);
+      }
+    });
+    !("draggable" in options) && (options.draggable = ">*");
+    this._sortable = new sortablejs__WEBPACK_IMPORTED_MODULE_0__["default"](this.rootContainer, options);
+    this.computeIndexes();
+  },
+  beforeDestroy: function beforeDestroy() {
+    if (this._sortable !== undefined) this._sortable.destroy();
+  },
+  computed: {
+    rootContainer: function rootContainer() {
+      return this.transitionMode ? this.$el.children[0] : this.$el;
+    },
+    realList: function realList() {
+      return this.list ? this.list : this.value;
+    }
+  },
+  watch: {
+    options: {
+      handler: function handler(newOptionValue) {
+        this.updateOptions(newOptionValue);
+      },
+      deep: true
+    },
+    $attrs: {
+      handler: function handler(newOptionValue) {
+        this.updateOptions(newOptionValue);
+      },
+      deep: true
+    },
+    realList: function realList() {
+      this.computeIndexes();
+    }
+  },
+  methods: {
+    getIsFunctional: function getIsFunctional() {
+      var fnOptions = this._vnode.fnOptions;
+      return fnOptions && fnOptions.functional;
+    },
+    getTag: function getTag() {
+      return this.tag || this.element;
+    },
+    updateOptions: function updateOptions(newOptionValue) {
+      for (var property in newOptionValue) {
+        var value = Object(_util_helper__WEBPACK_IMPORTED_MODULE_1__["camelize"])(property);
+
+        if (readonlyProperties.indexOf(value) === -1) {
+          this._sortable.option(value, newOptionValue[property]);
+        }
+      }
+    },
+    getChildrenNodes: function getChildrenNodes() {
+      if (this.noneFunctionalComponentMode) {
+        return this.$children[0].$slots.default;
+      }
+
+      var rawNodes = this.$slots.default;
+      return this.transitionMode ? rawNodes[0].child.$slots.default : rawNodes;
+    },
+    computeIndexes: function computeIndexes() {
+      var _this4 = this;
+
+      this.$nextTick(function () {
+        _this4.visibleIndexes = _computeIndexes(_this4.getChildrenNodes(), _this4.rootContainer.children, _this4.transitionMode, _this4.footerOffset);
+      });
+    },
+    getUnderlyingVm: function getUnderlyingVm(htmlElt) {
+      var index = computeVmIndex(this.getChildrenNodes() || [], htmlElt);
+
+      if (index === -1) {
+        //Edge case during move callback: related element might be
+        //an element different from collection
+        return null;
+      }
+
+      var element = this.realList[index];
+      return {
+        index: index,
+        element: element
+      };
+    },
+    getUnderlyingPotencialDraggableComponent: function getUnderlyingPotencialDraggableComponent(_ref) {
+      var vue = _ref.__vue__;
+
+      if (!vue || !vue.$options || !isTransitionName(vue.$options._componentTag)) {
+        if (!("realList" in vue) && vue.$children.length === 1 && "realList" in vue.$children[0]) return vue.$children[0];
+        return vue;
+      }
+
+      return vue.$parent;
+    },
+    emitChanges: function emitChanges(evt) {
+      var _this5 = this;
+
+      this.$nextTick(function () {
+        _this5.$emit("change", evt);
+      });
+    },
+    alterList: function alterList(onList) {
+      if (this.list) {
+        onList(this.list);
+        return;
+      }
+
+      var newList = _toConsumableArray(this.value);
+
+      onList(newList);
+      this.$emit("input", newList);
+    },
+    spliceList: function spliceList() {
+      var _arguments = arguments;
+
+      var spliceList = function spliceList(list) {
+        return list.splice.apply(list, _toConsumableArray(_arguments));
+      };
+
+      this.alterList(spliceList);
+    },
+    updatePosition: function updatePosition(oldIndex, newIndex) {
+      var updatePosition = function updatePosition(list) {
+        return list.splice(newIndex, 0, list.splice(oldIndex, 1)[0]);
+      };
+
+      this.alterList(updatePosition);
+    },
+    getRelatedContextFromMoveEvent: function getRelatedContextFromMoveEvent(_ref2) {
+      var to = _ref2.to,
+          related = _ref2.related;
+      var component = this.getUnderlyingPotencialDraggableComponent(to);
+
+      if (!component) {
+        return {
+          component: component
+        };
+      }
+
+      var list = component.realList;
+      var context = {
+        list: list,
+        component: component
+      };
+
+      if (to !== related && list && component.getUnderlyingVm) {
+        var destination = component.getUnderlyingVm(related);
+
+        if (destination) {
+          return Object.assign(destination, context);
+        }
+      }
+
+      return context;
+    },
+    getVmIndex: function getVmIndex(domIndex) {
+      var indexes = this.visibleIndexes;
+      var numberIndexes = indexes.length;
+      return domIndex > numberIndexes - 1 ? numberIndexes : indexes[domIndex];
+    },
+    getComponent: function getComponent() {
+      return this.$slots.default[0].componentInstance;
+    },
+    resetTransitionData: function resetTransitionData(index) {
+      if (!this.noTransitionOnDrag || !this.transitionMode) {
+        return;
+      }
+
+      var nodes = this.getChildrenNodes();
+      nodes[index].data = null;
+      var transitionContainer = this.getComponent();
+      transitionContainer.children = [];
+      transitionContainer.kept = undefined;
+    },
+    onDragStart: function onDragStart(evt) {
+      this.context = this.getUnderlyingVm(evt.item);
+      evt.item._underlying_vm_ = this.clone(this.context.element);
+      draggingElement = evt.item;
+    },
+    onDragAdd: function onDragAdd(evt) {
+      var element = evt.item._underlying_vm_;
+
+      if (element === undefined) {
+        return;
+      }
+
+      Object(_util_helper__WEBPACK_IMPORTED_MODULE_1__["removeNode"])(evt.item);
+      var newIndex = this.getVmIndex(evt.newIndex);
+      this.spliceList(newIndex, 0, element);
+      this.computeIndexes();
+      var added = {
+        element: element,
+        newIndex: newIndex
+      };
+      this.emitChanges({
+        added: added
+      });
+    },
+    onDragRemove: function onDragRemove(evt) {
+      Object(_util_helper__WEBPACK_IMPORTED_MODULE_1__["insertNodeAt"])(this.rootContainer, evt.item, evt.oldIndex);
+
+      if (evt.pullMode === "clone") {
+        Object(_util_helper__WEBPACK_IMPORTED_MODULE_1__["removeNode"])(evt.clone);
+        return;
+      }
+
+      var oldIndex = this.context.index;
+      this.spliceList(oldIndex, 1);
+      var removed = {
+        element: this.context.element,
+        oldIndex: oldIndex
+      };
+      this.resetTransitionData(oldIndex);
+      this.emitChanges({
+        removed: removed
+      });
+    },
+    onDragUpdate: function onDragUpdate(evt) {
+      Object(_util_helper__WEBPACK_IMPORTED_MODULE_1__["removeNode"])(evt.item);
+      Object(_util_helper__WEBPACK_IMPORTED_MODULE_1__["insertNodeAt"])(evt.from, evt.item, evt.oldIndex);
+      var oldIndex = this.context.index;
+      var newIndex = this.getVmIndex(evt.newIndex);
+      this.updatePosition(oldIndex, newIndex);
+      var moved = {
+        element: this.context.element,
+        oldIndex: oldIndex,
+        newIndex: newIndex
+      };
+      this.emitChanges({
+        moved: moved
+      });
+    },
+    updateProperty: function updateProperty(evt, propertyName) {
+      evt.hasOwnProperty(propertyName) && (evt[propertyName] += this.headerOffset);
+    },
+    computeFutureIndex: function computeFutureIndex(relatedContext, evt) {
+      if (!relatedContext.element) {
+        return 0;
+      }
+
+      var domChildren = _toConsumableArray(evt.to.children).filter(function (el) {
+        return el.style["display"] !== "none";
+      });
+
+      var currentDOMIndex = domChildren.indexOf(evt.related);
+      var currentIndex = relatedContext.component.getVmIndex(currentDOMIndex);
+      var draggedInList = domChildren.indexOf(draggingElement) !== -1;
+      return draggedInList || !evt.willInsertAfter ? currentIndex : currentIndex + 1;
+    },
+    onDragMove: function onDragMove(evt, originalEvent) {
+      var onMove = this.move;
+
+      if (!onMove || !this.realList) {
+        return true;
+      }
+
+      var relatedContext = this.getRelatedContextFromMoveEvent(evt);
+      var draggedContext = this.context;
+      var futureIndex = this.computeFutureIndex(relatedContext, evt);
+      Object.assign(draggedContext, {
+        futureIndex: futureIndex
+      });
+      var sendEvt = Object.assign({}, evt, {
+        relatedContext: relatedContext,
+        draggedContext: draggedContext
+      });
+      return onMove(sendEvt, originalEvent);
+    },
+    onDragEnd: function onDragEnd() {
+      this.computeIndexes();
+      draggingElement = null;
+    }
   }
-});
+};
 
-/***/ }),
-
-/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewOC.vue?vue&type=style&index=0&lang=css&":
-/*!************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader??ref--5-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--5-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/NewOC.vue?vue&type=style&index=0&lang=css& ***!
-  \************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n#tree {\r\n  width: 100%;\r\n  height: 100%;\n}\npath {\r\n  stroke: #000;\r\n  stroke-width: 2;\n}\n.node.competence rect {\r\n  fill: #040347;\n}\n.node.skill rect {\r\n  fill: #13465b;\n}\n.node.ability rect {\r\n  fill: #316950;\n}\n.node.knowledge rect {\r\n  fill: #dba94c;\n}\n.print_type {\r\n  text-transform: uppercase;\n}\ncircle {\r\n  stroke: #000;\n}\nline {\r\n  stroke: #000;\r\n  stroke-width: 2;\n}\n[control-export-menu] {\r\n  left: 100px;\r\n  top: 50px;\n}\n[data-id=\"search-icon\"] {\r\n  left: 500px;\n}\r\n", ""]);
-
-// exports
-
-
-/***/ }),
-
-/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewOC.vue?vue&type=style&index=0&lang=css&":
-/*!****************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--5-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--5-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/NewOC.vue?vue&type=style&index=0&lang=css& ***!
-  \****************************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(/*! !../../../../../node_modules/css-loader??ref--5-1!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/src??ref--5-2!../../../../../node_modules/vue-loader/lib??vue-loader-options!./NewOC.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewOC.vue?vue&type=style&index=0&lang=css&");
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(/*! ../../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {}
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/AddParent2.vue?vue&type=template&id=4d44ea9d&":
-/*!**************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/AddParent2.vue?vue&type=template&id=4d44ea9d& ***!
-  \**************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "b-modal",
-        {
-          attrs: {
-            "no-close-on-esc": "",
-            "no-close-on-backdrop": "",
-            id: "modal-addparent",
-            "ok-title": "Добавить связь",
-            "cancel-title": "Закрыть",
-            size: "xl",
-            title: "Добавление дополнительной связи к знанию"
-          },
-          on: { ok: _vm.handle_ok }
-        },
-        [
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v(
-              "Выберите умение, к которому добавить дополнительную связь от знания"
-            )
-          ]),
-          _vm._v(" "),
-          _c("h5", [_vm._v("Знание:")]),
-          _vm._v(" "),
-          _c("p", [_vm._v(_vm._s(_vm.edit_elem.name))]),
-          _vm._v(" "),
-          _c("h5", [_vm._v("Умения:")]),
-          _vm._v(" "),
-          _c(
-            "b-form-group",
-            _vm._l(_vm.elems, function(elem) {
-              return _c(
-                "b-form-radio",
-                {
-                  key: elem.id,
-                  attrs: {
-                    disabled: elem.id == _vm.edit_elem.pid,
-                    name: "skills",
-                    value: elem.id
-                  },
-                  model: {
-                    value: _vm.selected,
-                    callback: function($$v) {
-                      _vm.selected = $$v
-                    },
-                    expression: "selected"
-                  }
-                },
-                [_vm._v(_vm._s(elem.name))]
-              )
-            }),
-            1
-          ),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          _vm.errors.length > 0
-            ? _c("b-alert", { attrs: { show: "", variant: "danger" } }, [
-                _c("strong", [_vm._v("Ошибка!")]),
-                _vm._v(" Выберите умение")
-              ])
-            : _vm._e()
-        ],
-        1
-      )
-    ],
-    1
-  )
+if (typeof window !== "undefined" && "Vue" in window) {
+  window.Vue.component("draggable", draggableComponent);
 }
-var staticRenderFns = []
-render._withStripped = true
 
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditAbility2.vue?vue&type=template&id=d2b29db0&":
-/*!****************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/EditAbility2.vue?vue&type=template&id=d2b29db0& ***!
-  \****************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "b-modal",
-        {
-          attrs: {
-            "no-close-on-esc": "",
-            "no-close-on-backdrop": "",
-            id: "modal-editability",
-            "ok-title": "Сохранить",
-            "cancel-title": "Закрыть",
-            size: "xl",
-            title: "Редактирование умения"
-          },
-          on: { ok: _vm.handle_ok }
-        },
-        [
-          _c("h4", [_vm._v("НАЗВАНИЕ УМЕНИЯ")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v("Заполните параметры названия компонента")
-          ]),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Ключевое слово"
-                  }
-                },
-                [
-                  _c("b-form-input", {
-                    attrs: {
-                      disabled: "",
-                      required: "",
-                      placeholder: "Уметь",
-                      value: "Уметь"
-                    },
-                    model: {
-                      value: _vm.new_ability.keyword,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_ability, "keyword", $$v)
-                      },
-                      expression: "new_ability.keyword"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Что?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "Что?" },
-                    model: {
-                      value: _vm.new_ability.what,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_ability, "what", $$v)
-                      },
-                      expression: "new_ability.what"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "При помощи чего?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "При помощи чего?" },
-                    model: {
-                      value: _vm.new_ability.with,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_ability, "with", $$v)
-                      },
-                      expression: "new_ability.with"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "При каких условиях?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "При каких условиях?" },
-                    model: {
-                      value: _vm.new_ability.where,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_ability, "where", $$v)
-                      },
-                      expression: "new_ability.where"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Итоговое название"
-                  }
-                },
-                [_c("p", [_vm._v(_vm._s(_vm.name))])]
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          _c("h4", [_vm._v("ОБОСНОВАНИЕ")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v("Выберите на основе какой информации формируется навык")
-          ]),
-          _vm._v(" "),
-          _c(
-            "b-form-radio",
-            {
-              attrs: { name: "is_by_expert", value: "0" },
-              model: {
-                value: _vm.new_ability.is_by_expert,
-                callback: function($$v) {
-                  _vm.$set(_vm.new_ability, "is_by_expert", $$v)
-                },
-                expression: "new_ability.is_by_expert"
-              }
-            },
-            [_vm._v("На основе источников НСИ")]
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-radio",
-            {
-              attrs: { name: "is_by_expert", value: "1" },
-              model: {
-                value: _vm.new_ability.is_by_expert,
-                callback: function($$v) {
-                  _vm.$set(_vm.new_ability, "is_by_expert", $$v)
-                },
-                expression: "new_ability.is_by_expert"
-              }
-            },
-            [_vm._v("На основе мнения эксперта")]
-          ),
-          _vm._v(" "),
-          _vm.new_ability.is_by_expert == 0
-            ? _c(
-                "div",
-                { staticClass: "mt-4" },
-                [
-                  _c("h5", [_vm._v("ИСТОЧНИКИ НСИ")]),
-                  _vm._v(" "),
-                  _c("b-alert", { attrs: { show: "" } }, [
-                    _vm._v("Соотнесите навык с источниками НСИ")
-                  ]),
-                  _vm._v(" "),
-                  !_vm.isBusy
-                    ? _c("nsi-choose", {
-                        attrs: {
-                          mode: "work",
-                          selected: _vm.new_ability.nsis,
-                          ish_version_id: _vm.ish_version_id
-                        },
-                        on: { change_nsi: _vm.change_nsi }
-                      })
-                    : _vm._e()
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.new_ability.is_by_expert == 1
-            ? _c(
-                "div",
-                { staticClass: "mt-4" },
-                [
-                  _c("h5", [_vm._v("МНЕНИЕ ЭКСПЕРТА")]),
-                  _vm._v(" "),
-                  _c("b-alert", { attrs: { show: "" } }, [
-                    _vm._v(
-                      "Введите комментарий, указав Ф.И.О. эксперта и его обоснование"
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("b-form-textarea", {
-                    attrs: {
-                      id: "textarea",
-                      placeholder: "Введите комментарий...",
-                      rows: "3",
-                      "max-rows": "6"
-                    },
-                    model: {
-                      value: _vm.new_ability.expert_answer,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_ability, "expert_answer", $$v)
-                      },
-                      expression: "new_ability.expert_answer"
-                    }
-                  })
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          !_vm.new_ability.valid
-            ? _c("b-alert", { attrs: { show: "", variant: "danger" } }, [
-                _c("strong", [_vm._v("Ошибка!")]),
-                _vm._v(" Заполните ВСЕ параметры компонента")
-              ])
-            : _vm._e()
-        ],
-        1
-      )
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditCompetence2.vue?vue&type=template&id=90ab9f4e&":
-/*!*******************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/EditCompetence2.vue?vue&type=template&id=90ab9f4e& ***!
-  \*******************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "b-modal",
-        {
-          attrs: {
-            "no-close-on-esc": "",
-            "no-close-on-backdrop": "",
-            id: "modal-editcompetence",
-            "ok-title": "Сохранить",
-            "cancel-title": "Закрыть",
-            size: "xl",
-            title: "Редактирование компетенции"
-          },
-          on: { ok: _vm.handle_ok }
-        },
-        [
-          _c("h4", [_vm._v("НАЗВАНИЕ КОМПЕТЕНЦИИ")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v("Заполните параметры названия компонента")
-          ]),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Ключевое слово"
-                  }
-                },
-                [
-                  _c("b-form-input", {
-                    attrs: {
-                      disabled: "",
-                      required: "",
-                      placeholder: "Способен",
-                      value: "Способен"
-                    },
-                    model: {
-                      value: _vm.new_competence.keyword,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_competence, "keyword", $$v)
-                      },
-                      expression: "new_competence.keyword"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "На что?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "На что?" },
-                    model: {
-                      value: _vm.new_competence.what,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_competence, "what", $$v)
-                      },
-                      expression: "new_competence.what"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "При помощи чего?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "При помощи чего?" },
-                    model: {
-                      value: _vm.new_competence.with,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_competence, "with", $$v)
-                      },
-                      expression: "new_competence.with"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "При каких условиях?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "При каких условиях?" },
-                    model: {
-                      value: _vm.new_competence.where,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_competence, "where", $$v)
-                      },
-                      expression: "new_competence.where"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Итоговое название"
-                  }
-                },
-                [_c("p", [_vm._v(_vm._s(_vm.name))])]
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          !_vm.new_competence.valid
-            ? _c("b-alert", { attrs: { show: "", variant: "danger" } }, [
-                _c("strong", [_vm._v("Ошибка!")]),
-                _vm._v(" Заполните ВСЕ параметры новой компетенции")
-              ])
-            : _vm._e()
-        ],
-        1
-      )
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditKnowledge2.vue?vue&type=template&id=11928054&":
-/*!******************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/EditKnowledge2.vue?vue&type=template&id=11928054& ***!
-  \******************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "b-modal",
-        {
-          attrs: {
-            "no-close-on-esc": "",
-            "no-close-on-backdrop": "",
-            id: "modal-editknowledge",
-            "ok-title": "Сохранить",
-            "cancel-title": "Закрыть",
-            size: "xl",
-            title: "Редактирование знания"
-          },
-          on: { ok: _vm.handle_ok }
-        },
-        [
-          _c("h4", [_vm._v("НАЗВАНИЕ ЗНАНИЯ")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v("Заполните параметры названия компонента")
-          ]),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Ключевое слово"
-                  }
-                },
-                [
-                  _c("b-form-input", {
-                    attrs: {
-                      disabled: "",
-                      required: "",
-                      placeholder: "Знать",
-                      value: "Знать"
-                    },
-                    model: {
-                      value: _vm.new_knowledge.keyword,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_knowledge, "keyword", $$v)
-                      },
-                      expression: "new_knowledge.keyword"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Что?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "Что?" },
-                    model: {
-                      value: _vm.new_knowledge.what,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_knowledge, "what", $$v)
-                      },
-                      expression: "new_knowledge.what"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Итоговое название"
-                  }
-                },
-                [_c("p", [_vm._v(_vm._s(_vm.name))])]
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("h4", [_vm._v("СООТВЕТСТВИЕ РАЗДЕЛУ ТИПОВОЙ СТРУКТУРЫ ДПП")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v(
-              "Выберите, какому разделу типовой структуры соответсвует данное знание"
-            )
-          ]),
-          _vm._v(" "),
-          _vm._l(_vm.dtps, function(dtp) {
-            return _c(
-              "b-form-radio",
-              {
-                key: "d" + dtp.id,
-                attrs: { name: "dtps", value: dtp.id },
-                model: {
-                  value: _vm.new_knowledge.dtp,
-                  callback: function($$v) {
-                    _vm.$set(_vm.new_knowledge, "dtp", $$v)
-                  },
-                  expression: "new_knowledge.dtp"
-                }
-              },
-              [_vm._v(_vm._s(dtp.name))]
-            )
-          }),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          _c("h4", [_vm._v("ОБОСНОВАНИЕ")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v("Выберите на основе какой информации формируется навык")
-          ]),
-          _vm._v(" "),
-          _c(
-            "b-form-radio",
-            {
-              attrs: { name: "is_by_expert", value: "0" },
-              model: {
-                value: _vm.new_knowledge.is_by_expert,
-                callback: function($$v) {
-                  _vm.$set(_vm.new_knowledge, "is_by_expert", $$v)
-                },
-                expression: "new_knowledge.is_by_expert"
-              }
-            },
-            [_vm._v("На основе источников НСИ")]
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-radio",
-            {
-              attrs: { name: "is_by_expert", value: "1" },
-              model: {
-                value: _vm.new_knowledge.is_by_expert,
-                callback: function($$v) {
-                  _vm.$set(_vm.new_knowledge, "is_by_expert", $$v)
-                },
-                expression: "new_knowledge.is_by_expert"
-              }
-            },
-            [_vm._v("На основе мнения эксперта")]
-          ),
-          _vm._v(" "),
-          _vm.new_knowledge.is_by_expert == 0
-            ? _c(
-                "div",
-                { staticClass: "mt-4" },
-                [
-                  _c("h5", [_vm._v("ИСТОЧНИКИ НСИ")]),
-                  _vm._v(" "),
-                  _c("b-alert", { attrs: { show: "" } }, [
-                    _vm._v("Соотнесите навык с источниками НСИ")
-                  ]),
-                  _vm._v(" "),
-                  !_vm.isBusy
-                    ? _c("nsi-choose", {
-                        attrs: {
-                          mode: "work",
-                          selected: _vm.new_knowledge.nsis,
-                          ish_version_id: _vm.ish_version_id
-                        },
-                        on: { change_nsi: _vm.change_nsi }
-                      })
-                    : _vm._e()
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.new_knowledge.is_by_expert == 1
-            ? _c(
-                "div",
-                { staticClass: "mt-4" },
-                [
-                  _c("h5", [_vm._v("МНЕНИЕ ЭКСПЕРТА")]),
-                  _vm._v(" "),
-                  _c("b-alert", { attrs: { show: "" } }, [
-                    _vm._v(
-                      "Введите комментарий, указав Ф.И.О. эксперта и его обоснование"
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("b-form-textarea", {
-                    attrs: {
-                      id: "textarea",
-                      placeholder: "Введите комментарий...",
-                      rows: "3",
-                      "max-rows": "6"
-                    },
-                    model: {
-                      value: _vm.new_knowledge.expert_answer,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_knowledge, "expert_answer", $$v)
-                      },
-                      expression: "new_knowledge.expert_answer"
-                    }
-                  })
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          !_vm.new_knowledge.valid
-            ? _c("b-alert", { attrs: { show: "", variant: "danger" } }, [
-                _c("strong", [_vm._v("Ошибка!")]),
-                _vm._v(" Заполните ВСЕ параметры названия компонента")
-              ])
-            : _vm._e()
-        ],
-        2
-      )
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditSkill2.vue?vue&type=template&id=ace8a33e&":
-/*!**************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/EditSkill2.vue?vue&type=template&id=ace8a33e& ***!
-  \**************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "b-modal",
-        {
-          attrs: {
-            "no-close-on-esc": "",
-            "no-close-on-backdrop": "",
-            id: "modal-editskill",
-            "ok-title": "Сохранить",
-            "cancel-title": "Закрыть",
-            size: "xl",
-            title: "Редактирование навыка"
-          },
-          on: { ok: _vm.handle_ok }
-        },
-        [
-          _c("h4", [_vm._v("НАЗВАНИЕ НАВЫКА")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v("Заполните параметры названия компонента")
-          ]),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Ключевое слово"
-                  }
-                },
-                [
-                  _c("b-form-input", {
-                    attrs: {
-                      disabled: "",
-                      required: "",
-                      placeholder: "Владеть навыком",
-                      value: "Владеть навыком"
-                    },
-                    model: {
-                      value: _vm.new_skill.keyword,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_skill, "keyword", $$v)
-                      },
-                      expression: "new_skill.keyword"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Каким?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "Каким?" },
-                    model: {
-                      value: _vm.new_skill.what,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_skill, "what", $$v)
-                      },
-                      expression: "new_skill.what"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "При помощи чего?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "При помощи чего?" },
-                    model: {
-                      value: _vm.new_skill.with,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_skill, "with", $$v)
-                      },
-                      expression: "new_skill.with"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "При каких условиях?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "При каких условиях?" },
-                    model: {
-                      value: _vm.new_skill.where,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_skill, "where", $$v)
-                      },
-                      expression: "new_skill.where"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Итоговое название"
-                  }
-                },
-                [_c("p", [_vm._v(_vm._s(_vm.name))])]
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          _c("h4", [_vm._v("ОБОСНОВАНИЕ")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v("Выберите на основе какой информации формируется навык")
-          ]),
-          _vm._v(" "),
-          _c(
-            "b-form-radio",
-            {
-              attrs: { name: "is_by_expert", value: "0" },
-              model: {
-                value: _vm.new_skill.is_by_expert,
-                callback: function($$v) {
-                  _vm.$set(_vm.new_skill, "is_by_expert", $$v)
-                },
-                expression: "new_skill.is_by_expert"
-              }
-            },
-            [_vm._v("На основе источников НСИ")]
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-radio",
-            {
-              attrs: { name: "is_by_expert", value: "1" },
-              model: {
-                value: _vm.new_skill.is_by_expert,
-                callback: function($$v) {
-                  _vm.$set(_vm.new_skill, "is_by_expert", $$v)
-                },
-                expression: "new_skill.is_by_expert"
-              }
-            },
-            [_vm._v("На основе мнения эксперта")]
-          ),
-          _vm._v(" "),
-          _vm.new_skill.is_by_expert == 0
-            ? _c(
-                "div",
-                { staticClass: "mt-4" },
-                [
-                  _c("h5", [_vm._v("ИСТОЧНИКИ НСИ")]),
-                  _vm._v(" "),
-                  _c("b-alert", { attrs: { show: "" } }, [
-                    _vm._v("Соотнесите навык с источниками НСИ")
-                  ]),
-                  _vm._v(" "),
-                  !_vm.isBusy
-                    ? _c("nsi-choose", {
-                        attrs: {
-                          mode: "work",
-                          selected: _vm.new_skill.nsis,
-                          ish_version_id: _vm.ish_version_id
-                        },
-                        on: { change_nsi: _vm.change_nsi }
-                      })
-                    : _vm._e()
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.new_skill.is_by_expert == 1
-            ? _c(
-                "div",
-                { staticClass: "mt-4" },
-                [
-                  _c("h5", [_vm._v("МНЕНИЕ ЭКСПЕРТА")]),
-                  _vm._v(" "),
-                  _c("b-alert", { attrs: { show: "" } }, [
-                    _vm._v(
-                      "Введите комментарий, указав Ф.И.О. эксперта и его обоснование"
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("b-form-textarea", {
-                    attrs: {
-                      id: "textarea",
-                      placeholder: "Введите комментарий...",
-                      rows: "3",
-                      "max-rows": "6"
-                    },
-                    model: {
-                      value: _vm.new_skill.expert_answer,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_skill, "expert_answer", $$v)
-                      },
-                      expression: "new_skill.expert_answer"
-                    }
-                  })
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          !_vm.new_skill.valid
-            ? _c("b-alert", { attrs: { show: "", variant: "danger" } }, [
-                _c("strong", [_vm._v("Ошибка!")]),
-                _vm._v(" Заполните ВСЕ параметры названия компонента")
-              ])
-            : _vm._e()
-        ],
-        1
-      )
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewAbility2.vue?vue&type=template&id=e897fc7c&":
-/*!***************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/NewAbility2.vue?vue&type=template&id=e897fc7c& ***!
-  \***************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "b-modal",
-        {
-          attrs: {
-            "no-close-on-esc": "",
-            "no-close-on-backdrop": "",
-            id: "modal-newability",
-            "ok-title": "Сохранить",
-            "cancel-title": "Закрыть",
-            size: "xl",
-            title: "Создание нового умения"
-          },
-          on: { ok: _vm.handle_ok }
-        },
-        [
-          _c("p", [_vm._v("Parent: " + _vm._s(_vm.parent_node))]),
-          _vm._v(" "),
-          _c("h4", [_vm._v("НАЗВАНИЕ УМЕНИЯ")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v("Заполните параметры названия компонента")
-          ]),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Ключевое слово"
-                  }
-                },
-                [
-                  _c("b-form-input", {
-                    attrs: {
-                      disabled: "",
-                      required: "",
-                      placeholder: "Уметь",
-                      value: "Уметь"
-                    },
-                    model: {
-                      value: _vm.new_ability.keyword,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_ability, "keyword", $$v)
-                      },
-                      expression: "new_ability.keyword"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Что?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "Что?" },
-                    model: {
-                      value: _vm.new_ability.what,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_ability, "what", $$v)
-                      },
-                      expression: "new_ability.what"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "При помощи чего?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "При помощи чего?" },
-                    model: {
-                      value: _vm.new_ability.with,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_ability, "with", $$v)
-                      },
-                      expression: "new_ability.with"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "При каких условиях?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "При каких условиях?" },
-                    model: {
-                      value: _vm.new_ability.where,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_ability, "where", $$v)
-                      },
-                      expression: "new_ability.where"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Итоговое название"
-                  }
-                },
-                [_c("p", [_vm._v(_vm._s(_vm.name))])]
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          _c("h4", [_vm._v("ОБОСНОВАНИЕ")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v("Выберите на основе какой информации формируется навык")
-          ]),
-          _vm._v(" "),
-          _c(
-            "b-form-radio",
-            {
-              attrs: { name: "is_by_expert", value: "0" },
-              model: {
-                value: _vm.new_ability.is_by_expert,
-                callback: function($$v) {
-                  _vm.$set(_vm.new_ability, "is_by_expert", $$v)
-                },
-                expression: "new_ability.is_by_expert"
-              }
-            },
-            [_vm._v("На основе источников НСИ")]
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-radio",
-            {
-              attrs: { name: "is_by_expert", value: "1" },
-              model: {
-                value: _vm.new_ability.is_by_expert,
-                callback: function($$v) {
-                  _vm.$set(_vm.new_ability, "is_by_expert", $$v)
-                },
-                expression: "new_ability.is_by_expert"
-              }
-            },
-            [_vm._v("На основе мнения эксперта")]
-          ),
-          _vm._v(" "),
-          _vm.new_ability.is_by_expert == 0
-            ? _c(
-                "div",
-                { staticClass: "mt-4" },
-                [
-                  _c("h5", [_vm._v("ИСТОЧНИКИ НСИ")]),
-                  _vm._v(" "),
-                  _c("b-alert", { attrs: { show: "" } }, [
-                    _vm._v("Соотнесите навык с источниками НСИ")
-                  ]),
-                  _vm._v(" "),
-                  !_vm.isBusy
-                    ? _c("nsi-choose", {
-                        attrs: {
-                          mode: "work",
-                          selected: [],
-                          ish_version_id: _vm.ish_version_id
-                        },
-                        on: { change_nsi: _vm.change_nsi }
-                      })
-                    : _vm._e()
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.new_ability.is_by_expert == 1
-            ? _c(
-                "div",
-                { staticClass: "mt-4" },
-                [
-                  _c("h5", [_vm._v("МНЕНИЕ ЭКСПЕРТА")]),
-                  _vm._v(" "),
-                  _c("b-alert", { attrs: { show: "" } }, [
-                    _vm._v(
-                      "Введите комментарий, указав Ф.И.О. эксперта и его обоснование"
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("b-form-textarea", {
-                    attrs: {
-                      id: "textarea",
-                      placeholder: "Введите комментарий...",
-                      rows: "3",
-                      "max-rows": "6"
-                    },
-                    model: {
-                      value: _vm.new_ability.expert_answer,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_ability, "expert_answer", $$v)
-                      },
-                      expression: "new_ability.expert_answer"
-                    }
-                  })
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          !_vm.new_ability.valid
-            ? _c("b-alert", { attrs: { show: "", variant: "danger" } }, [
-                _c("strong", [_vm._v("Ошибка!")]),
-                _vm._v(" Заполните ВСЕ параметры компонента")
-              ])
-            : _vm._e()
-        ],
-        1
-      )
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewCompetence2.vue?vue&type=template&id=9fbe3d02&":
-/*!******************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/NewCompetence2.vue?vue&type=template&id=9fbe3d02& ***!
-  \******************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "b-modal",
-        {
-          attrs: {
-            "no-close-on-esc": "",
-            "no-close-on-backdrop": "",
-            id: "modal-newcompetence",
-            "ok-title": "Сформировать",
-            "cancel-title": "Закрыть",
-            size: "xl",
-            title: "Формирование новой компетенции"
-          },
-          on: { ok: _vm.handle_ok }
-        },
-        [
-          _c("h4", [_vm._v("НАЗВАНИЕ КОМПЕТЕНЦИИ")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v("Заполните параметры названия компонента")
-          ]),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Ключевое слово"
-                  }
-                },
-                [
-                  _c("b-form-input", {
-                    attrs: {
-                      disabled: "",
-                      required: "",
-                      placeholder: "Способен",
-                      value: "Способен"
-                    },
-                    model: {
-                      value: _vm.new_competence.keyword,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_competence, "keyword", $$v)
-                      },
-                      expression: "new_competence.keyword"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "На что?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "На что?" },
-                    model: {
-                      value: _vm.new_competence.what,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_competence, "what", $$v)
-                      },
-                      expression: "new_competence.what"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "При помощи чего?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "При помощи чего?" },
-                    model: {
-                      value: _vm.new_competence.with,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_competence, "with", $$v)
-                      },
-                      expression: "new_competence.with"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "При каких условиях?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "При каких условиях?" },
-                    model: {
-                      value: _vm.new_competence.where,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_competence, "where", $$v)
-                      },
-                      expression: "new_competence.where"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Итоговое название"
-                  }
-                },
-                [_c("p", [_vm._v(_vm._s(_vm.name))])]
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          _c("h4", [_vm._v("НАВЫКИ/УМЕНИЯ, КОТОРЫЕ ВОЙДУТ В КОМПЕТЕНЦИЮ")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v("Выберите необходимые компоненты")
-          ]),
-          _vm._v(" "),
-          _c("b-form-checkbox-group", {
-            attrs: {
-              id: "checkbox-group-4",
-              options: _vm.elems,
-              name: "elems",
-              "value-field": "id",
-              "text-field": "name",
-              stacked: ""
-            },
-            model: {
-              value: _vm.new_competence.elems,
-              callback: function($$v) {
-                _vm.$set(_vm.new_competence, "elems", $$v)
-              },
-              expression: "new_competence.elems"
-            }
-          }),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          !_vm.new_competence.valid
-            ? _c("b-alert", { attrs: { show: "", variant: "danger" } }, [
-                _c("strong", [_vm._v("Ошибка!")]),
-                _vm._v(" Заполните ВСЕ параметры новой компетенции")
-              ])
-            : _vm._e()
-        ],
-        1
-      )
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewKnowledge2.vue?vue&type=template&id=0ee3db24&":
-/*!*****************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/NewKnowledge2.vue?vue&type=template&id=0ee3db24& ***!
-  \*****************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "b-modal",
-        {
-          attrs: {
-            "no-close-on-esc": "",
-            "no-close-on-backdrop": "",
-            id: "modal-newknowledge",
-            "ok-title": "Сохранить",
-            "cancel-title": "Закрыть",
-            size: "xl",
-            title: "Создание нового знания"
-          },
-          on: { ok: _vm.handle_ok }
-        },
-        [
-          _c("p", [_vm._v("Parent: " + _vm._s(_vm.parent_node))]),
-          _vm._v(" "),
-          _c("h4", [_vm._v("НАЗВАНИЕ ЗНАНИЯ")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v("Заполните параметры названия компонента")
-          ]),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Ключевое слово"
-                  }
-                },
-                [
-                  _c("b-form-input", {
-                    attrs: {
-                      disabled: "",
-                      required: "",
-                      placeholder: "Знать",
-                      value: "Знать"
-                    },
-                    model: {
-                      value: _vm.new_knowledge.keyword,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_knowledge, "keyword", $$v)
-                      },
-                      expression: "new_knowledge.keyword"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Что?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "Что?" },
-                    model: {
-                      value: _vm.new_knowledge.what,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_knowledge, "what", $$v)
-                      },
-                      expression: "new_knowledge.what"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Итоговое название"
-                  }
-                },
-                [_c("p", [_vm._v(_vm._s(_vm.name))])]
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("h4", [_vm._v("СООТВЕТСТВИЕ РАЗДЕЛУ ТИПОВОЙ СТРУКТУРЫ ДПП")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v(
-              "Выберите, какому разделу типовой структуры соответсвует данное знание"
-            )
-          ]),
-          _vm._v(" "),
-          _vm._l(_vm.dtps, function(dtp) {
-            return _c(
-              "b-form-radio",
-              {
-                key: "d" + dtp.id,
-                attrs: { name: "dtps", value: dtp.id },
-                model: {
-                  value: _vm.new_knowledge.dtp,
-                  callback: function($$v) {
-                    _vm.$set(_vm.new_knowledge, "dtp", $$v)
-                  },
-                  expression: "new_knowledge.dtp"
-                }
-              },
-              [_vm._v(_vm._s(dtp.name))]
-            )
-          }),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          _c("h4", [_vm._v("ОБОСНОВАНИЕ")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v("Выберите на основе какой информации формируется навык")
-          ]),
-          _vm._v(" "),
-          _c(
-            "b-form-radio",
-            {
-              attrs: { name: "is_by_expert", value: "0" },
-              model: {
-                value: _vm.new_knowledge.is_by_expert,
-                callback: function($$v) {
-                  _vm.$set(_vm.new_knowledge, "is_by_expert", $$v)
-                },
-                expression: "new_knowledge.is_by_expert"
-              }
-            },
-            [_vm._v("На основе источников НСИ")]
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-radio",
-            {
-              attrs: { name: "is_by_expert", value: "1" },
-              model: {
-                value: _vm.new_knowledge.is_by_expert,
-                callback: function($$v) {
-                  _vm.$set(_vm.new_knowledge, "is_by_expert", $$v)
-                },
-                expression: "new_knowledge.is_by_expert"
-              }
-            },
-            [_vm._v("На основе мнения эксперта")]
-          ),
-          _vm._v(" "),
-          _vm.new_knowledge.is_by_expert == 0
-            ? _c(
-                "div",
-                { staticClass: "mt-4" },
-                [
-                  _c("h5", [_vm._v("ИСТОЧНИКИ НСИ")]),
-                  _vm._v(" "),
-                  _c("b-alert", { attrs: { show: "" } }, [
-                    _vm._v("Соотнесите навык с источниками НСИ")
-                  ]),
-                  _vm._v(" "),
-                  !_vm.isBusy
-                    ? _c("nsi-choose", {
-                        attrs: {
-                          mode: "work",
-                          selected: [],
-                          ish_version_id: _vm.ish_version_id
-                        },
-                        on: { change_nsi: _vm.change_nsi }
-                      })
-                    : _vm._e()
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.new_knowledge.is_by_expert == 1
-            ? _c(
-                "div",
-                { staticClass: "mt-4" },
-                [
-                  _c("h5", [_vm._v("МНЕНИЕ ЭКСПЕРТА")]),
-                  _vm._v(" "),
-                  _c("b-alert", { attrs: { show: "" } }, [
-                    _vm._v(
-                      "Введите комментарий, указав Ф.И.О. эксперта и его обоснование"
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("b-form-textarea", {
-                    attrs: {
-                      id: "textarea",
-                      placeholder: "Введите комментарий...",
-                      rows: "3",
-                      "max-rows": "6"
-                    },
-                    model: {
-                      value: _vm.new_knowledge.expert_answer,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_knowledge, "expert_answer", $$v)
-                      },
-                      expression: "new_knowledge.expert_answer"
-                    }
-                  })
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          !_vm.new_knowledge.valid
-            ? _c("b-alert", { attrs: { show: "", variant: "danger" } }, [
-                _c("strong", [_vm._v("Ошибка!")]),
-                _vm._v(" Заполните ВСЕ параметры названия компонента")
-              ])
-            : _vm._e()
-        ],
-        2
-      )
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewOC.vue?vue&type=template&id=0ac6daae&":
-/*!*********************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/NewOC.vue?vue&type=template&id=0ac6daae& ***!
-  \*********************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "b-button",
-        {
-          attrs: { variant: "primary" },
-          on: {
-            click: function($event) {
-              return _vm.$router.go(-1)
-            }
-          }
-        },
-        [_vm._v("Назад")]
-      ),
-      _vm._v(" "),
-      _c("hr"),
-      _vm._v(" "),
-      _c("h4", [_vm._v("Проектирование результатов")]),
-      _vm._v(" "),
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-md-4" }, [
-          _c("h5", [_vm._v("Статистика результатов:")]),
-          _vm._v(" "),
-          _c("ul", [
-            _c("li", [
-              _vm._v(
-                "Компетенций: " +
-                  _vm._s(
-                    _vm.nodes.filter(function(node) {
-                      return node.tags == "competence"
-                    }).length
-                  ) +
-                  " (не заполнено " +
-                  _vm._s(
-                    _vm.nodes.filter(function(node) {
-                      return node.tags == "competence" && node.valid == false
-                    }).length
-                  ) +
-                  " )"
-              )
-            ]),
-            _vm._v(" "),
-            _c("li", [
-              _vm._v(
-                "Навыков: " +
-                  _vm._s(
-                    _vm.nodes.filter(function(node) {
-                      return node.tags == "skill"
-                    }).length
-                  ) +
-                  " (не заполнено " +
-                  _vm._s(
-                    _vm.nodes.filter(function(node) {
-                      return node.tags == "skill" && node.valid == false
-                    }).length
-                  ) +
-                  " )"
-              )
-            ]),
-            _vm._v(" "),
-            _c("li", [
-              _vm._v(
-                "Умений: " +
-                  _vm._s(
-                    _vm.nodes.filter(function(node) {
-                      return node.tags == "ability"
-                    }).length
-                  ) +
-                  " (не заполнено " +
-                  _vm._s(
-                    _vm.nodes.filter(function(node) {
-                      return node.tags == "ability" && node.valid == false
-                    }).length
-                  ) +
-                  " )"
-              )
-            ]),
-            _vm._v(" "),
-            _c("li", [
-              _vm._v(
-                "Знаний: " +
-                  _vm._s(
-                    _vm.nodes.filter(function(node) {
-                      return node.tags == "knowledge"
-                    }).length
-                  ) +
-                  " (не заполнено " +
-                  _vm._s(
-                    _vm.nodes.filter(function(node) {
-                      return node.tags == "knowledge" && node.valid == false
-                    }).length
-                  ) +
-                  " )"
-              )
-            ]),
-            _vm._v(" "),
-            _c("li", [
-              _vm._v(
-                "Из них сквозных знаний: " +
-                  _vm._s(
-                    _vm.nodes.filter(function(node) {
-                      return node.pid == 0
-                    }).length
-                  ) +
-                  " (не заполнено " +
-                  _vm._s(
-                    _vm.nodes.filter(function(node) {
-                      return node.pid == 0 && node.valid == false
-                    }).length
-                  ) +
-                  " )"
-              )
-            ])
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "col-md-8" }, [
-          _c("h5", [
-            _c(
-              "span",
-              {
-                directives: [
-                  {
-                    name: "b-popover",
-                    rawName: "v-b-popover.hover.top",
-                    value:
-                      "Кликните по названию раздела, чтобы узнать, какие знания входят в него",
-                    expression:
-                      "'Кликните по названию раздела, чтобы узнать, какие знания входят в него'",
-                    modifiers: { hover: true, top: true }
-                  }
-                ],
-                staticClass: "text-primary",
-                staticStyle: { "font-size": "20px" },
-                attrs: { title: "Подсказка" }
-              },
-              [
-                _c("i", {
-                  staticClass: "ion ion-md-information-circle-outline"
-                })
-              ]
-            ),
-            _vm._v("\n          Типовое содержание ДПП:\n      ")
-          ]),
-          _vm._v(" "),
-          _c(
-            "div",
-            _vm._l(_vm.parts, function(part) {
-              return _c(
-                "b-card",
-                {
-                  key: "part_" + part.id,
-                  staticClass: "mb-1",
-                  attrs: { "no-body": "" }
-                },
-                [
-                  _c("b-card-header", { staticClass: "pt-1 pb-1" }, [
-                    _c(
-                      "a",
-                      {
-                        directives: [
-                          {
-                            name: "b-toggle",
-                            rawName: "v-b-toggle",
-                            value: "accordion_" + part.id,
-                            expression: "'accordion_'+part.id"
-                          }
-                        ],
-                        staticClass: "text-body",
-                        attrs: { href: "javascript:void(0)" }
-                      },
-                      [
-                        part.knowledges.length == 0
-                          ? _c("i", { staticClass: "ion ion-md-folder" })
-                          : _vm._e(),
-                        _vm._v(" "),
-                        part.knowledges.length != 0
-                          ? _c("i", {
-                              staticClass: "ion ion-md-folder text-success"
-                            })
-                          : _vm._e(),
-                        _vm._v(
-                          "\n              " +
-                            _vm._s(part.name) +
-                            " (Знаний: " +
-                            _vm._s(part.knowledges.length) +
-                            ")\n          "
-                        )
-                      ]
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "b-collapse",
-                    {
-                      attrs: {
-                        id: "accordion_" + part.id,
-                        accordion: "accordion"
-                      }
-                    },
-                    [
-                      _c("b-card-body", { staticClass: "p-1" }, [
-                        _c(
-                          "ul",
-                          _vm._l(part.knowledges, function(knowledge) {
-                            return _c("li", { key: "kd" + knowledge.id }, [
-                              _vm._v(_vm._s(knowledge.name))
-                            ])
-                          }),
-                          0
-                        )
-                      ])
-                    ],
-                    1
-                  )
-                ],
-                1
-              )
-            }),
-            1
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c(
-        "div",
-        [
-          _c(
-            "b-dropdown",
-            {
-              staticClass: "m-md-2",
-              attrs: { id: "dropdown-1", text: "Добавить компонент" }
-            },
-            [
-              _c(
-                "b-dropdown-item",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.create_skill("root")
-                    }
-                  }
-                },
-                [_vm._v("Добавить навык")]
-              ),
-              _vm._v(" "),
-              _c(
-                "b-dropdown-item",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.create_ability("root")
-                    }
-                  }
-                },
-                [_vm._v("Добавить умение")]
-              ),
-              _vm._v(" "),
-              _c(
-                "b-dropdown-item",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.make_competence("root")
-                    }
-                  }
-                },
-                [_vm._v("Сформировать компетенцию")]
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-dropdown",
-            {
-              staticClass: "m-md-2",
-              attrs: { id: "dropdown-2", text: "Экспорт" }
-            },
-            [
-              _c(
-                "b-dropdown-item",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.chart.exportPDF({ filename: "My.pdf" })
-                    }
-                  }
-                },
-                [_vm._v("Экспорт в PDF")]
-              ),
-              _vm._v(" "),
-              _c(
-                "b-dropdown-item",
-                {
-                  on: {
-                    click: function($event) {
-                      return _vm.chart.exportPNG({ filename: "My.png" })
-                    }
-                  }
-                },
-                [_vm._v("Экспорт в PNG")]
-              ),
-              _vm._v(" "),
-              _c(
-                "b-dropdown-item",
-                {
-                  attrs: {
-                    href:
-                      "/dpps/" +
-                      this.$route.params.dpp +
-                      "/export_zun/" +
-                      this.stage.zun_version_id
-                  }
-                },
-                [_vm._v("Экспорт в Word")]
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "span",
-            {
-              staticClass: "btn btn-success",
-              on: {
-                click: function($event) {
-                  return _vm.check_stage()
-                }
-              }
-            },
-            [_vm._v("Согласовать результаты и перейти к следующему этапу")]
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _vm.errors.length > 0
-        ? _c(
-            "b-alert",
-            { attrs: { show: "", dismissible: "", variant: "danger" } },
-            [
-              _c("strong", [_vm._v("Обнаружены ошибки:")]),
-              _vm._v(" "),
-              _c(
-                "ul",
-                _vm._l(_vm.errors, function(error, index) {
-                  return _c("li", { key: index }, [_vm._v(_vm._s(error))])
-                }),
-                0
-              )
-            ]
-          )
-        : _vm._e(),
-      _vm._v(" "),
-      _c("div"),
-      _vm._v(" "),
-      _c(
-        "div",
-        [
-          _c(
-            "b-card",
-            { attrs: { "no-body": "" } },
-            [
-              _c(
-                "b-tabs",
-                { attrs: { card: "" } },
-                [
-                  _c(
-                    "b-tab",
-                    { attrs: { title: "В виде графа", active: "" } },
-                    [_c("div", { ref: "tree", attrs: { id: "tree" } })]
-                  ),
-                  _vm._v(" "),
-                  _c("b-tab", { attrs: { title: "В виде списка" } }, [
-                    !_vm.isBusy
-                      ? _c(
-                          "div",
-                          [
-                            _c("h5", [_vm._v("Сформированные компетенции")]),
-                            _vm._v(" "),
-                            _vm._l(
-                              _vm.nodes.filter(function(el) {
-                                return el.type == "Компетенция"
-                              }),
-                              function(comp) {
-                                return _c("div", { key: comp.id }, [
-                                  _c("h5", [
-                                    _c("i", {
-                                      staticClass:
-                                        "ion ion-ios-radio-button-on text-primary"
-                                    }),
-                                    _vm._v(" Компетенция: " + _vm._s(comp.name))
-                                  ]),
-                                  _vm._v(" "),
-                                  _c(
-                                    "ul",
-                                    {
-                                      staticStyle: { "padding-left": "20px" },
-                                      attrs: { type: "none" }
-                                    },
-                                    _vm._l(
-                                      _vm.nodes.filter(function(el) {
-                                        return (
-                                          el.type.includes("Навык") &&
-                                          el.pid == comp.id
-                                        )
-                                      }),
-                                      function(skil) {
-                                        return _c("li", { key: skil.id }, [
-                                          _c("i", {
-                                            staticClass:
-                                              "ion ion-ios-radio-button-on text-secondary"
-                                          }),
-                                          _vm._v(
-                                            " Навык: " +
-                                              _vm._s(skil.name) +
-                                              "\n                          "
-                                          ),
-                                          _c(
-                                            "ul",
-                                            {
-                                              staticStyle: {
-                                                "padding-left": "20px"
-                                              },
-                                              attrs: { type: "none" }
-                                            },
-                                            _vm._l(
-                                              _vm.nodes.filter(function(el) {
-                                                return (
-                                                  el.type.includes("Умение") &&
-                                                  el.pid == skil.id
-                                                )
-                                              }),
-                                              function(abil) {
-                                                return _c(
-                                                  "li",
-                                                  { key: abil.id },
-                                                  [
-                                                    _c("i", {
-                                                      staticClass:
-                                                        "ion ion-ios-radio-button-on text-success"
-                                                    }),
-                                                    _vm._v(
-                                                      " Умение: " +
-                                                        _vm._s(abil.name) +
-                                                        "\n                                  "
-                                                    ),
-                                                    _c(
-                                                      "ul",
-                                                      {
-                                                        staticStyle: {
-                                                          "padding-left": "20px"
-                                                        },
-                                                        attrs: { type: "none" }
-                                                      },
-                                                      _vm._l(
-                                                        _vm.nodes.filter(
-                                                          function(el) {
-                                                            return (
-                                                              el.type.includes(
-                                                                "Знание"
-                                                              ) &&
-                                                              el.pid == abil.id
-                                                            )
-                                                          }
-                                                        ),
-                                                        function(know) {
-                                                          return _c(
-                                                            "li",
-                                                            { key: know.id },
-                                                            [
-                                                              _c("i", {
-                                                                staticClass:
-                                                                  "ion ion-ios-radio-button-on text-warning"
-                                                              }),
-                                                              _vm._v(
-                                                                " Знание: " +
-                                                                  _vm._s(
-                                                                    know.name
-                                                                  ) +
-                                                                  "\n                                      "
-                                                              )
-                                                            ]
-                                                          )
-                                                        }
-                                                      ),
-                                                      0
-                                                    )
-                                                  ]
-                                                )
-                                              }
-                                            ),
-                                            0
-                                          )
-                                        ])
-                                      }
-                                    ),
-                                    0
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "ul",
-                                    {
-                                      staticStyle: { "padding-left": "20px" },
-                                      attrs: { type: "none" }
-                                    },
-                                    _vm._l(
-                                      _vm.nodes.filter(function(el) {
-                                        return (
-                                          el.type.includes("Умение") &&
-                                          el.pid == comp.id
-                                        )
-                                      }),
-                                      function(abil) {
-                                        return _c("li", { key: abil.id }, [
-                                          _c("i", {
-                                            staticClass:
-                                              "ion ion-ios-radio-button-on text-success"
-                                          }),
-                                          _vm._v(
-                                            " Умение: " +
-                                              _vm._s(abil.name) +
-                                              "\n                                  "
-                                          ),
-                                          _c(
-                                            "ul",
-                                            {
-                                              staticStyle: {
-                                                "padding-left": "20px"
-                                              },
-                                              attrs: { type: "none" }
-                                            },
-                                            _vm._l(
-                                              _vm.nodes.filter(function(el) {
-                                                return (
-                                                  el.type.includes("Знание") &&
-                                                  el.pid == abil.id
-                                                )
-                                              }),
-                                              function(know) {
-                                                return _c(
-                                                  "li",
-                                                  { key: know.id },
-                                                  [
-                                                    _c("i", {
-                                                      staticClass:
-                                                        "ion ion-ios-radio-button-on text-warning"
-                                                    }),
-                                                    _vm._v(
-                                                      " Знание: " +
-                                                        _vm._s(know.name) +
-                                                        "\n                                      "
-                                                    )
-                                                  ]
-                                                )
-                                              }
-                                            ),
-                                            0
-                                          )
-                                        ])
-                                      }
-                                    ),
-                                    0
-                                  )
-                                ])
-                              }
-                            ),
-                            _vm._v(" "),
-                            _c("hr"),
-                            _vm._v(" "),
-                            _c("h5", [
-                              _vm._v("ЗУН, не прикрепленные к компетенциям")
-                            ]),
-                            _vm._v(" "),
-                            _c(
-                              "ul",
-                              {
-                                staticStyle: { "padding-left": "20px" },
-                                attrs: { type: "none" }
-                              },
-                              _vm._l(
-                                _vm.nodes.filter(function(el) {
-                                  return (
-                                    el.type.includes("Навык") && el.pid == "c"
-                                  )
-                                }),
-                                function(skil) {
-                                  return _c("li", { key: skil.id }, [
-                                    _c("i", {
-                                      staticClass:
-                                        "ion ion-ios-radio-button-on text-secondary"
-                                    }),
-                                    _vm._v(
-                                      " Навык: " +
-                                        _vm._s(skil.name) +
-                                        "\n                          "
-                                    ),
-                                    _c(
-                                      "ul",
-                                      {
-                                        staticStyle: { "padding-left": "20px" },
-                                        attrs: { type: "none" }
-                                      },
-                                      _vm._l(
-                                        _vm.nodes.filter(function(el) {
-                                          return (
-                                            el.type.includes("Умение") &&
-                                            el.pid == skil.id
-                                          )
-                                        }),
-                                        function(abil) {
-                                          return _c("li", { key: abil.id }, [
-                                            _c("i", {
-                                              staticClass:
-                                                "ion ion-ios-radio-button-on text-success"
-                                            }),
-                                            _vm._v(
-                                              " Умение: " +
-                                                _vm._s(abil.name) +
-                                                "\n                                  "
-                                            ),
-                                            _c(
-                                              "ul",
-                                              {
-                                                staticStyle: {
-                                                  "padding-left": "20px"
-                                                },
-                                                attrs: { type: "none" }
-                                              },
-                                              _vm._l(
-                                                _vm.nodes.filter(function(el) {
-                                                  return (
-                                                    el.type.includes(
-                                                      "Знание"
-                                                    ) && el.pid == abil.id
-                                                  )
-                                                }),
-                                                function(know) {
-                                                  return _c(
-                                                    "li",
-                                                    { key: know.id },
-                                                    [
-                                                      _c("i", {
-                                                        staticClass:
-                                                          "ion ion-ios-radio-button-on text-warning"
-                                                      }),
-                                                      _vm._v(
-                                                        " Знание: " +
-                                                          _vm._s(know.name) +
-                                                          "\n                                      "
-                                                      )
-                                                    ]
-                                                  )
-                                                }
-                                              ),
-                                              0
-                                            )
-                                          ])
-                                        }
-                                      ),
-                                      0
-                                    )
-                                  ])
-                                }
-                              ),
-                              0
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "ul",
-                              {
-                                staticStyle: { "padding-left": "20px" },
-                                attrs: { type: "none" }
-                              },
-                              _vm._l(
-                                _vm.nodes.filter(function(el) {
-                                  return (
-                                    el.type.includes("Умение") && el.pid == "s"
-                                  )
-                                }),
-                                function(abil) {
-                                  return _c("li", { key: abil.id }, [
-                                    _c("i", {
-                                      staticClass:
-                                        "ion ion-ios-radio-button-on text-success"
-                                    }),
-                                    _vm._v(
-                                      " Умение: " +
-                                        _vm._s(abil.name) +
-                                        "\n                                  "
-                                    ),
-                                    _c(
-                                      "ul",
-                                      {
-                                        staticStyle: { "padding-left": "20px" },
-                                        attrs: { type: "none" }
-                                      },
-                                      _vm._l(
-                                        _vm.nodes.filter(function(el) {
-                                          return (
-                                            el.type.includes("Знание") &&
-                                            el.pid == abil.id
-                                          )
-                                        }),
-                                        function(know) {
-                                          return _c("li", { key: know.id }, [
-                                            _c("i", {
-                                              staticClass:
-                                                "ion ion-ios-radio-button-on text-warning"
-                                            }),
-                                            _vm._v(
-                                              " Знание: " +
-                                                _vm._s(know.name) +
-                                                "\n                                      "
-                                            )
-                                          ])
-                                        }
-                                      ),
-                                      0
-                                    )
-                                  ])
-                                }
-                              ),
-                              0
-                            ),
-                            _vm._v(" "),
-                            _c("hr"),
-                            _vm._v(" "),
-                            _c("h5", [_vm._v("Сквозные знания:")]),
-                            _vm._v(" "),
-                            _c(
-                              "ul",
-                              {
-                                staticStyle: { "padding-left": "20px" },
-                                attrs: { type: "none" }
-                              },
-                              _vm._l(
-                                _vm.nodes.filter(function(el) {
-                                  return (
-                                    el.type.includes("Знание") && el.pid == "th"
-                                  )
-                                }),
-                                function(know) {
-                                  return _c("li", { key: know.id }, [
-                                    _c("i", {
-                                      staticClass:
-                                        "ion ion-ios-radio-button-on text-warning"
-                                    }),
-                                    _vm._v(
-                                      " Знание: " +
-                                        _vm._s(know.name) +
-                                        "\n                      "
-                                    )
-                                  ])
-                                }
-                              ),
-                              0
-                            )
-                          ],
-                          2
-                        )
-                      : _vm._e()
-                  ])
-                ],
-                1
-              )
-            ],
-            1
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c("new-skill2", {
-        key: _vm.ns,
-        attrs: {
-          ish_version_id: _vm.stage.ish_version_id,
-          parent_node: _vm.parent_node
-        },
-        on: { add_skill: _vm.add_skill }
-      }),
-      _vm._v(" "),
-      _c("new-ability2", {
-        key: _vm.as,
-        attrs: {
-          ish_version_id: _vm.stage.ish_version_id,
-          parent_node: _vm.parent_node
-        },
-        on: { add_ability: _vm.add_ability }
-      }),
-      _vm._v(" "),
-      _c("new-knowledge2", {
-        key: _vm.ks,
-        attrs: {
-          dtps: _vm.parts,
-          ish_version_id: _vm.stage.ish_version_id,
-          parent_node: _vm.parent_node
-        },
-        on: { add_knowledge: _vm.add_knowledge }
-      }),
-      _vm._v(" "),
-      _c("new-competence2", {
-        key: _vm.cs,
-        attrs: { elems: _vm.unattached_elems },
-        on: { add_competence: _vm.add_competence }
-      }),
-      _vm._v(" "),
-      _vm.edit_type == "parent"
-        ? _c("add-parent2", {
-            key: _vm.edit_elem.id,
-            attrs: {
-              edit_elem: _vm.edit_elem,
-              elems: _vm.nodes.filter(function(node) {
-                return node.tags == "ability"
-              })
-            },
-            on: { draw_parent: _vm.draw_parent }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      !_vm.isBusy && _vm.edit_elem.id != "0" && _vm.edit_type == "skill"
-        ? _c("edit-skill2", {
-            key: "s" + _vm.edit_elem.id,
-            attrs: {
-              edit_elem: _vm.edit_elem.id,
-              ish_version_id: _vm.stage.ish_version_id
-            },
-            on: { update_skill: _vm.update_skill }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      !_vm.isBusy && _vm.edit_elem.id != "0" && _vm.edit_type == "ability"
-        ? _c("edit-ability2", {
-            key: "a" + _vm.edit_elem.id,
-            attrs: {
-              edit_elem: _vm.edit_elem.id,
-              ish_version_id: _vm.stage.ish_version_id
-            },
-            on: { update_ability: _vm.update_ability }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      !_vm.isBusy && _vm.edit_elem.id != "0" && _vm.edit_type == "knowledge"
-        ? _c("edit-knowledge2", {
-            key: "a" + _vm.edit_elem.id,
-            attrs: {
-              dtps: _vm.parts,
-              edit_elem: _vm.edit_elem.id,
-              ish_version_id: _vm.stage.ish_version_id
-            },
-            on: { update_knowledge: _vm.update_knowledge }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      !_vm.isBusy && _vm.edit_elem.id != "0" && _vm.edit_type == "competence"
-        ? _c("edit-competence2", {
-            key: "c" + _vm.edit_elem.id,
-            attrs: { edit_elem: _vm.edit_elem.id },
-            on: { update_competence: _vm.update_competence }
-          })
-        : _vm._e(),
-      _vm._v(" "),
-      !_vm.isBusy && _vm.edit_elem.id != "0"
-        ? _c("order-children", {
-            key: "eo_" + _vm.edit_elem.id,
-            attrs: {
-              edit_elem: _vm.edit_elem,
-              zun_version: _vm.stage.zun_version_id
-            },
-            on: { update_order: _vm.update_order }
-          })
-        : _vm._e()
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewSkill2.vue?vue&type=template&id=0b085d7b&":
-/*!*************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/NewSkill2.vue?vue&type=template&id=0b085d7b& ***!
-  \*************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "b-modal",
-        {
-          attrs: {
-            "no-close-on-esc": "",
-            "no-close-on-backdrop": "",
-            id: "modal-newskill",
-            "ok-title": "Сохранить",
-            "cancel-title": "Закрыть",
-            size: "xl",
-            title: "Создание нового навыка"
-          },
-          on: { ok: _vm.handle_ok }
-        },
-        [
-          _c("p", [_vm._v("Parent: " + _vm._s(_vm.parent_node))]),
-          _vm._v(" "),
-          _c("h4", [_vm._v("НАЗВАНИЕ НАВЫКА")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v("Заполните параметры названия компонента")
-          ]),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Ключевое слово"
-                  }
-                },
-                [
-                  _c("b-form-input", {
-                    attrs: {
-                      disabled: "",
-                      required: "",
-                      placeholder: "Владеть навыком",
-                      value: "Владеть навыком"
-                    },
-                    model: {
-                      value: _vm.new_skill.keyword,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_skill, "keyword", $$v)
-                      },
-                      expression: "new_skill.keyword"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Каким?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "Каким?" },
-                    model: {
-                      value: _vm.new_skill.what,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_skill, "what", $$v)
-                      },
-                      expression: "new_skill.what"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "При помощи чего?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "При помощи чего?" },
-                    model: {
-                      value: _vm.new_skill.with,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_skill, "with", $$v)
-                      },
-                      expression: "new_skill.with"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "При каких условиях?"
-                  }
-                },
-                [
-                  _c("b-input", {
-                    attrs: { required: "", placeholder: "При каких условиях?" },
-                    model: {
-                      value: _vm.new_skill.where,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_skill, "where", $$v)
-                      },
-                      expression: "new_skill.where"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-row",
-            [
-              _c(
-                "b-form-group",
-                {
-                  staticClass: "col",
-                  attrs: {
-                    "label-size": "lg",
-                    "label-cols-lg": "2",
-                    label: "Итоговое название"
-                  }
-                },
-                [_c("p", [_vm._v(_vm._s(_vm.name))])]
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          _c("h4", [_vm._v("ОБОСНОВАНИЕ")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "" } }, [
-            _vm._v("Выберите на основе какой информации формируется навык")
-          ]),
-          _vm._v(" "),
-          _c(
-            "b-form-radio",
-            {
-              attrs: { name: "is_by_expert", value: "0" },
-              model: {
-                value: _vm.new_skill.is_by_expert,
-                callback: function($$v) {
-                  _vm.$set(_vm.new_skill, "is_by_expert", $$v)
-                },
-                expression: "new_skill.is_by_expert"
-              }
-            },
-            [_vm._v("На основе источников НСИ")]
-          ),
-          _vm._v(" "),
-          _c(
-            "b-form-radio",
-            {
-              attrs: { name: "is_by_expert", value: "1" },
-              model: {
-                value: _vm.new_skill.is_by_expert,
-                callback: function($$v) {
-                  _vm.$set(_vm.new_skill, "is_by_expert", $$v)
-                },
-                expression: "new_skill.is_by_expert"
-              }
-            },
-            [_vm._v("На основе мнения эксперта")]
-          ),
-          _vm._v(" "),
-          _vm.new_skill.is_by_expert == 0
-            ? _c(
-                "div",
-                { staticClass: "mt-4" },
-                [
-                  _c("h5", [_vm._v("ИСТОЧНИКИ НСИ")]),
-                  _vm._v(" "),
-                  _c("b-alert", { attrs: { show: "" } }, [
-                    _vm._v("Соотнесите навык с источниками НСИ")
-                  ]),
-                  _vm._v(" "),
-                  !_vm.isBusy
-                    ? _c("nsi-choose", {
-                        attrs: {
-                          mode: "work",
-                          selected: [],
-                          ish_version_id: _vm.ish_version_id
-                        },
-                        on: { change_nsi: _vm.change_nsi }
-                      })
-                    : _vm._e()
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.new_skill.is_by_expert == 1
-            ? _c(
-                "div",
-                { staticClass: "mt-4" },
-                [
-                  _c("h5", [_vm._v("МНЕНИЕ ЭКСПЕРТА")]),
-                  _vm._v(" "),
-                  _c("b-alert", { attrs: { show: "" } }, [
-                    _vm._v(
-                      "Введите комментарий, указав Ф.И.О. эксперта и его обоснование"
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("b-form-textarea", {
-                    attrs: {
-                      id: "textarea",
-                      placeholder: "Введите комментарий...",
-                      rows: "3",
-                      "max-rows": "6"
-                    },
-                    model: {
-                      value: _vm.new_skill.expert_answer,
-                      callback: function($$v) {
-                        _vm.$set(_vm.new_skill, "expert_answer", $$v)
-                      },
-                      expression: "new_skill.expert_answer"
-                    }
-                  })
-                ],
-                1
-              )
-            : _vm._e(),
-          _vm._v(" "),
-          _c("hr"),
-          _vm._v(" "),
-          !_vm.new_skill.valid
-            ? _c("b-alert", { attrs: { show: "", variant: "danger" } }, [
-                _c("strong", [_vm._v("Ошибка!")]),
-                _vm._v(" Заполните ВСЕ параметры названия компонента")
-              ])
-            : _vm._e()
-        ],
-        1
-      )
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/OrderChildren.vue?vue&type=template&id=2b2fc427&":
-/*!*****************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/dpps/OrderChildren.vue?vue&type=template&id=2b2fc427& ***!
-  \*****************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "b-modal",
-        {
-          attrs: {
-            "no-close-on-esc": "",
-            "no-close-on-backdrop": "",
-            id: "modal-orderchildren",
-            "ok-title": "Сохранить",
-            "cancel-title": "Закрыть",
-            size: "xl",
-            title: "Упорядочивание дочерних компонентов"
-          },
-          on: { ok: _vm.handle_ok }
-        },
-        [
-          _c("h5", [
-            _vm._v("Родительский компонент: " + _vm._s(_vm.edit_elem.name))
-          ]),
-          _vm._v(" "),
-          _c("h5", [_vm._v("Дочерние компоненты:")]),
-          _vm._v(" "),
-          _c("b-alert", { attrs: { show: "", variant: "info" } }, [
-            _c("span", [
-              _vm._v(
-                "Установите правильную последовательность отображения компонентов. Вы можете поменять последовательность путем перетаскивания компонента (с помощью иконки "
-              ),
-              _c("i", { staticClass: "ion ion-ios-move m-r-1" }),
-              _vm._v(").")
-            ])
-          ]),
-          _vm._v(" "),
-          _c(
-            "draggable",
-            _vm._b(
-              {
-                staticClass: "sortable-example",
-                attrs: { tag: "div" },
-                model: {
-                  value: _vm.children,
-                  callback: function($$v) {
-                    _vm.children = $$v
-                  },
-                  expression: "children"
-                }
-              },
-              "draggable",
-              { animation: 150, handle: ".ion" },
-              false
-            ),
-            _vm._l(_vm.children, function(item) {
-              return _c(
-                "div",
-                { key: item.id, staticStyle: { "margin-bottom": "10px" } },
-                [
-                  _c(
-                    "b-row",
-                    [
-                      _c("b-col", { attrs: { sm: "1" } }, [
-                        _c("i", {
-                          staticClass: "ion ion-ios-move m-r-1",
-                          staticStyle: { "font-size": "35px" }
-                        }),
-                        _vm._v("  \n          ")
-                      ]),
-                      _vm._v(" "),
-                      _c("b-col", { attrs: { sm: "11" } }, [
-                        _vm._v(
-                          "\n            " + _vm._s(item.name) + "\n          "
-                        )
-                      ])
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c("hr")
-                ],
-                1
-              )
-            }),
-            0
-          )
-        ],
-        1
-      )
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/nsis/NsiChoose.vue?vue&type=template&id=3b720956&":
-/*!*************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/assets/src/components/nsis/NsiChoose.vue?vue&type=template&id=3b720956& ***!
-  \*************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("div", { staticClass: "row" }, [
-        _c("div", { staticClass: "col-md-12" }, [
-          _c("h5", [
-            _vm._v("Выбрано источников (" + _vm._s(_vm.selected.length) + ")")
-          ])
-        ])
-      ]),
-      _vm._v(" "),
-      _vm._l(_vm.types, function(type) {
-        return _c(
-          "div",
-          { key: "t" + type.id, staticClass: "col-md-6" },
-          [
-            _c("h5", [
-              _vm._v(
-                _vm._s(type.name) +
-                  " (" +
-                  _vm._s(
-                    _vm.nsis.filter(function(nsi) {
-                      return nsi.type_id == type.id
-                    }).length
-                  ) +
-                  ")"
-              )
-            ]),
-            _vm._v(" "),
-            _c("b-form-checkbox-group", {
-              attrs: {
-                options: _vm.nsis.filter(function(nsi) {
-                  return nsi.type_id == type.id
-                }),
-                name: "nsis",
-                "value-field": "id",
-                "text-field": "name",
-                stacked: ""
-              },
-              on: { input: _vm.change_nsi },
-              model: {
-                value: _vm.selected,
-                callback: function($$v) {
-                  _vm.selected = $$v
-                },
-                expression: "selected"
-              }
-            }),
-            _vm._v(" "),
-            _c("br")
-          ],
-          1
-        )
-      }),
-      _vm._v(" "),
-      _c("new-nsi", {
-        key: _vm.nn,
-        attrs: { types: _vm.types },
-        on: { add_nsi: _vm.add_nsi }
-      }),
-      _vm._v(" "),
-      _vm.show_edit_window
-        ? _c("edit-nsi", {
-            key: _vm.nsi_to_edit,
-            attrs: { nsi_id: _vm.nsi_to_edit, types: _vm.types },
-            on: { update_nsi: _vm.update_nsi }
-          })
-        : _vm._e()
-    ],
-    2
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/AddParent2.vue":
-/*!*************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/AddParent2.vue ***!
-  \*************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _AddParent2_vue_vue_type_template_id_4d44ea9d___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AddParent2.vue?vue&type=template&id=4d44ea9d& */ "./resources/assets/src/components/dpps/AddParent2.vue?vue&type=template&id=4d44ea9d&");
-/* harmony import */ var _AddParent2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AddParent2.vue?vue&type=script&lang=js& */ "./resources/assets/src/components/dpps/AddParent2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _AddParent2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _AddParent2_vue_vue_type_template_id_4d44ea9d___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _AddParent2_vue_vue_type_template_id_4d44ea9d___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/assets/src/components/dpps/AddParent2.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/AddParent2.vue?vue&type=script&lang=js&":
-/*!**************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/AddParent2.vue?vue&type=script&lang=js& ***!
-  \**************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddParent2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./AddParent2.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/AddParent2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_AddParent2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/AddParent2.vue?vue&type=template&id=4d44ea9d&":
-/*!********************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/AddParent2.vue?vue&type=template&id=4d44ea9d& ***!
-  \********************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddParent2_vue_vue_type_template_id_4d44ea9d___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./AddParent2.vue?vue&type=template&id=4d44ea9d& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/AddParent2.vue?vue&type=template&id=4d44ea9d&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddParent2_vue_vue_type_template_id_4d44ea9d___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_AddParent2_vue_vue_type_template_id_4d44ea9d___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/EditAbility2.vue":
-/*!***************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/EditAbility2.vue ***!
-  \***************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _EditAbility2_vue_vue_type_template_id_d2b29db0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EditAbility2.vue?vue&type=template&id=d2b29db0& */ "./resources/assets/src/components/dpps/EditAbility2.vue?vue&type=template&id=d2b29db0&");
-/* harmony import */ var _EditAbility2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EditAbility2.vue?vue&type=script&lang=js& */ "./resources/assets/src/components/dpps/EditAbility2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _EditAbility2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _EditAbility2_vue_vue_type_template_id_d2b29db0___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _EditAbility2_vue_vue_type_template_id_d2b29db0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/assets/src/components/dpps/EditAbility2.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/EditAbility2.vue?vue&type=script&lang=js&":
-/*!****************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/EditAbility2.vue?vue&type=script&lang=js& ***!
-  \****************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditAbility2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./EditAbility2.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditAbility2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditAbility2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/EditAbility2.vue?vue&type=template&id=d2b29db0&":
-/*!**********************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/EditAbility2.vue?vue&type=template&id=d2b29db0& ***!
-  \**********************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditAbility2_vue_vue_type_template_id_d2b29db0___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./EditAbility2.vue?vue&type=template&id=d2b29db0& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditAbility2.vue?vue&type=template&id=d2b29db0&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditAbility2_vue_vue_type_template_id_d2b29db0___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditAbility2_vue_vue_type_template_id_d2b29db0___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/EditCompetence2.vue":
-/*!******************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/EditCompetence2.vue ***!
-  \******************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _EditCompetence2_vue_vue_type_template_id_90ab9f4e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EditCompetence2.vue?vue&type=template&id=90ab9f4e& */ "./resources/assets/src/components/dpps/EditCompetence2.vue?vue&type=template&id=90ab9f4e&");
-/* harmony import */ var _EditCompetence2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EditCompetence2.vue?vue&type=script&lang=js& */ "./resources/assets/src/components/dpps/EditCompetence2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _EditCompetence2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _EditCompetence2_vue_vue_type_template_id_90ab9f4e___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _EditCompetence2_vue_vue_type_template_id_90ab9f4e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/assets/src/components/dpps/EditCompetence2.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/EditCompetence2.vue?vue&type=script&lang=js&":
-/*!*******************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/EditCompetence2.vue?vue&type=script&lang=js& ***!
-  \*******************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditCompetence2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./EditCompetence2.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditCompetence2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditCompetence2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/EditCompetence2.vue?vue&type=template&id=90ab9f4e&":
-/*!*************************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/EditCompetence2.vue?vue&type=template&id=90ab9f4e& ***!
-  \*************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditCompetence2_vue_vue_type_template_id_90ab9f4e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./EditCompetence2.vue?vue&type=template&id=90ab9f4e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditCompetence2.vue?vue&type=template&id=90ab9f4e&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditCompetence2_vue_vue_type_template_id_90ab9f4e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditCompetence2_vue_vue_type_template_id_90ab9f4e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/EditKnowledge2.vue":
-/*!*****************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/EditKnowledge2.vue ***!
-  \*****************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _EditKnowledge2_vue_vue_type_template_id_11928054___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EditKnowledge2.vue?vue&type=template&id=11928054& */ "./resources/assets/src/components/dpps/EditKnowledge2.vue?vue&type=template&id=11928054&");
-/* harmony import */ var _EditKnowledge2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EditKnowledge2.vue?vue&type=script&lang=js& */ "./resources/assets/src/components/dpps/EditKnowledge2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _EditKnowledge2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _EditKnowledge2_vue_vue_type_template_id_11928054___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _EditKnowledge2_vue_vue_type_template_id_11928054___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/assets/src/components/dpps/EditKnowledge2.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/EditKnowledge2.vue?vue&type=script&lang=js&":
-/*!******************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/EditKnowledge2.vue?vue&type=script&lang=js& ***!
-  \******************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditKnowledge2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./EditKnowledge2.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditKnowledge2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditKnowledge2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/EditKnowledge2.vue?vue&type=template&id=11928054&":
-/*!************************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/EditKnowledge2.vue?vue&type=template&id=11928054& ***!
-  \************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditKnowledge2_vue_vue_type_template_id_11928054___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./EditKnowledge2.vue?vue&type=template&id=11928054& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditKnowledge2.vue?vue&type=template&id=11928054&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditKnowledge2_vue_vue_type_template_id_11928054___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditKnowledge2_vue_vue_type_template_id_11928054___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/EditSkill2.vue":
-/*!*************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/EditSkill2.vue ***!
-  \*************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _EditSkill2_vue_vue_type_template_id_ace8a33e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./EditSkill2.vue?vue&type=template&id=ace8a33e& */ "./resources/assets/src/components/dpps/EditSkill2.vue?vue&type=template&id=ace8a33e&");
-/* harmony import */ var _EditSkill2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./EditSkill2.vue?vue&type=script&lang=js& */ "./resources/assets/src/components/dpps/EditSkill2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _EditSkill2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _EditSkill2_vue_vue_type_template_id_ace8a33e___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _EditSkill2_vue_vue_type_template_id_ace8a33e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/assets/src/components/dpps/EditSkill2.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/EditSkill2.vue?vue&type=script&lang=js&":
-/*!**************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/EditSkill2.vue?vue&type=script&lang=js& ***!
-  \**************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditSkill2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./EditSkill2.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditSkill2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_EditSkill2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/EditSkill2.vue?vue&type=template&id=ace8a33e&":
-/*!********************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/EditSkill2.vue?vue&type=template&id=ace8a33e& ***!
-  \********************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditSkill2_vue_vue_type_template_id_ace8a33e___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./EditSkill2.vue?vue&type=template&id=ace8a33e& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/EditSkill2.vue?vue&type=template&id=ace8a33e&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditSkill2_vue_vue_type_template_id_ace8a33e___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_EditSkill2_vue_vue_type_template_id_ace8a33e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewAbility2.vue":
-/*!**************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewAbility2.vue ***!
-  \**************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _NewAbility2_vue_vue_type_template_id_e897fc7c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./NewAbility2.vue?vue&type=template&id=e897fc7c& */ "./resources/assets/src/components/dpps/NewAbility2.vue?vue&type=template&id=e897fc7c&");
-/* harmony import */ var _NewAbility2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NewAbility2.vue?vue&type=script&lang=js& */ "./resources/assets/src/components/dpps/NewAbility2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _NewAbility2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _NewAbility2_vue_vue_type_template_id_e897fc7c___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _NewAbility2_vue_vue_type_template_id_e897fc7c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/assets/src/components/dpps/NewAbility2.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewAbility2.vue?vue&type=script&lang=js&":
-/*!***************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewAbility2.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NewAbility2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./NewAbility2.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewAbility2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NewAbility2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewAbility2.vue?vue&type=template&id=e897fc7c&":
-/*!*********************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewAbility2.vue?vue&type=template&id=e897fc7c& ***!
-  \*********************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NewAbility2_vue_vue_type_template_id_e897fc7c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./NewAbility2.vue?vue&type=template&id=e897fc7c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewAbility2.vue?vue&type=template&id=e897fc7c&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NewAbility2_vue_vue_type_template_id_e897fc7c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NewAbility2_vue_vue_type_template_id_e897fc7c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewCompetence2.vue":
-/*!*****************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewCompetence2.vue ***!
-  \*****************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _NewCompetence2_vue_vue_type_template_id_9fbe3d02___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./NewCompetence2.vue?vue&type=template&id=9fbe3d02& */ "./resources/assets/src/components/dpps/NewCompetence2.vue?vue&type=template&id=9fbe3d02&");
-/* harmony import */ var _NewCompetence2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NewCompetence2.vue?vue&type=script&lang=js& */ "./resources/assets/src/components/dpps/NewCompetence2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _NewCompetence2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _NewCompetence2_vue_vue_type_template_id_9fbe3d02___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _NewCompetence2_vue_vue_type_template_id_9fbe3d02___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/assets/src/components/dpps/NewCompetence2.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewCompetence2.vue?vue&type=script&lang=js&":
-/*!******************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewCompetence2.vue?vue&type=script&lang=js& ***!
-  \******************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NewCompetence2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./NewCompetence2.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewCompetence2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NewCompetence2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewCompetence2.vue?vue&type=template&id=9fbe3d02&":
-/*!************************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewCompetence2.vue?vue&type=template&id=9fbe3d02& ***!
-  \************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NewCompetence2_vue_vue_type_template_id_9fbe3d02___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./NewCompetence2.vue?vue&type=template&id=9fbe3d02& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewCompetence2.vue?vue&type=template&id=9fbe3d02&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NewCompetence2_vue_vue_type_template_id_9fbe3d02___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NewCompetence2_vue_vue_type_template_id_9fbe3d02___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewKnowledge2.vue":
-/*!****************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewKnowledge2.vue ***!
-  \****************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _NewKnowledge2_vue_vue_type_template_id_0ee3db24___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./NewKnowledge2.vue?vue&type=template&id=0ee3db24& */ "./resources/assets/src/components/dpps/NewKnowledge2.vue?vue&type=template&id=0ee3db24&");
-/* harmony import */ var _NewKnowledge2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NewKnowledge2.vue?vue&type=script&lang=js& */ "./resources/assets/src/components/dpps/NewKnowledge2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _NewKnowledge2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _NewKnowledge2_vue_vue_type_template_id_0ee3db24___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _NewKnowledge2_vue_vue_type_template_id_0ee3db24___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/assets/src/components/dpps/NewKnowledge2.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewKnowledge2.vue?vue&type=script&lang=js&":
-/*!*****************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewKnowledge2.vue?vue&type=script&lang=js& ***!
-  \*****************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NewKnowledge2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./NewKnowledge2.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewKnowledge2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NewKnowledge2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewKnowledge2.vue?vue&type=template&id=0ee3db24&":
-/*!***********************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewKnowledge2.vue?vue&type=template&id=0ee3db24& ***!
-  \***********************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NewKnowledge2_vue_vue_type_template_id_0ee3db24___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./NewKnowledge2.vue?vue&type=template&id=0ee3db24& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewKnowledge2.vue?vue&type=template&id=0ee3db24&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NewKnowledge2_vue_vue_type_template_id_0ee3db24___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NewKnowledge2_vue_vue_type_template_id_0ee3db24___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewOC.vue":
-/*!********************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewOC.vue ***!
-  \********************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _NewOC_vue_vue_type_template_id_0ac6daae___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./NewOC.vue?vue&type=template&id=0ac6daae& */ "./resources/assets/src/components/dpps/NewOC.vue?vue&type=template&id=0ac6daae&");
-/* harmony import */ var _NewOC_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NewOC.vue?vue&type=script&lang=js& */ "./resources/assets/src/components/dpps/NewOC.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _NewOC_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NewOC.vue?vue&type=style&index=0&lang=css& */ "./resources/assets/src/components/dpps/NewOC.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
-  _NewOC_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _NewOC_vue_vue_type_template_id_0ac6daae___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _NewOC_vue_vue_type_template_id_0ac6daae___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/assets/src/components/dpps/NewOC.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewOC.vue?vue&type=script&lang=js&":
-/*!*********************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewOC.vue?vue&type=script&lang=js& ***!
-  \*********************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NewOC_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./NewOC.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewOC.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NewOC_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewOC.vue?vue&type=style&index=0&lang=css&":
-/*!*****************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewOC.vue?vue&type=style&index=0&lang=css& ***!
-  \*****************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_5_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_5_2_node_modules_vue_loader_lib_index_js_vue_loader_options_NewOC_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/style-loader!../../../../../node_modules/css-loader??ref--5-1!../../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../../node_modules/postcss-loader/src??ref--5-2!../../../../../node_modules/vue-loader/lib??vue-loader-options!./NewOC.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewOC.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_5_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_5_2_node_modules_vue_loader_lib_index_js_vue_loader_options_NewOC_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_5_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_5_2_node_modules_vue_loader_lib_index_js_vue_loader_options_NewOC_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_5_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_5_2_node_modules_vue_loader_lib_index_js_vue_loader_options_NewOC_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_5_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_5_2_node_modules_vue_loader_lib_index_js_vue_loader_options_NewOC_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_5_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_5_2_node_modules_vue_loader_lib_index_js_vue_loader_options_NewOC_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewOC.vue?vue&type=template&id=0ac6daae&":
-/*!***************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewOC.vue?vue&type=template&id=0ac6daae& ***!
-  \***************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NewOC_vue_vue_type_template_id_0ac6daae___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./NewOC.vue?vue&type=template&id=0ac6daae& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewOC.vue?vue&type=template&id=0ac6daae&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NewOC_vue_vue_type_template_id_0ac6daae___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NewOC_vue_vue_type_template_id_0ac6daae___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewSkill2.vue":
-/*!************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewSkill2.vue ***!
-  \************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _NewSkill2_vue_vue_type_template_id_0b085d7b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./NewSkill2.vue?vue&type=template&id=0b085d7b& */ "./resources/assets/src/components/dpps/NewSkill2.vue?vue&type=template&id=0b085d7b&");
-/* harmony import */ var _NewSkill2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NewSkill2.vue?vue&type=script&lang=js& */ "./resources/assets/src/components/dpps/NewSkill2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _NewSkill2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _NewSkill2_vue_vue_type_template_id_0b085d7b___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _NewSkill2_vue_vue_type_template_id_0b085d7b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/assets/src/components/dpps/NewSkill2.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewSkill2.vue?vue&type=script&lang=js&":
-/*!*************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewSkill2.vue?vue&type=script&lang=js& ***!
-  \*************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NewSkill2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./NewSkill2.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewSkill2.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NewSkill2_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/NewSkill2.vue?vue&type=template&id=0b085d7b&":
-/*!*******************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/NewSkill2.vue?vue&type=template&id=0b085d7b& ***!
-  \*******************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NewSkill2_vue_vue_type_template_id_0b085d7b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./NewSkill2.vue?vue&type=template&id=0b085d7b& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/NewSkill2.vue?vue&type=template&id=0b085d7b&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NewSkill2_vue_vue_type_template_id_0b085d7b___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NewSkill2_vue_vue_type_template_id_0b085d7b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/OrderChildren.vue":
-/*!****************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/OrderChildren.vue ***!
-  \****************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _OrderChildren_vue_vue_type_template_id_2b2fc427___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OrderChildren.vue?vue&type=template&id=2b2fc427& */ "./resources/assets/src/components/dpps/OrderChildren.vue?vue&type=template&id=2b2fc427&");
-/* harmony import */ var _OrderChildren_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OrderChildren.vue?vue&type=script&lang=js& */ "./resources/assets/src/components/dpps/OrderChildren.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _OrderChildren_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _OrderChildren_vue_vue_type_template_id_2b2fc427___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _OrderChildren_vue_vue_type_template_id_2b2fc427___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/assets/src/components/dpps/OrderChildren.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/OrderChildren.vue?vue&type=script&lang=js&":
-/*!*****************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/OrderChildren.vue?vue&type=script&lang=js& ***!
-  \*****************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OrderChildren_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./OrderChildren.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/OrderChildren.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OrderChildren_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/dpps/OrderChildren.vue?vue&type=template&id=2b2fc427&":
-/*!***********************************************************************************************!*\
-  !*** ./resources/assets/src/components/dpps/OrderChildren.vue?vue&type=template&id=2b2fc427& ***!
-  \***********************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OrderChildren_vue_vue_type_template_id_2b2fc427___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./OrderChildren.vue?vue&type=template&id=2b2fc427& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/dpps/OrderChildren.vue?vue&type=template&id=2b2fc427&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OrderChildren_vue_vue_type_template_id_2b2fc427___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OrderChildren_vue_vue_type_template_id_2b2fc427___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/nsis/NsiChoose.vue":
-/*!************************************************************!*\
-  !*** ./resources/assets/src/components/nsis/NsiChoose.vue ***!
-  \************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _NsiChoose_vue_vue_type_template_id_3b720956___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./NsiChoose.vue?vue&type=template&id=3b720956& */ "./resources/assets/src/components/nsis/NsiChoose.vue?vue&type=template&id=3b720956&");
-/* harmony import */ var _NsiChoose_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./NsiChoose.vue?vue&type=script&lang=js& */ "./resources/assets/src/components/nsis/NsiChoose.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _NsiChoose_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _NsiChoose_vue_vue_type_template_id_3b720956___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _NsiChoose_vue_vue_type_template_id_3b720956___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/assets/src/components/nsis/NsiChoose.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/nsis/NsiChoose.vue?vue&type=script&lang=js&":
-/*!*************************************************************************************!*\
-  !*** ./resources/assets/src/components/nsis/NsiChoose.vue?vue&type=script&lang=js& ***!
-  \*************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NsiChoose_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/babel-loader/lib??ref--4-0!../../../../../node_modules/vue-loader/lib??vue-loader-options!./NsiChoose.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/nsis/NsiChoose.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_NsiChoose_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/assets/src/components/nsis/NsiChoose.vue?vue&type=template&id=3b720956&":
-/*!*******************************************************************************************!*\
-  !*** ./resources/assets/src/components/nsis/NsiChoose.vue?vue&type=template&id=3b720956& ***!
-  \*******************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NsiChoose_vue_vue_type_template_id_3b720956___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../../node_modules/vue-loader/lib??vue-loader-options!./NsiChoose.vue?vue&type=template&id=3b720956& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/assets/src/components/nsis/NsiChoose.vue?vue&type=template&id=3b720956&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NsiChoose_vue_vue_type_template_id_3b720956___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_NsiChoose_vue_vue_type_template_id_3b720956___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
+/* harmony default export */ __webpack_exports__["default"] = (draggableComponent);
 
 /***/ })
 

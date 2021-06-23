@@ -11,8 +11,8 @@ import Layout1 from '@/layout/Layout1'
 import axios from 'axios';
 import VueAxios from 'vue-axios';
 Vue.use(VueAxios, axios);
-//axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
-axios.defaults.baseURL = 'https://constructor.emiit.ru/api';
+axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
+//axios.defaults.baseURL = 'https://constructor.emiit.ru/api';
 
 
 Vue.use(Router)
@@ -124,6 +124,12 @@ const router = new Router({
       path: 'my_dpps/:dpp/stages/:stage/work_om',
       name: 'dpp_stage_work_om',
       component: () => import('@/components/dpps/DppStageWorkOM'),
+      meta: { auth: true }
+    },
+    {
+      path: 'my_dpps/:dpp/stages/:stage/work_structure',
+      name: 'dpp_stage_work_structure',
+      component: () => import('@/components/dpps/DppStageWorkStructure'),
       meta: { auth: true }
     },
     {

@@ -60,6 +60,7 @@ class IshVersionController extends Controller
             
             foreach($iv->typology_parts as $part)
             {
+                $part->get_knowledges()->detach();
                 DppTypologyPart::destroy($part->id);
             }
             $typology = Typology::find($request->ish_data["typology"]);
@@ -82,7 +83,7 @@ class IshVersionController extends Controller
         
         $iv->save();
         $iv->prof_levels()->sync($request->ish_data["pl"]);
-                
+        return $this->get_ish_version_data($dpp->id,$id->id);
     }
 
     public function get_nsi_types()

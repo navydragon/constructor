@@ -2,6 +2,7 @@
 <div>
     <b-button @click="$router.go(-1)" variant="primary">Назад</b-button>
     <b-card :title="header">
+            <span class="btn btn-success mb-2" @click="go_forward()">Согласовать результаты и перейти к следующему этапу</span>
             <b-tabs content-class="mt-3" pills fill>            
             <b-tab title="Знания" active>
                 <b-button v-b-modal.modal-addquest variant="primary">Добавить вопрос</b-button>
@@ -331,6 +332,12 @@ export default {
       {
           
       },
+      go_forward()
+        {
+            axios
+            .post('/dpps/'+this.$route.params.dpp+'/'+ this.stage.id+'/go_next')
+            .then(() => (this.$router.push('/my_dpps/'+this.$route.params.dpp+'/overview/1')))      
+        }
   },
   
   mounted() {
