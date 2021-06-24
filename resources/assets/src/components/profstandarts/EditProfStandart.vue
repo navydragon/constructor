@@ -52,7 +52,7 @@ export default {
     mounted (){
       self = this;
       axios
-        .post('/profstandarts/get_profstandart',this.edit_item)
+        .get('/profstandarts/get_profstandart',this.edit_item)
         .then(function (response) {
             self.new_item = response.data
         })

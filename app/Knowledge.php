@@ -23,4 +23,9 @@ class Knowledge extends Model
     {
         return $this->belongsToMany('App\DppTypologyPart', 'knowledge_dtp', 'knowledge_id', 'dtp_id');
     }
+
+    public function sections()
+    {
+        return $this->belongsToMany('App\StructureSection', 'knowledge_section', 'knowledge_id', 'section_id');
+    }
 }

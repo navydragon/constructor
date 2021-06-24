@@ -131,12 +131,18 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/dpps/{dpp}/add_knowledge_link','ZunVersionController@add_knowledge_link2');
 
 
-  Route::get('/dpps/{dpp}/get_sections/{sv}','StructureSectionController@get_sections');
+  Route::get('/dpps/{dpp}/structure/{sv}/get_sections','StructureSectionController@get_sections');
+  Route::get('/dpps/{dpp}/structure/{sv}/get_zuns','StructureSectionController@get_zuns');
+  Route::post('/dpps/{dpp}/structure/{sv}/add_theme','StructureSectionController@add_theme');
+  Route::post('/dpps/{dpp}/structure/{sv}/delete_theme','StructureSectionController@delete_theme');
+  Route::post('/dpps/{dpp}/structure/{sv}/delete_section','StructureSectionController@delete_section');
+  Route::post('/dpps/{dpp}/structure/{sv}/move_up','StructureSectionController@move_up');
+  Route::post('/dpps/{dpp}/structure/{sv}/move_down','StructureSectionController@move_down');
 
 
   Route::post('/profstandarts/add_profstandart','ProfStandartController@add_profstandart');
-  Route::post('/profstandarts/get_profstandarts','ProfStandartController@get_profstandarts');
-  Route::post('/profstandarts/get_profstandart','ProfStandartController@get_profstandart');
+  Route::get('/profstandarts/get_profstandarts','ProfStandartController@get_profstandarts');
+  Route::get('/profstandarts/get_profstandart','ProfStandartController@get_profstandart');
   Route::post('/profstandarts/remove_profstandart','ProfStandartController@remove_profstandart');
   Route::post('/profstandarts/update_profstandart','ProfStandartController@update_profstandart');
   

@@ -124,7 +124,7 @@ export default {
   mounted (){
       self = this;
       axios
-        .post('/profstandarts/get_profstandarts')
+        .get('/profstandarts/get_profstandarts')
         .then(function (response) {
             self.items = response.data
         })

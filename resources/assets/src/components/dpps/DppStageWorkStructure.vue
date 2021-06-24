@@ -10,15 +10,22 @@
             <b-card v-for="section in sections"  :key="'s_'+section.id" class="mt-2 mb-1">
               <b-card-header header-tag="header" class="p-1" role="tab">
                 <b-row>
-                  <b-col cols="10">
+                  <b-col cols="9">
                     <h4>{{section.position}}. {{section.name}}</h4>
                   </b-col>
                   <b-col>
                     <b-button-group class="ml-auto">
-                            <b-btn v-if="section.position != 1" variant="primary icon-btn" class="btn" @click.prevent=""><i class="ion ion-md-arrow-round-up"></i></b-btn>
-                            <b-btn variant="primary icon-btn" class="btn" @click.prevent=""><i class="ion ion-md-arrow-round-down"></i></b-btn>
-                            <b-btn variant="primary icon-btn" class="btn" @click.prevent=""><i class="ion ion-md-create"></i></b-btn>
+                            <b-btn v-if="section.position != 1" variant="info icon-btn" class="btn" @click.prevent="move_up(section.id,null)"><i class="ion ion-md-arrow-round-up"></i></b-btn>
+                            <b-btn v-if="section.position != sections.length" variant="info icon-btn" class="btn" @click.prevent="move_down(section.id,null)"><i class="ion ion-md-arrow-round-down"></i></b-btn>
+                            <b-btn variant="primary icon-btn" class="btn" @click.prevent="edit_section(section)"><i class="ion ion-md-create"></i></b-btn>
+                            <b-btn variant="danger icon-btn" class="btn" @click.prevent="delete_section(section.id)"><i class="ion ion-md-close"></i></b-btn>
+                            <b-btn variant="info icon-btn" class="btn" @click.prevent="create_theme(null,section.id)"><i class="ion ion-md-add"></i></b-btn>
                       </b-button-group>
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col>
+                    <h5>Всего часов: {{section.total_hours}} (Лекции: {{section.lection_hours}}, Практики: {{section.practice_hours}}, Лабораторные: {{section.lab_hours}}, Самостоятельная работа: {{section.self_hours}}, Аттестация: {{section.attestation_hours}})</h5>
                   </b-col>
                 </b-row>
                 <hr>
@@ -28,7 +35,7 @@
                 <b-collapse :id="'ks_'+section.id" class="mt-2">
                   <b-list-group>
                     <b-list-group-item v-for="knowledge in section.knowledges" :key="'k_'+knowledge.id">{{knowledge.name}}
-                      <span class="float-right"><b-button variant="outline-primary">+</b-button></span>
+                      <span class="float-right"><b-button v-on:click="create_theme(knowledge,section.id)" size="sm" variant="outline-primary">+</b-button></span>
                     </b-list-group-item>
                   </b-list-group>
                 </b-collapse>
@@ -37,18 +44,178 @@
                 <b-button v-b-toggle="'st_'+section.id" variant="info">Темы ({{section.themes.length}})</b-button>
                 <b-collapse :id="'st_'+section.id" class="mt-2">
                   <b-list-group>
-                    <b-list-group-item v-for="theme in section.themes" :key="'t_'+theme.id">{{theme.name}}</b-list-group-item>
+                    <b-list-group-item v-for="theme in section.themes" :key="'t_'+theme.id"><strong>{{section.position}}.{{theme.position}} {{theme.name}}</strong> Часов: {{theme.total_hours}} (лек: {{theme.lection_hours}},пр: {{theme.practice_hours}}, лаб. {{theme.lab_hours}}, сам. {{theme.self_hours}}, атт. {{theme.attestation_hours}})
+                      <b-button-group class="float-right">
+                        <b-btn size="sm" v-if="theme.position != 1" variant="outline-info icon-btn" class="btn" @click.prevent="move_up(theme.id,section.id)"><i class="ion ion-md-arrow-round-up"></i></b-btn>
+                        <b-btn size="sm" v-if="theme.position != section.length" variant="outline-info icon-btn" class="btn" @click.prevent="move_down(theme.id,section.id)"><i class="ion ion-md-arrow-round-down"></i></b-btn>
+                        <b-btn size="sm" variant="outline-primary icon-btn" class="btn" @click.prevent="edit_theme(theme)"><i class="ion ion-md-create"></i></b-btn>
+                        <b-btn size="sm" variant="outline-danger icon-btn" class="btn" @click.prevent="delete_theme(theme.id,section.id)"><i class="ion ion-md-close"></i></b-btn>
+                      </b-button-group>
+                    </b-list-group-item>
                   </b-list-group>
                 </b-collapse>
               </div>
             </b-card>
           </div>
+           <b-modal id="new_theme" ok-title="Добавить тему" size="xl" no-close-on-esc no-close-on-backdrop @ok="add_theme" cancel-title="Закрыть" title="Добавить тему">
+              <b-form-group label-size="lg" label="Название темы">
+                <b-form-input v-model="new_theme.name"></b-form-input>
+              </b-form-group>
+              <b-form-group label-size="lg" label="Количество часов лекций">
+                <b-form-input v-model="new_theme.lection_hours"></b-form-input>
+              </b-form-group>      
+              <b-form-group label-size="lg" label="Количество часов практик">
+                <b-form-input v-model="new_theme.practice_hours"></b-form-input>
+              </b-form-group>
+              <b-form-group label-size="lg" label="Количество часов лабораторных работ">
+                <b-form-input v-model="new_theme.lab_hours"></b-form-input>
+              </b-form-group>
+              <b-form-group label-size="lg" label="Количество часов самостоятельной работы">
+                <b-form-input v-model="new_theme.self_hours"></b-form-input>
+              </b-form-group>
+              <b-form-group label-size="lg" label="Количество часов итоговой аттестации">
+                <b-form-input v-model="new_theme.attestation_hours"></b-form-input>
+              </b-form-group>
+              <h5>Всего часов на тему: {{parseInt(new_theme.lection_hours)+parseInt(new_theme.practice_hours)+parseInt(new_theme.self_hours)+parseInt(new_theme.lab_hours)+parseInt(new_theme.attestation_hours)}}</h5>
+            </b-modal>
+            <b-modal id="edit_section" ok-title="Обновить" size="xl" no-close-on-esc no-close-on-backdrop @ok="update_section" cancel-title="Закрыть" title="Редактирование раздела">
+              <b-form-group label-size="lg" label="Название раздела">
+                <b-form-input v-model="current_section.name"></b-form-input>
+              </b-form-group>
+              <b-alert show  v-if="current_section.themes.length>0">Данный раздел содержит темы, поэтому часы для него рассчитываются автоматически</b-alert>
+              <b-form-group label-size="lg" label="Количество часов лекций">
+                <b-form-input :disabled="current_section.themes.length>0" v-model="current_section.lection_hours"></b-form-input>
+              </b-form-group>      
+              <b-form-group label-size="lg" label="Количество часов практик">
+                <b-form-input :disabled="current_section.themes.length>0" v-model="current_section.practice_hours"></b-form-input>
+              </b-form-group>
+              <b-form-group label-size="lg" label="Количество часов лабораторных">
+                <b-form-input :disabled="current_section.themes.length>0" v-model="current_section.lab_hours"></b-form-input>
+              </b-form-group>
+              <b-form-group label-size="lg" label="Количество часов самостоятельной работы">
+                <b-form-input :disabled="current_section.themes.length>0" v-model="current_section.self_hours"></b-form-input>
+              </b-form-group>
+              <b-form-group label-size="lg" label="Количество часов аттестации">
+                <b-form-input :disabled="current_section.themes.length>0" v-model="current_section.attestation_hours"></b-form-input>
+              </b-form-group>
+              <h5>Всего часов в разделе: {{parseInt(current_section.lection_hours)+parseInt(current_section.practice_hours)+parseInt(current_section.self_hours)+parseInt(current_theme.lab_hours)+parseInt(current_theme.attestation_hours)}}</h5>
+            </b-modal>
+            <b-modal id="edit_theme" ok-title="Обновить" size="xl" no-close-on-esc no-close-on-backdrop @ok="update_theme" cancel-title="Закрыть" title="Редактирование темы">
+              <b-tabs card>
+              <b-tab title="Основные параметры" active>
+                <b-form-group label-size="lg" label="Название раздела">
+                  <b-form-input v-model="current_theme.name"></b-form-input>
+                </b-form-group>
+                <b-form-group label-size="lg" label="Количество часов лекций">
+                  <b-form-input v-model="current_theme.lection_hours"></b-form-input>
+                </b-form-group>      
+                <b-form-group label-size="lg" label="Количество часов практик">
+                  <b-form-input v-model="current_theme.practice_hours"></b-form-input>
+                </b-form-group>
+                <b-form-group label-size="lg" label="Количество часов лабораторных">
+                  <b-form-input v-model="current_theme.lab_hours"></b-form-input>
+                </b-form-group>
+                <b-form-group label-size="lg" label="Количество часов самостоятельной работы">
+                  <b-form-input v-model="current_theme.self_hours"></b-form-input>
+                </b-form-group>
+                <b-form-group label-size="lg" label="Количество часов аттестации">
+                  <b-form-input v-model="current_theme.attestation_hours"></b-form-input>
+                </b-form-group>
+                <h5>Всего часов в теме: {{parseInt(current_theme.lection_hours)+parseInt(current_theme.practice_hours)+parseInt(current_theme.lab_hours)+parseInt(current_theme.self_hours)+parseInt(current_theme.attestation_hours)}}</h5>
+              </b-tab>
+              <b-tab title="ЗУНы">
+                <h5>Знания:</h5>
+                <b-form-checkbox-group v-if="current_theme.lection_hours>0" stacked
+                  v-model="current_theme.zuns.knowledges"
+                  :options="zuns.knowledges"
+                  class="mb-3"
+                  value-field="id"
+                  text-field="name"
+                  disabled-field="notEnabled"
+                ></b-form-checkbox-group>
+                <b-alert v-else show>Тема не содержит часы на лекции, поэтому Вы не можете прикрепить к ней знания</b-alert>
+                <h5>Умения:</h5>
+                <b-form-checkbox-group v-if="(current_theme.lab_hours>0)||(current_theme.practice_hours>0)" stacked
+                  v-model="current_theme.zuns.abilities"
+                  :options="zuns.abilities"
+                  class="mb-3"
+                  value-field="id"
+                  text-field="name"
+                  disabled-field="notEnabled"
+                ></b-form-checkbox-group>
+                <b-alert v-else show>Тема не содержит часы на практики/лабораторные, поэтому Вы не можете прикрепить к ней умения</b-alert>
+                <h5>Навыки:</h5>
+                <b-form-checkbox-group v-if="(current_theme.lab_hours>0)||(current_theme.practice_hours>0)" stacked
+                  v-model="current_theme.zuns.skills"
+                  :options="zuns.skills"
+                  class="mb-3"
+                  value-field="id"
+                  text-field="name"
+                  disabled-field="notEnabled"
+                ></b-form-checkbox-group>
+                <b-alert v-else show>Тема не содержит часы на практики/лабораторные, поэтому Вы не можете прикрепить к ней навыки</b-alert>
+              </b-tab>
+              </b-tabs>
+            </b-modal>
         </b-tab>
-        <b-tab title="Таблица">
-          <b-card-text>Tab contents 2</b-card-text>
+        <b-tab title="Учебный план">
+          <h5>Учебный план</h5>
+          <table class="table table-bordered">
+            <thead>
+              <tr><th rowspan="2">Наименование разделов</th><th colspan="6">Трудоемкость, ч</th><th rowspan="2">Планируемые результаты обучения</th></tr>
+              <tr><th>Итого</th><th>Лек.</th><th>Пр.</th><th>Лаб.</th><th>Сам. раб.</th><th>Атт.</th></tr>
+              <tr v-for="section in sections" :key="'ps_'+section.id">
+                <td><strong>{{section.position}}. {{section.name}}</strong></td>
+                <td>{{section.total_hours}}</td>
+                <td>{{section.lection_hours}}</td>
+                <td>{{section.practice_hours}}</td>
+                <td>{{section.lab_hours}}</td>
+                <td>{{section.self_hours}}</td>
+                <td>{{section.attestation_hours}}</td>
+                <td>...</td>
+              </tr>
+            </thead>
+
+          </table>
         </b-tab>
-        <b-tab title="Знания">
-          <b-card-text>Tab contents 2</b-card-text>
+        <b-tab title="ЗУН">
+          <h5>Сопоставление ЗУН и Разделов/Тем</h5>
+          <h5>Навыки</h5>
+          <table class="table table-bordered">
+            <thead><tr><th>Навык</th><th>Раздел/Тема</th></tr></thead>
+            <tbody>
+              <tr v-for="skill in zuns.skills" :key="'s_'+skill.id">
+                <td width="50%">{{skill.name}}</td>
+                <td>
+                  <div v-for="section in skill.sections" :key="'ss_'+section.id">{{section.name}}</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h5>Умения</h5>
+          <table class="table table-bordered">
+            <thead><tr><th>Умение</th><th>Раздел/Тема</th></tr></thead>
+            <tbody>
+              <tr v-for="ability in zuns.abilities" :key="'a_'+ability.id">
+                <td width="50%">{{ability.name}}</td>
+                <td>
+                  <div v-for="section in ability.sections" :key="'as_'+section.id">{{section.name}}</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h5>Знания</h5>
+          <table class="table table-bordered">
+            <thead><tr><th>Знание</th><th>Раздел/Тема</th></tr></thead>
+            <tbody>
+              <tr v-for="knowledge in zuns.knowledges" :key="'k_'+knowledge.id">
+                <td width="50%">{{knowledge.name}}</td>
+                <td>
+                  <div v-for="section in knowledge.sections" :key="'ks_'+section.id">{{section.name}}</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </b-tab>
       </b-tabs>
     </b-card>
@@ -60,16 +227,13 @@
 
 
 
-
-
-
 export default {
     name: "dpp_stage_work_structure",
     metaInfo: {
         title: "Разработка ДПП - Структура"
     },
   components: {
-      
+
   },
   computed: {
       header() {
@@ -80,24 +244,192 @@ export default {
     return {
         stage: {},
         sections: [],
-
+        new_theme:{
+          name: "",
+          lection_hours: 0,
+          practice_hours: 0,
+          self_hours: 0,
+          lab_hours: 0,
+          attestation_hours: 0,
+          parent_id: '',
+          knowledges:[],
+        },
+        current_section: {themes:[]},
+        current_theme: {zuns : {knowledges:[],abilities:[],skills:[]}},
+        zuns: {}
     }
   },
   
   methods: {
-      
+      create_theme(knowledge,parent_id)
+      {
+        this.new_theme.parent_id = parent_id
+        if (knowledge !== null)
+        {
+          this.new_theme.name = knowledge.what.charAt(0).toUpperCase() + knowledge.what.slice(1);
+          this.new_theme.knowledges.push(knowledge.id)
+        }
+        this.$bvModal.show("new_theme")
+      },
+      count_section_hours(section_id)
+      {
+          let lec_h = 0; let pr_h = 0; let self_h = 0;
+          let section = this.sections.find(elem => elem.id == section_id)
+          let idx = this.sections.indexOf(section)
+          for (let i = 0; i< section.themes.length; i++)
+          {
+            lec_h += parseInt(section.themes[i].lection_hours);
+            pr_h += parseInt(section.themes[i].practice_hours);
+            self_h += parseInt(section.themes[i].self_hours);
+          }
+          section.lection_hours = lec_h;
+          section.practice_hours = lec_h;
+          section.self_hours = lec_h;
+          section.total_hours =  section.lection_hours + section.practice_hours + section.self_hours;
+          this.sections[idx] = section;
+      },
+      reset_new_theme()
+      {
+        this.new_theme = {
+          name: "",
+          lection_hours: 0,
+          practice_hours: 0,
+          self_hours: 0,
+          lab_hours: 0,
+          attestation_hours: 0,
+          parent_id: '',
+          knowledges:[],
+        }
+      },
+      add_theme()
+      {
+        self = this
+        axios
+          .post('/dpps/'+this.$route.params.dpp+'/structure/'+this.stage.st_version_id+'/add_theme', {
+                    'theme_data': this.new_theme,
+                })
+          .then((response) =>{
+            
+            let parent = this.sections.find(elem => elem.id == this.new_theme.parent_id)
+            parent = this.sections.indexOf(parent)
+            this.sections[parent] = response.data
+           //this.count_section_hours(this.new_theme.parent_id)
+          })
+          .finally((response) => { 
+            this.reset_new_theme()
+          })
+      },
+      delete_theme (id,parent_id)
+      {
+        axios
+        .post('/dpps/'+this.$route.params.dpp+'/structure/'+this.stage.st_version_id+'/delete_theme', {
+                  'id': id,
+              })
+        .then ((response) =>{
+          parent = this.sections.find(elem => elem.id == parent_id)
+          parent = this.sections.indexOf(parent)
+          this.sections[parent] = response.data
+        })
+        .finally((response) => { 
+            this.reset_new_theme()
+        })
+      },
+      edit_theme (theme)
+      {
+        this.current_theme = theme
+        this.current_theme.zuns = {knowledges:[],abilities:[],skills:[]}
+        this.$bvModal.show("edit_theme")
+      },
+      update_theme ()
+      {
+
+      },
+      edit_section (section)
+      {
+        this.current_section = section
+        this.$bvModal.show("edit_section")
+      },
+      delete_section (id)
+      {
+        axios
+        .post('/dpps/'+this.$route.params.dpp+'/structure/'+this.stage.st_version_id+'/delete_section', {
+                'id': id,
+              })
+        .then ((response) =>{
+          this.sections = this.sections.filter(elem => elem.id !== id)
+          
+        })
+      },
+      update_section ()
+      {
+
+      },
+      move_up(id,parent_id)
+      {
+        axios
+        .post('/dpps/'+this.$route.params.dpp+'/structure/'+this.stage.st_version_id+'/move_up', {
+                'id': id,
+                'parent_id': parent_id
+              })
+        .then ((response) =>{
+          if (parent_id == null)
+          {
+            let section = this.sections.find(elem => elem.id == id)
+            let idx = this.sections.indexOf(section)
+            this.sections[idx].position -= 1;
+            this.sections[idx-1].position += 1;
+            this.sections.sort(function(a, b) {
+              return parseInt(a.position) - parseInt(b.position)
+            })
+          }else{
+            parent = this.sections.find(elem => elem.id == parent_id)
+            parent = this.sections.indexOf(parent)
+            this.sections[parent] = response.data
+            this.reset_new_theme()
+          }
+        })
+      },
+      move_down(id,parent_id)
+      {
+        axios
+        .post('/dpps/'+this.$route.params.dpp+'/structure/'+this.stage.st_version_id+'/move_down', {
+                'id': id,
+                'parent_id': parent_id
+              })
+        .then ((response) =>{
+          if (parent_id == null)
+          {
+            let section = this.sections.find(elem => elem.id == id)
+            let idx = this.sections.indexOf(section)
+            this.sections[idx].position += 1;
+            this.sections[idx+1].position -= 1;
+            this.sections.sort(function(a, b) {
+              return parseInt(a.position) - parseInt(b.position)
+            })
+          }else{
+            parent = this.sections.find(elem => elem.id == parent_id)
+            parent = this.sections.indexOf(parent)
+            this.sections[parent] = response.data
+            this.reset_new_theme()
+          }
+        })
+      }
   },
   mounted() {
       var self = this
       axios
         .get('/dpps/'+this.$route.params.dpp+'/get_stage_data/'+ this.$route.params.stage)
         .then(response => (this.stage = response.data))
-        .finally (function (response){ 
-            
-            axios
-              .get('/dpps/'+self.$route.params.dpp+'/get_sections/'+ self.stage.st_version_id)
-              .then(response => (self.sections = response.data))
+        .finally (function (response){           
+          axios 
+            .get('/dpps/'+self.$route.params.dpp+'/structure/'+self.stage.st_version_id+'/get_sections')
+            .then(response => (self.sections = response.data))
+          axios 
+            .get('/dpps/'+self.$route.params.dpp+'/structure/'+self.stage.st_version_id+'/get_zuns')
+            .then(response => (self.zuns = response.data))
         })
+
+        
   }
 }
 </script>

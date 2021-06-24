@@ -14,4 +14,9 @@ class Skill extends Model
     {
         return $this->hasMany('App\Ability','skill_id')->orderBy('position');
     }
+
+    public function sections()
+    {
+        return $this->belongsToMany('App\StructureSection', 'skill_section', 'skill_id', 'section_id');
+    }
 }

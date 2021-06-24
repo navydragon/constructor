@@ -55,6 +55,7 @@ class IshVersionController extends Controller
         $iv->req_user_edulevel = $request->ish_data["req_user_edulevel"];
         $iv->req_user_kval = $request->ish_data["req_user_kval"];
         $iv->target = $request->ish_data["target"];
+        $iv->make_new_competence = $request->ish_data["make_new_competence"];
         if ($iv->typology_id != $request->ish_data["typology"])
         {
             
@@ -83,7 +84,7 @@ class IshVersionController extends Controller
         
         $iv->save();
         $iv->prof_levels()->sync($request->ish_data["pl"]);
-        return $this->get_ish_version_data($dpp->id,$id->id);
+        return $this->get_ish_version_data($dpp,$iv);
     }
 
     public function get_nsi_types()
