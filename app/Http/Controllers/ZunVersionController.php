@@ -583,6 +583,7 @@ class ZunVersionController extends Controller
         $row["name"] = 'СКВОЗНЫЕ ЗНАНИЯ';
         $row["pid"] = null;
         $row["type"] = "Сквозные знания";
+        $row["tags"][0] = 'through';
         array_push($result,$row);
         return json_encode($result);
     }
