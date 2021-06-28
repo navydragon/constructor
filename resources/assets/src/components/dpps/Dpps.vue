@@ -108,6 +108,11 @@
                 ></b-form-input>
                 </b-form-group>
                 <b-form-group
+                label="Часы по плану"
+                >
+
+                </b-form-group>
+                <b-form-group
                 :state="new_dpp.typeState"
                 label="Тип ДПП"
                 label-for="type-input"
@@ -153,6 +158,11 @@
           {
             key: 'zuns',
             label: 'ЗУНов',
+            sortable: true
+          },
+          {
+            key: 'total_hours',
+            label: 'Часы по плану',
             sortable: true
           },
           {

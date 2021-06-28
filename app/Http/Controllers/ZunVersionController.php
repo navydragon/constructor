@@ -525,6 +525,7 @@ class ZunVersionController extends Controller
             $row["pid"] = null;
             $row["type"] = "Компетенция";
             $row["valid"] = $competence->valid;
+            $row["tags"][0] = 'competence';
             array_push($result,$row);                    
         }
         foreach ($skills as $skill)
@@ -535,6 +536,7 @@ class ZunVersionController extends Controller
             $row["pid"] = 'c'.$skill->competence_id;
             $row["type"] = "Навык";
             $row["valid"] = $skill->valid;
+            $row["tags"][0] = 'skill';
             array_push($result,$row);                    
         }
         foreach ($abilities as $ability)
@@ -550,6 +552,7 @@ class ZunVersionController extends Controller
             }
             $row["type"] = "Умение";
             $row["valid"] = $ability->valid;
+            $row["tags"][0] = 'ability';
             array_push($result,$row);                    
         }
         foreach ($knowledges as $knowledge)
@@ -561,6 +564,7 @@ class ZunVersionController extends Controller
             $row["type"] = "Знание";
             $row["valid"] = $knowledge->valid;
             $row["position"] = $knowledge->position;
+            $row["tags"][0] = 'knowledge';
             array_push($result,$row);                    
         }
         foreach ($th_knowledges as $knowledge)
@@ -571,6 +575,7 @@ class ZunVersionController extends Controller
             $row["pid"] = 'th';
             $row["type"] = "Знание";
             $row["valid"] = $knowledge->valid;
+            $row["tags"][0] = 'knowledge';
             array_push($result,$row);                    
         }
         $row = [];
