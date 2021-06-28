@@ -126,6 +126,7 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/dpps/{dpp}/update_ability','ZunVersionController@update_ability2');
 
   Route::post('/dpps/{dpp}/add_knowledge','ZunVersionController@add_knowledge2');
+  Route::post('/dpps/{dpp}/add_knowledge_new','ZunVersionController@add_knowledge_new');
   Route::post('/dpps/{dpp}/remove_knowledge','ZunVersionController@remove_knowledge2');
   Route::post('/dpps/{dpp}/update_knowledge','ZunVersionController@update_knowledge2');
   Route::post('/dpps/{dpp}/add_knowledge_link','ZunVersionController@add_knowledge_link2');

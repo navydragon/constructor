@@ -939,6 +939,59 @@ class ZunVersionController extends Controller
         return $knowledge;
     }
 
+    public function add_knowledge_new(Dpp $dpp,ZunVersion $zv, Request $request)
+    {
+        $data = $request->node; 
+        $knowledge = new Knowledge;
+        $knowledge->dpp_id = $dpp->id;
+        $knowledge->zun_version_id = $request->zun_version;
+        $knowledge->name = $data["name"];
+        $knowledge->keyword = 'Знать';
+        $knowledge->what = $data["what"];
+        $knowledge->with = " ";
+        $knowledge->where = " ";
+        if ($data["pid"] == '0')
+        {
+            $knowledge->is_through = true;
+            $knowledge->ability_id = null;
+        }else{
+            $knowledge->is_through = false;
+            $parent_node = substr($data["pid"],1); 
+            $knowledge->ability_id = $parent_node;
+        }
+
+        $knowledge->save();
+        // if ($data["dtp"] != ""){
+        //     $knowledge->get_dtps()->attach($data["dtp"]);
+        // }
+        // switch ($data["is_by_expert"]) {
+        //     case '0':
+        //         $knowledge->is_by_expert = 0;
+        //         $knowledge->save();
+        //         $knowledge->nsis()->sync($data["nsis"]);
+        //         if (count($data["nsis"]) > 0 && $data["dtp"] != "")
+        //         { $knowledge->valid = true; }else{ $knowledge->valid = false; }
+        //         $knowledge->save();
+        //     break;
+
+        //     case '1':
+        //         $knowledge->is_by_expert = 1;
+        //         $knowledge->expert_answer = $data["expert_answer"];
+        //         $knowledge->save();
+        //         if (strlen($data["expert_answer"]) != 0 && $data["dtp"] != "")
+        //         { $knowledge->valid = true; }else{ $knowledge->valid = false; }
+        //         $knowledge->save();
+        //     break;
+            
+        //     default:
+        //         # code...
+        //         break;
+        // }
+        $knowledge->new_id = 'k'.$knowledge->id;
+        $knowledge->new_parent = $data["pid"];
+        return $knowledge;
+    }
+
     public function remove_knowledge2 (Request $request)
     {
         $id = substr($request->knowledge_id,1); 
