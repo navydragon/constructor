@@ -118,16 +118,22 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/dpps/{dpp}/update_competence','ZunVersionController@update_competence2');
 
   Route::post('/dpps/{dpp}/add_skill','ZunVersionController@add_skill2');
+  Route::post('/dpps/{dpp}/add_skill_new/{zv}','ZunVersionController@add_skill_new');
   Route::post('/dpps/{dpp}/update_skill','ZunVersionController@update_skill2');
   Route::post('/dpps/{dpp}/remove_skill','ZunVersionController@remove_skill2');
-  
+  Route::post('/dpps/{dpp}/add_skill_new/{zv}','ZunVersionController@add_skill_new');
+  Route::post('/dpps/{dpp}/remove_skill_new/{zv}','ZunVersionController@remove_skill_new');
+
   Route::post('/dpps/{dpp}/add_ability','ZunVersionController@add_ability2');
+  Route::post('/dpps/{dpp}/add_ability_new/{zv}','ZunVersionController@add_ability_new');
   Route::post('/dpps/{dpp}/remove_ability','ZunVersionController@remove_ability2');
+  Route::post('/dpps/{dpp}/remove_ability_new/{zv}','ZunVersionController@remove_ability_new');
   Route::post('/dpps/{dpp}/update_ability','ZunVersionController@update_ability2');
 
   Route::post('/dpps/{dpp}/add_knowledge','ZunVersionController@add_knowledge2');
-  Route::post('/dpps/{dpp}/add_knowledge_new','ZunVersionController@add_knowledge_new');
+  Route::post('/dpps/{dpp}/add_knowledge_new/{zv}','ZunVersionController@add_knowledge_new');
   Route::post('/dpps/{dpp}/remove_knowledge','ZunVersionController@remove_knowledge2');
+  Route::post('/dpps/{dpp}/remove_knowledge_new/{zv}','ZunVersionController@remove_knowledge_new');
   Route::post('/dpps/{dpp}/update_knowledge','ZunVersionController@update_knowledge2');
   Route::post('/dpps/{dpp}/add_knowledge_link','ZunVersionController@add_knowledge_link2');
 

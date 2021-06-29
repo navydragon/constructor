@@ -11,6 +11,7 @@ use App\Skill;
 use App\Ability;
 use App\Knowledge;
 use App\Competence;
+use App\Question;
 class ZunVersionController extends Controller
 {
     public function add_skill(Dpp $dpp,ZunVersion $zv, Request $request)
@@ -730,12 +731,73 @@ class ZunVersionController extends Controller
         return $skill;
     }
 
+    public function add_skill_new(Dpp $dpp,ZunVersion $zv, Request $request)
+    {
+        $data = $request->node;
+        if ($data["pid"] != '')
+        { $parent_node = substr($data["pid"],1); 
+        }else { $parent_node = null;}
+        $skill = new Skill;
+        $skill->dpp_id = $dpp->id;
+        $skill->zun_version_id = $zv->id;
+        $skill->name = $data["name"];
+        $skill->keyword = "Уметь";
+        $skill->what = $data["what"];
+        $skill->with = $data["with"];
+        $skill->where = $data["where"];
+        $skill->competence_id = $parent_node;
+        $skill->save();
+        // switch ($data["is_by_expert"]) {
+        //     case '0':
+        //         $skill->is_by_expert = 0;
+        //         $skill->save();
+        //         $skill->nsis()->sync($data["nsis"]);
+        //         if (count($data["nsis"]) > 0)
+        //         { $skill->valid = true; }else{ $skill->valid = false; }
+        //         $skill->save();
+        //     break;
+
+        //     case '1':
+        //         $skill->is_by_expert = 1;
+        //         $skill->expert_answer = $data["expert_answer"];
+        //         $skill->save();
+        //         if (strlen($data["expert_answer"]) != 0)
+        //         { $skill->valid = true; }else{ $skill->valid = false; }
+        //         $skill->save();
+        //     break;
+            
+        //     default:
+        //         $skill->valid = false;
+        //         $skill->save();
+        //     break;
+        // }
+        $row = [];
+        $row["id"] = 's'.$skill->id;
+        $row["name"] = $skill->name;
+        $row["pid"] = $data["pid"];
+        $row["type"] = "Навык";
+        $row["valid"] = $skill->valid;
+        $row["what"] = $skill->what;
+        $row["position"] = $skill->position;
+        $row["tags"][0] = 'skill';
+        return json_encode($row);
+    }
+
     public function remove_skill2 (Request $request)
     {
         $id = substr($request->skill_id,1); 
         $sk = Skill::find($id);
         $sk->nsis()->detach();
         Skill::destroy($id);
+    }
+
+    public function remove_skill_new(Dpp $dpp,ZunVersion $zv, Request $request)
+    {
+        $id = substr($request->nodeId,1); 
+        $sk = Skill::find($id);
+        $sk->nsis()->detach();
+        Skill::destroy($id);
+        return json_encode("s".$id);
     }
 
     public function update_skill2  (Dpp $dpp, Request $request)
@@ -837,6 +899,72 @@ class ZunVersionController extends Controller
         return $ability;
     }
 
+    public function add_ability_new(Dpp $dpp,ZunVersion $zv, Request $request)
+    {
+        $data = $request->node;
+        if ($data["pid"] != '')
+        { $parent_node = substr($data["pid"],1); 
+        }else { $parent_node = null;} 
+        $ability = new Ability;
+        $ability->dpp_id = $dpp->id;
+        $ability->zun_version_id = $zv->id;
+        $ability->name = $data["name"];
+        $ability->keyword = 'Уметь';
+        $ability->what = $data["what"];
+        $ability->with = $data["with"];
+        $ability->where = $data["where"];
+        if ($parent_node == null)
+        {
+            $ability->has_parent_comp = false;
+        }
+        if (substr($data["pid"], 0, 1) == 's')
+        {
+            $ability->has_parent_comp = false;
+            $ability->skill_id = $parent_node;
+            $abs_c = Ability::where('skill_id','=',$parent_node)->get()->count();
+            $ability->position = $abs_c + 1;
+        }
+        if (substr($data["pid"], 0, 1) == 'c')
+        {
+            $ability->has_parent_comp = true;
+            $ability->competence_id = $parent_node;
+        }
+        $ability->save();
+        // switch ($data["is_by_expert"]) {
+        //     case '0':
+        //         $ability->is_by_expert = 0;
+        //         $ability->save();
+        //         $ability->nsis()->sync($data["nsis"]);
+        //         if (count($data["nsis"]) > 0)
+        //         { $ability->valid = true; }else{ $ability->valid = false; }
+        //         $ability->save();
+        //     break;
+
+        //     case '1':
+        //         $ability->is_by_expert = 1;
+        //         $ability->expert_answer = $data["expert_answer"];
+        //         if (strlen($data["expert_answer"]) != 0)
+        //         { $ability->valid = true; }else{ $ability->valid = false; }
+        //         $ability->save();
+        //     break;
+            
+        //     default:
+        //         $ability->valid = false;
+        //         $ability->save();
+        //     break;
+        // }
+        $row = [];
+        $row["id"] = 'a'.$ability->id;
+        $row["name"] = $ability->name;
+        $row["pid"] = $data["pid"];
+        $row["type"] = "Умение";
+        $row["valid"] = $ability->valid;
+        $row["what"] = $ability->what;
+        $row["position"] = $ability->position;
+        $row["tags"][0] = 'ability';
+        return json_encode($row);
+    }
+
     public function remove_ability2 (Request $request)
     {
         $id = substr($request->ability_id,1); 
@@ -845,11 +973,19 @@ class ZunVersionController extends Controller
         Ability::destroy($id);
     }
 
+    public function remove_ability_new(Dpp $dpp,ZunVersion $zv, Request $request)
+    {
+        $id = substr($request->nodeId,1); 
+        $ab = Ability::find($id);
+        $ab->nsis()->detach();
+        Ability::destroy($id);
+        return json_encode("a".$id);
+    }
+
     public function update_ability2  (Dpp $dpp, Request $request)
     {
         $data = $request->ability_data;
         $ability = Ability::find($data["id"]);
-
         $ability->name = $request->ability_name;
         $ability->keyword = $data["keyword"];
         $ability->what = $data["what"];
@@ -944,13 +1080,13 @@ class ZunVersionController extends Controller
         $data = $request->node; 
         $knowledge = new Knowledge;
         $knowledge->dpp_id = $dpp->id;
-        $knowledge->zun_version_id = $request->zun_version;
+        $knowledge->zun_version_id = $zv->id;
         $knowledge->name = $data["name"];
         $knowledge->keyword = 'Знать';
         $knowledge->what = $data["what"];
         $knowledge->with = " ";
         $knowledge->where = " ";
-        if ($data["pid"] == '0')
+        if ($data["pid"] == 'th')
         {
             $knowledge->is_through = true;
             $knowledge->ability_id = null;
@@ -987,9 +1123,16 @@ class ZunVersionController extends Controller
         //         # code...
         //         break;
         // }
-        $knowledge->new_id = 'k'.$knowledge->id;
-        $knowledge->new_parent = $data["pid"];
-        return $knowledge;
+            $row = [];
+            $row["id"] = 'k'.$knowledge->id;
+            $row["name"] = $knowledge->name;
+            $row["pid"] = $data["pid"];
+            $row["type"] = "Знание";
+            $row["valid"] = $knowledge->valid;
+            $row["what"] = $knowledge->what;
+            $row["position"] = $knowledge->position;
+            $row["tags"][0] = 'knowledge';
+        return json_encode($row);
     }
 
     public function remove_knowledge2 (Request $request)
@@ -999,7 +1142,31 @@ class ZunVersionController extends Controller
         $kn->nsis()->detach();
         $kn->links()->detach();
         $kn->get_dtps()->detach();
+        foreach($kn->questions as $question)
+        {
+            $q = Question::findOrFail($question->id);
+            $q->knowledge_id = null;
+            $q->save();
+        }
         Knowledge::destroy($id);
+    }
+
+    public function remove_knowledge_new(Dpp $dpp,ZunVersion $zv, Request $request)
+    {
+        //$data = $request->node;
+        $id = substr($request->nodeId,1); 
+        $kn = Knowledge::find($id);
+        $kn->nsis()->detach();
+        $kn->links()->detach();
+        $kn->get_dtps()->detach();
+        foreach($kn->questions as $question)
+        {
+            $q = Question::findOrFail($question->id);
+            $q->knowledge_id = null;
+            $q->save();
+        }
+        Knowledge::destroy($id);
+        return json_encode("k".$id);
     }
 
     public function update_knowledge2 (Dpp $dpp, Request $request)
