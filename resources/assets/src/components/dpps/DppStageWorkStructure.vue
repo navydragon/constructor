@@ -7,6 +7,7 @@
       <b-tabs card>
         <b-tab title="Управление" active>
           <div>
+            <b-button @click="rebuild">Rebuild</b-button>
             <b-card v-for="section in sections"  :key="'s_'+section.id" class="mt-2 mb-1">
               <b-card-header header-tag="header" class="p-1" role="tab">
                 <b-row>
@@ -261,6 +262,12 @@ export default {
   },
   
   methods: {
+      rebuild()
+      {
+        axios
+        .post('/dpps/'+this.$route.params.dpp+'/structure/'+this.stage.st_version_id+'/rebuild')
+        .then(response => (console.log(response.data)))
+      },
       create_theme(knowledge,parent_id)
       {
         this.new_theme.parent_id = parent_id

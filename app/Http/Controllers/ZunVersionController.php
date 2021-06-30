@@ -1266,6 +1266,9 @@ class ZunVersionController extends Controller
             default:
             break;
         }
+        return response([
+            'status' => 'success',
+        ], 200);
     }
 
     public function disconnect2(Request $request)

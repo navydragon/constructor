@@ -145,6 +145,7 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/dpps/{dpp}/structure/{sv}/delete_section','StructureSectionController@delete_section');
   Route::post('/dpps/{dpp}/structure/{sv}/move_up','StructureSectionController@move_up');
   Route::post('/dpps/{dpp}/structure/{sv}/move_down','StructureSectionController@move_down');
+  Route::post('/dpps/{dpp}/structure/{sv}/rebuild','StructureVersionController@rebuild');
 
 
   Route::post('/profstandarts/add_profstandart','ProfStandartController@add_profstandart');

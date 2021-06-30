@@ -27,7 +27,7 @@
 <body>
 
     <div id="app"></div>
-    <script src="{{ mix('/entry-point.678df1e82b011608b3cc.js') }}"></script>
+    <script src="{{ mix('/entry-point.js') }}"></script>
   
 
 </body>

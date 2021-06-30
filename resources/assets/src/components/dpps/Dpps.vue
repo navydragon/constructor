@@ -107,10 +107,11 @@
                     required
                 ></b-form-input>
                 </b-form-group>
-                <b-form-group
-                label="Часы по плану"
-                >
-
+                <b-form-group label="Часы по плану">
+                  <b-form-input
+                    v-model="new_dpp.total_hours"
+                    required
+                ></b-form-input>
                 </b-form-group>
                 <b-form-group
                 :state="new_dpp.typeState"
@@ -181,6 +182,7 @@
             nameState: null,
             type: '',
             typeState: null,
+            total_hours: "",
             actors: []  
         },
         dpp_types: []
