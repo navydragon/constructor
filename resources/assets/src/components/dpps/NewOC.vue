@@ -260,14 +260,14 @@ export default {
   },
   methods: {
     get_zun_versions_data() {
-      // axios
-      //   .get(
-      //     "/dpps/" +
-      //       this.$route.params.dpp +
-      //       "/get_links/" +
-      //       this.stage.zun_version_id
-      //   )
-      //   .then(response => (this.links = response.data));
+      axios
+        .get(
+          "/dpps/" +
+            this.$route.params.dpp +
+            "/get_links/" +
+            this.stage.zun_version_id
+        )
+        .then(response => (this.links = response.data));
       axios
         .get("/dpps/" + this.$route.params.dpp + "/get_typology")
         .then(response => (this.parts = response.data));
