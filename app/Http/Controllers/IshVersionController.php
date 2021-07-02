@@ -96,6 +96,10 @@ class IshVersionController extends Controller
     public function get_nsis(IshVersion $iv, Request $request)
     {
         $nsis = $iv->nsis;
+        foreach ($nsis as $nsi)
+        {
+            $nsi->type_name = $nsi->type->name;
+        }
         return $nsis;
     }
 

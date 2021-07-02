@@ -141,8 +141,11 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('/dpps/{dpp}/structure/{sv}/get_sections','StructureSectionController@get_sections');
   Route::get('/dpps/{dpp}/structure/{sv}/get_zuns','StructureSectionController@get_zuns');
   Route::post('/dpps/{dpp}/structure/{sv}/add_theme','StructureSectionController@add_theme');
+  Route::post('/dpps/{dpp}/structure/{sv}/update_theme','StructureSectionController@update_theme');
+  Route::post('/dpps/{dpp}/structure/{sv}/update_section','StructureSectionController@update_section');
   Route::post('/dpps/{dpp}/structure/{sv}/delete_theme','StructureSectionController@delete_theme');
   Route::post('/dpps/{dpp}/structure/{sv}/delete_section','StructureSectionController@delete_section');
+  Route::post('/dpps/{dpp}/structure/{sv}/add_section','StructureSectionController@add_section');
   Route::post('/dpps/{dpp}/structure/{sv}/move_up','StructureSectionController@move_up');
   Route::post('/dpps/{dpp}/structure/{sv}/move_down','StructureSectionController@move_down');
   Route::post('/dpps/{dpp}/structure/{sv}/rebuild','StructureVersionController@rebuild');

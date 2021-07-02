@@ -534,6 +534,9 @@ class ZunVersionController extends Controller
             $row = [];
             $row["id"] = 's'.$skill->id;
             $row["name"] = $skill->name;
+            $row["what"] = $skill->what;
+            $row["with"] = $skill->with;
+            $row["where"] = $skill->where;
             $row["pid"] = 'c'.$skill->competence_id;
             $row["type"] = "Навык";
             $row["valid"] = $skill->valid;
@@ -545,6 +548,9 @@ class ZunVersionController extends Controller
             $row = [];
             $row["id"] = 'a'.$ability->id;
             $row["name"] = $ability->name;
+            $row["what"] = $ability->what;
+            $row["with"] = $ability->with;
+            $row["where"] = $ability->where;
             if ($ability->has_parent_comp == true)
             {
                 $row["pid"] = 'c'.$ability->competence_id;
@@ -561,6 +567,7 @@ class ZunVersionController extends Controller
             $row = [];
             $row["id"] = 'k'.$knowledge->id;
             $row["name"] = $knowledge->name;
+            $row["what"] = $knowledge->what;
             $row["pid"] = 'a'.$knowledge->ability_id;
             $row["type"] = "Знание";
             $row["valid"] = $knowledge->valid;
@@ -575,6 +582,7 @@ class ZunVersionController extends Controller
             $row["name"] = $knowledge->name;
             $row["pid"] = 'th';
             $row["type"] = "Знание";
+            $row["what"] = $knowledge->what;
             $row["valid"] = $knowledge->valid;
             $row["tags"][0] = 'knowledge';
             array_push($result,$row);                    

@@ -18,6 +18,7 @@ class DppStageController extends Controller
     public function get_stage_data(Dpp $dpp, DppStage $stage)
     {
         $stage->dpp_name = $dpp->name;
+        $stage->dpp_total_hours = $dpp->total_hours;
         $stage->type_name = $stage->type->name;
         $stage->zun_version_id = $dpp->zun_version_id;
         $stage->ish_version_id = $dpp->ish_version_id;

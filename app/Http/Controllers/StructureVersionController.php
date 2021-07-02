@@ -17,9 +17,13 @@ class StructureVersionController extends Controller
             foreach ($themes as $theme)
             {
                 $theme->knowledges()->detach();
+                $theme->abilities()->detach();
+                $theme->skills()->detach();
                 StructureSection::destroy($theme->id);
             }
             $section->knowledges()->detach();
+            $section->abilities()->detach();
+            $section->skills()->detach();
             StructureSection::destroy($section->id);
         }
         $n = 1;
@@ -35,15 +39,22 @@ class StructureVersionController extends Controller
             foreach ($tp->get_knowledges as $kn)
             {
                 $theme = new StructureSection;
-                $theme->name = $kn["what"];
+                $fc = mb_strtoupper(mb_substr($kn["what"], 0, 1));
+                $theme->name = $fc.mb_substr($kn["what"], 1);
                 $theme->position = $m;
                 $theme->st_version_id = $sv->id;
                 $theme->parent_id = $section->id;
                 $theme->save();
                 $m++;
-                $theme->knowledges()->sync($kn->id);
+                $theme->knowledges()->attach($kn->id);
+                $section->knowledges()->attach($kn->id);
             }
             
         }
+        $section = new StructureSection;
+        $section->name = 'Итоговая аттестация';
+        $section->position = $n;
+        $section->st_version_id = $sv->id;
+        $section->save();
     }
 }
