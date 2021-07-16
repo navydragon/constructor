@@ -16,5 +16,6 @@ Route::get('/make_positions','ZunVersionController@make_positions');
 Route::get('/make_tp_positions','TypologyController@make_tp_positions');
 Route::get('/dpps/{dpp}/export_zun/{zun}','ExportController@export_zun');
 Route::get('/dpps/{dpp}/export_om_questions/{om}','ExportController@export_om_questions');
+Route::get('/dpps/{dpp}/export_ych_plan/{sv}','ExportController@export_learning_plan');
 
 Route::get('/{any}', 'ApplicationController')->where('any', '.*');

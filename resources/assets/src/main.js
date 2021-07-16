@@ -6,6 +6,8 @@ import { BootstrapVue  } from 'bootstrap-vue'
 
 import globals from './globals'
 import Popper from 'popper.js'
+import CKEditor from '@ckeditor/ckeditor5-vue2';
+Vue.use( CKEditor );
 
 import 'vue-search-select/dist/VueSearchSelect.css'
 // Required to enable animations on dropdowns/tooltips/popovers

@@ -5,7 +5,7 @@
             <h5>Выбрано источников ({{selected.length}})</h5>
         </div>
     </div>   
-            <div class="col-md-6" v-for="type in types" :key="'t'+type.id">
+            <div class="col-md-12" v-for="type in types" :key="'t'+type.id">
                 <h5>{{type.name}} ({{nsis.filter(nsi => nsi.type_id == type.id).length}})</h5>
                 <b-form-checkbox-group
                     v-model="selected"

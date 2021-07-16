@@ -27,6 +27,7 @@ class StructureSectionController extends Controller
              foreach ($section->themes as $theme)
              {
                 $theme->zuns = (object)['knowledges'=>$theme->knowledges,'abilities'=>$theme->abilities,'skills'=>$theme->skills];
+                $theme->lections = $theme->lections;
              }
          }
          return $sections;
@@ -117,8 +118,10 @@ class StructureSectionController extends Controller
                     $theme->skills()->syncWithoutDetaching($ability->skill_id);
                     $section->skills()->syncWithoutDetaching($ability->skill_id);
                 }
-            }   
-        }else{
+            }
+        }   
+        if ($theme->practice_hours == 0 && $theme->lab_hours == 0)
+        {
             $section = StructureSection::find($theme->parent_id);
             $knowledges = $theme->knowledges;
             foreach ($knowledges as $knowledge)
@@ -128,12 +131,13 @@ class StructureSectionController extends Controller
                     $ability = Ability::find($knowledge->ability_id);
                     $theme->abilities()->detach($ability->id);
                     $section->abilities()->detach($ability->id);
+                    if ($ability->skill_id != null)
+                    {
+                        $theme->skills()->detach($ability->skill_id);
+                        $section->skills()->detach($ability->skill_id);
+                    }
                 }
-                if ($ability->skill_id != null)
-                {
-                    $theme->skills()->detach($ability->skill_id);
-                    $section->skills()->detach($ability->skill_id);
-                }
+                
             }
         }
 

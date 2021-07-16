@@ -49,6 +49,10 @@ class Dpp extends Model
     {
         return $this->hasMany('App\StructureVersion','dpp_id');
     }
+    public function ct_versions()
+    {
+        return $this->hasMany('App\ContentVersion','dpp_id');
+    }
 
     public function knowledges()
     {

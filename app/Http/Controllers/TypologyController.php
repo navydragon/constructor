@@ -111,27 +111,42 @@ class TypologyController extends Controller
         return $dtp;
     }
 
-    public function dtp_move_up(IshVersion $iv, Request $request)
+    public function dtp_move_up(Request $request)
     {
         $dtp = DppTypologyPart::find($request->part);
-        $previous = DppTypologyPart::where('ish_version_id','=',$iv->id)->where('position','=',$dtp->position - 1)->get()->first();
+        $previous = DppTypologyPart::where('ish_version_id','=',$dtp->ish_version_id)->where('position','=',$dtp->position - 1)->get()->first();
         $dtp->position = $dtp->position - 1;
         $previous->position = $previous->position + 1;
         $dtp->save();
         $previous->save();
-        $dtps = DppTypologyPart::where('ish_version_id','=',$iv->id)->orderBy('position','asc')->get();
+        $dtps = DppTypologyPart::where('ish_version_id','=',$dtp->ish_version_id)->orderBy('position','asc')->get();
         return $dtps;
     }
 
-    public function dtp_move_down(IshVersion $iv, Request $request)
+    public function dtp_move_down(Request $request)
     {
         $dtp = DppTypologyPart::find($request->part);
-        $previous = DppTypologyPart::where('ish_version_id','=',$iv->id)->where('position','=',$dtp->position + 1 )->get()->first();
+        $previous = DppTypologyPart::where('ish_version_id','=',$dtp->ish_version_id)->where('position','=',$dtp->position + 1 )->get()->first();
         $dtp->position = $dtp->position + 1 ;
         $previous->position = $previous->position - 1;
         $dtp->save();
         $previous->save();
-        $dtps = DppTypologyPart::where('ish_version_id','=',$iv->id)->orderBy('position','asc')->get();
+        $dtps = DppTypologyPart::where('ish_version_id','=',$dtp->ish_version_id)->orderBy('position','asc')->get();
+        return $dtps;
+    }
+
+    public function dtp_remove(Request $request)
+    {
+        $dtp = DppTypologyPart::find($request->part);
+        $below_parts = DppTypologyPart::where('position','>',$dtp->position)->where('ish_version_id','=',$dtp->ish_version_id)->get();
+        foreach ($below_parts as $pt)
+        {
+            $pt->position = $pt->position - 1;
+            $pt->save();
+        }
+        $dtp->get_knowledges()->detach();
+        DppTypologyPart::destroy($dtp->id);
+        $dtps = DppTypologyPart::where('ish_version_id','=',$dtp->ish_version_id)->orderBy('position','asc')->get();
         return $dtps;
     }
 

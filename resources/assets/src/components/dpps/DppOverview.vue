@@ -32,6 +32,9 @@
                   <router-link v-if="st.stage_type_id==3 && st.stage_status_id!=1 && st.stage_status_id!=2" icon="ion ion-md-person" :to="{name: 'dpp_stage_work_structure', params: { dpp: dpp.id,stage: st.id }}" :exact="true">
                       <b-button  block variant="primary">Продолжить работу</b-button>
                   </router-link>
+                  <router-link v-if="st.stage_type_id==4 && st.stage_status_id!=1 && st.stage_status_id!=2" icon="ion ion-md-person" :to="{name: 'dpp_stage_work_content', params: { dpp: dpp.id,stage: st.id }}" :exact="true">
+                      <b-button  block variant="primary">Продолжить работу</b-button>
+                  </router-link>
                   <router-link v-if="st.stage_type_id==6 && st.stage_status_id!=1 && st.stage_status_id!=2" icon="ion ion-md-person" :to="{name: 'dpp_stage_work_ish', params: { dpp: dpp.id,stage: st.id }}" :exact="true">
                       <b-button  block variant="primary">Продолжить работу</b-button>
                   </router-link>
@@ -89,6 +92,10 @@ export default {
           if (self.curStage.stage_type_id == 3)
           {
             self.$router.push('/my_dpps/'+self.dpp.id+'/stages/'+id+'/work_structure')
+          }
+          if (self.curStage.stage_type_id == 4)
+          {
+            self.$router.push('/my_dpps/'+self.dpp.id+'/stages/'+id+'/work_content')
           }
         }
           )

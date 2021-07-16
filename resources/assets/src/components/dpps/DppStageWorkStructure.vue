@@ -11,6 +11,8 @@
         <b-tab title="Учебный план" active>
           <h5>Учебный план</h5>
           <b-button @click="rebuild">Сбросить</b-button>
+          <b-button variant="info" :href="'/dpps/'+stage.dpp_id+'/export_ych_plan/'+stage.st_version_id" target="_blank">Экспорт учебного плана</b-button>
+          <b-button variant="success" @click="go_forward()">Согласовать результаты и перейти к следующему этапу</b-button>
           <table class="table table-bordered">
             <thead>
               <tr><th rowspan="2">Наименование разделов</th><th colspan="6">Трудоемкость, ч</th><th rowspan="2">Планируемые результаты обучения</th></tr>
@@ -155,10 +157,10 @@
   <b-form-group label-size="lg" label="Количество часов самостоятельной работы">
     <b-form-input :disabled="current_section.themes.length>0" v-model="current_section.self_hours"></b-form-input>
   </b-form-group>
+  </div>
   <b-form-group label-size="lg" label="Количество часов аттестации">
     <b-form-input :disabled="current_section.themes.length>0" v-model="current_section.attestation_hours"></b-form-input>
   </b-form-group>
-  </div>
   <h5>Всего часов в разделе: {{parseInt(current_section.total_hours)}}</h5>
 </b-modal>
 <b-modal id="edit_theme" ok-title="Обновить" size="xl" no-close-on-esc no-close-on-backdrop @ok="update_theme" cancel-title="Закрыть" title="Редактирование темы">
@@ -481,7 +483,13 @@ export default {
           }
         }
         return result
-      }
+      },
+      go_forward()
+        {
+            axios
+            .post('/dpps/'+this.$route.params.dpp+'/'+ this.stage.id+'/go_next')
+            .then(() => (this.$router.push('/my_dpps/'+this.$route.params.dpp+'/overview/1')))      
+        }
   },
   mounted() {
       var self = this

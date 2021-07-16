@@ -67,7 +67,22 @@
                 </div>
                 <hr>
                 <h4>ТИПОВАЯ СТРУКТУРА ДПП</h4>
-                <div>
+                <h5>Разделы типологии:</h5>
+                <new-dtp @add_dtp="add_typology_part" :key="'ds'"></new-dtp>
+                <div v-for="(elem,index) in ish_data.typology_parts" :key="elem.id" class="m-3">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <p class="m-0"> {{index+1}}. {{elem.name}}</p>
+                        </div>
+                        <div class="col-md-3">
+                           <b-btn v-if="index!=0" variant="outline-info icon-btn btn-sm" class="btn" @click="move_up(elem)"><i class="ion ion-md-arrow-round-up"></i></b-btn>
+                           <b-btn v-if="index!=ish_data.typology_parts.length-1" variant="outline-info icon-btn btn-sm" class="btn" @click="move_down(elem)"><i class="ion ion-md-arrow-round-down"></i></b-btn>
+                           <b-btn  @click="edit_typology_part(elem)"  variant="outline-primary btn-sm"> <i class="ion ion-md-create"></i></b-btn>
+                           <b-btn  @click="remove_typology_part(elem)"  variant="outline-danger btn-sm"> <i class="ion ion-md-close"></i></b-btn>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div>
                     <b-alert show>Выберите наиболее подходящую типовую структуру ДПП. Типовая структура состоит из разделов, которых слудеует придерживаться во время разработки ДПП.</b-alert>
                 </div>
                 <div v-if="!isBusy" class="row">
@@ -86,7 +101,7 @@
                         </div>
                     </div>
                     </div>
-                </div>
+                </div> -->
                 <hr>
                 <h4>НОРМАТИВНО-СПРАВОЧНАЯ ИНФОРМАЦИЯ </h4>
                 <div>
@@ -105,6 +120,28 @@
                     <div class="col-md-6"><b-button block variant="success" @click="go_forward()">Перейти к следующему этапу</b-button></div>
                 </div>
             </b-card>
+        <b-modal
+            id="edit_modal"
+            :key="edit_item.id"
+            ref="modal"
+            title="Редактирование раздела в программе"
+            ok-title="Сохранить"
+            size="lg"
+            cancel-title="Закрыть"
+            @ok="update_typology_part">
+                <b-form-group
+                label="Название раздела"
+                invalid-feedback="Необходимо ввести название"
+                label-size="lg"
+                >
+                 <b-form-textarea
+                             v-model="edit_item.name"
+                            rows="3"
+                            max-rows="6"
+                            required
+                ></b-form-textarea>
+                </b-form-group>
+         </b-modal>
     </div>
 </template>
 
@@ -113,9 +150,11 @@ import Nsis from '@/components/nsis/Nsis'
 import ChooseProfstandart from '@/components/profstandarts/ChooseProfstandart'
 import ChooseDolgkval from '@/components/dolgkvals/ChooseDolgkval'
 import ChooseFgos from '@/components/fgoses/ChooseFgos'
+import Swal from 'sweetalert2'
+import NewDtp from '@/components/typologies/NewDppTypologyPart'
 export default {
   name: "dpp_stage_work_ish",
-  components: {Nsis,ChooseProfstandart,ChooseDolgkval,ChooseFgos},
+  components: {Nsis,ChooseProfstandart,ChooseDolgkval,ChooseFgos,NewDtp},
   metaInfo: {
     title: "Разработка ДПП - Исходные данные"
   },
@@ -125,6 +164,7 @@ export default {
         show_errors: false,
         errors: [],
         isBusy: true,
+        edit_item: {},
         ish_data : {
           req_user_edulevel: '',
           req_user_kval: '',
@@ -208,7 +248,71 @@ export default {
     },
      typology() {
           var t = this.ish_data.typologies.find(el => el.id == this.ish_data.typology)
-      }
+      },
+    
+    add_typology_part(data)
+    {
+        axios
+        .post('/dpp_typology_parts/add_dtp',{
+            dtp_name: data,
+            dpp_id: this.$route.params.dpp,
+            ish_version_id: this.ish_data.id,
+            typology_id: this.ish_data.typology_id,
+            })
+        .then((response) => (this.ish_data.typology_parts.push(response.data)))
+        .finally(()=>(this.$bvModal.hide("modal-newdtp")))
+    },
+    edit_typology_part(elem)
+    {
+         this.edit_item = elem
+          this.$nextTick(() => {
+                    this.$bvModal.show("edit_modal")
+          })
+    },
+    update_typology_part()
+    {
+        axios
+        .post('/dpp_typology_parts/update_dtp', this.edit_item)
+        .then ((response) => {
+            var upd_item =  this.ish_data.typology_parts.find(item => item.id == response.data.id)
+            upd_item = response.data
+            self.$bvModal.hide("edit_modal")
+        })
+    },
+    remove_typology_part(elem)
+    {
+        Swal.fire({
+            title: 'Удалить типовой раздел?',
+            text: "Знания, прикрепленные к данному разделу, будут отсоединены",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Удалить',
+            cancelButtonText: 'Отмена'
+            }).then((result) => {
+            if (result.isConfirmed) {
+                axios.post("/dpp_typology_parts/remove",{'part':elem.id})
+                .then ((response) => (this.ish_data.typology_parts = response.data))
+                .finally ((response) =>{
+                    Swal.fire(
+                    'Успех!',
+                    'Типовой раздел удален.',
+                    'success'
+                    ) })
+            }
+        })
+    },
+    move_up(elem)
+    {
+        axios.post("/dpp_typology_parts/move_up",{'part':elem.id})
+        .then ((response) => (this.ish_data.typology_parts = response.data))
+    },
+    move_down(elem)
+    {
+        axios.post("/dpp_typology_parts/move_down",{'part':elem.id})
+        .then ((response) => (this.ish_data.typology_parts = response.data))
+    },
   },
   mounted() {
       axios
@@ -224,3 +328,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.alert{
+    color: black;
+}
+</style>

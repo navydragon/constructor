@@ -20,6 +20,7 @@ use App\OmVersion;
 use App\QuestionType;
 use App\StructureVersion;
 use App\StructureSection;
+use App\ContentVersion;
 use Auth;
 class DppController extends Controller
 {
@@ -233,21 +234,20 @@ class DppController extends Controller
                 $st->save();
                 $dpp->st_version_id = $st->id;
                 $dpp->save();
-                $n = 1;
-                foreach($dpp->typology_parts as $tp)
-                {
-                    $section = new StructureSection;
-                    $section->name = $tp->name;
-                    $section->position = $n;
-                    $section->st_version_id = $st->id;
-                    $section->save();
-                    $n++; 
-                    foreach ($tp->get_knowledges as $kn)
-                    {
-                        $section->knowledges()->attach($kn);
-                    }
-                }
+                $st->rebuild();
 
+            }
+        }
+
+        if ($ds->stage_type_id == 4) {
+            if ($dpp->ct_versions->count() == 0)
+            {
+                $ct = new ContentVersion;
+                $ct->dpp_id = $dpp->id;
+                $ct->author_id = Auth::user()->id;
+                $ct->save();
+                $dpp->ct_version_id = $ct->id;
+                $dpp->save();
             }
         }
 

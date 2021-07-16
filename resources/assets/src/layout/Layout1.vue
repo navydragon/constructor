@@ -16,6 +16,7 @@
       </div>
     </div>
     <div class="layout-overlay" @click="closeSidenav"></div>
+    
   </div>
 </template>
 

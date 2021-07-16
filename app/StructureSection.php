@@ -25,4 +25,14 @@ class StructureSection extends Model
     {
         return $this->hasMany('App\StructureSection','parent_id');
     }
+
+    public function lections()
+    {
+        return $this->hasMany('App\Lection','section_id');
+    }
+    public function parent()
+    {
+        return $this->belongsTo('App\StructureSection','parent_id');
+    }
+
 }

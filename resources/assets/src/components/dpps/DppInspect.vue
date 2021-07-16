@@ -43,13 +43,13 @@
                         <b-alert show >Отредактируйте (при необходимости) типовую структуру ДПП</b-alert>
                         <new-dtp @add_dtp="add_dtp" :key="'ds'"></new-dtp>
                         <b-list-group>
-                            <b-list-group-item v-for="(dpp_part,index) in ish_data.dpp_parts" :key="dpp_part.id">
+                            <!-- <b-list-group-item v-for="(dpp_part,index) in ish_data.dpp_parts" :key="dpp_part.id">
                                 <b-btn v-if="index!=0" variant="outline-info icon-btn btn-xs" class="btn" @click="move_up(dpp_part)"><i class="ion ion-md-arrow-round-up"></i></b-btn>
                                 <b-btn v-if="index!=ish_data.dpp_parts.length-1" variant="outline-info icon-btn btn-xs" class="btn" @click="move_down(dpp_part)"><i class="ion ion-md-arrow-round-down"></i></b-btn>
                                 <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click="edit_dtp(dpp_part)"><i class="ion ion-md-create"></i></b-btn>
                                 <b-btn variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_dtp(dpp_part,dpp_part.name)">X</b-btn>
                                {{dpp_part.position}}. {{dpp_part.name}}
-                            </b-list-group-item>
+                            </b-list-group-item> -->
                         </b-list-group>
                         <hr>
                         <h5>НОРМАТИВНО-СПРАВОЧНАЯ ИНФОРМАЦИЯ</h5>

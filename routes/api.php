@@ -67,12 +67,13 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/typologies/add_typology','TypologyController@add_typology');
   Route::post('/typologies/update_typology','TypologyController@update_typology');
   Route::post('/typologies/remove_part','TypologyController@remove_part');
-  Route::post('/dpps/{iv}/typology_parts/move_up','TypologyController@dtp_move_up');
-  Route::post('/dpps/{iv}/typology_parts/move_down','TypologyController@dtp_move_down');
-  
-  
-  Route::post('/typologies/add_dtp','TypologyController@add_dtp');
-  Route::post('/typologies/update_dtp','TypologyController@update_dtp');
+
+  /* Типовые разделы в ДПП */
+  Route::post('/dpp_typology_parts/move_up','TypologyController@dtp_move_up');
+  Route::post('/dpp_typology_parts/move_down','TypologyController@dtp_move_down');
+  Route::post('/dpp_typology_parts/remove','TypologyController@dtp_remove');
+  Route::post('/dpp_typology_parts/add_dtp','TypologyController@add_dtp');
+  Route::post('/dpp_typology_parts/update_dtp','TypologyController@update_dtp');
   Route::post('/typologies/remove_dtp','TypologyController@remove_dtp');
  
 
@@ -149,6 +150,14 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/dpps/{dpp}/structure/{sv}/move_up','StructureSectionController@move_up');
   Route::post('/dpps/{dpp}/structure/{sv}/move_down','StructureSectionController@move_down');
   Route::post('/dpps/{dpp}/structure/{sv}/rebuild','StructureVersionController@rebuild');
+
+  Route::post('/dpps/{dpp}/content/{cv}/add_lection','LectionController@add_lection');
+  Route::get('/dpps/{dpp}/content/get_lection/{lection}','LectionController@get_lection');
+  Route::post('/dpps/{dpp}/content/{lection}/add_lection_part','LectionController@add_lection_part');
+  Route::post('/dpps/{dpp}/content/{lection}/update_part','LectionController@update_part');
+  Route::post('/dpps/{dpp}/content/parts/{part}/move_up','LectionController@move_up_part');
+  Route::post('/dpps/{dpp}/content/parts/{part}/move_down','LectionController@move_down_part');
+  Route::post('/dpps/{dpp}/content/parts/{part}/remove','LectionController@remove_part');
 
 
   Route::post('/profstandarts/add_profstandart','ProfStandartController@add_profstandart');
