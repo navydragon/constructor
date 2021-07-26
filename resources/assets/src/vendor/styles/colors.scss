@@ -22,12 +22,12 @@ $custom-colors: (
 ) !default;
 
 @each $color-name, $color-value in $custom-colors {
-  @include text-emphasis-variant('.text-#{$color-name}', $color-value);
+//  @include text-emphasis-variant('.text-#{$color-name}', $color-value);
   @include bg-variant('.bg-#{$color-name}', $color-value);
 
   @include appwork-button-variant('.btn-#{$color-name}', $color-value);
   @include appwork-button-outline-variant('.btn-outline-#{$color-name}', $color-value);
-}
+} 
 
 // *******************************************************************************
 // * Bootstrap colors (Uncomment required colors)
@@ -42,7 +42,7 @@ $bootstrap-colors: (
 ) !default;
 
 @each $color-name, $color-value in $bootstrap-colors {
-  @include text-emphasis-variant('.text-#{$color-name}', $color-value);
+ // @include text-emphasis-variant('.text-#{$color-name}', $color-value);
   @include bg-variant('.bg-#{$color-name}', $color-value);
   .border-#{$color-name} { border-color: $color-value !important; }
 

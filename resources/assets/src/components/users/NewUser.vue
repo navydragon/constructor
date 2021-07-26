@@ -2,11 +2,11 @@
     <div>
       <b-button v-b-modal.modal-adduser variant="primary">Добавить пользователя</b-button>
       <b-modal no-close-on-esc no-close-on-backdrop ok-only @ok="handle_ok" id="modal-adduser" ok-title="Добавить" cancel-title="Закрыть" size="xl" title="Создание нового пользователя">
-            <b-alert show>Заполните параметры пользователя и нажмите кнопку «Добавить» </b-alert>
+            <b-alert variant="info" show>Заполните параметры пользователя и нажмите кнопку «Добавить» </b-alert>
             <b-form-row>
               <b-form-group label-size="lg" label-cols-lg="2" label="Фамилия *" class="col">
                   <b-form-input v-model="new_user.lastname" :formatter="formatter" required placeholder="Введите фамилию" />
-              </b-form-group>
+              </b-form-group> 
             </b-form-row>
             <b-form-row>
               <b-form-group label-size="lg" label-cols-lg="2" label="Имя *" class="col">
@@ -107,3 +107,4 @@ export default {
     }
 }
 </script>
+

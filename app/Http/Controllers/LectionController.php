@@ -81,6 +81,8 @@ class LectionController extends Controller
         $part = Content::find($request->part_data["id"]);
         $part->name = $request->part_data["name"];
         $part->text = $request->part_data["text"];
+        $part->symbols = $request->part_data["symbols"];
+        $part->words = $request->part_data["words"];
         $part->save();
         return $part;
     }

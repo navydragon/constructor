@@ -80,12 +80,18 @@ export default {
                   'theme': theme,
               })
         .then ((response) =>{
-         console.log(response);
+         //idx = this.section.themes.indexOf(theme)
+         //console.log(idx)
+         theme.lections.push(response.data)
+        })
+        .finally((response) => {
+          this.edit_lection(theme)
+          //console.log(response.data)
         })
     },
     edit_lection(theme)
     {
-      this.$router.push({ path: `/my_dpps/138/stages/827/work_content/${theme.lections[0].id}` })
+      this.$router.push({ path: `/my_dpps/`+this.$route.params.dpp+`/stages/`+ this.stage.id+`/work_content/${theme.lections[0].id}` })
     },
     go_forward()
     {

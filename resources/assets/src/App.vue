@@ -11,6 +11,10 @@
 <style src="@/vendor/styles/uikit.scss" lang="scss"></style>
 <style src="./style.scss" lang="scss"></style>
 
+<style>
+.alert-info {color:#000}
+</style>
+
 <script>
 export default {
   name: 'app',

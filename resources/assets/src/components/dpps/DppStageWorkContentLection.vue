@@ -15,7 +15,8 @@
                     <b-row>
                         <b-col cols="3">
                             <h5>Структура лекции</h5>
-                            <b-list-group>
+                            <em v-if="lection.parts.length==0">Лекция пока не содержит разделы.</em>
+                            <b-list-group v-else>
                             <b-list-group-item v-for="part in lection.parts" :id="'p'+part.id" :key="'p'+part.id" button @click="choose_part(part.id)" class="flex-column align-items-start pt-1 pr-1">
                                 <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">
@@ -44,13 +45,17 @@
                             </b-modal>
                         </b-col>
                         <b-col cols="9">
-                            <b-form-group label="Название раздела">
+                            <b-form-group v-if="lection.parts.length>0" label="Название раздела">
                                 <b-form-input v-model="current_part.name" trim></b-form-input>
                             </b-form-group>
-                            <b-form-group label="Контент раздела">
+                            <b-form-group v-if="lection.parts.length>0" label="Контент раздела">
+                                <ckeditor :editor="editor" v-model="current_part.text" :config="editorConfig"></ckeditor>
+                            </b-form-group>
+                            <b-form-group v-else label="Контент лекции">
                                 <ckeditor :editor="editor" v-model="current_part.text" :config="editorConfig"></ckeditor>
                             </b-form-group>
                             <b-button @click="update_part" variant="primary"> Сохранить</b-button>
+                            <b-button @click="check" variant="info">Проверить</b-button>
                         </b-col>
                     </b-row>
                 </b-tab>
@@ -79,7 +84,7 @@
 </template>
 
 <script>
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import ClassicEditor from '@navydragon/ckeditor5-constructor-build'
 import Swal from 'sweetalert2'
 import NsiChoose from '@/components/nsis/NsiChoose'
 export default {
@@ -101,7 +106,7 @@ export default {
         editor: ClassicEditor,
         editorData: '<p>Content of the editor.</p>',
         content: {},
-        lection: {},
+        lection: {parts:[]},
         words: 0,
         isBusy: true,
         characters: 0,
@@ -109,18 +114,23 @@ export default {
         current_part: {name: "",text: "Контент..."},
         editorConfig: {
             toolbar: {
-                items: [
+					items: [
+						'undo',
+						'redo',
 						'heading',
+                        'alignment',
 						'|',
 						'bold',
 						'italic',
-						'link',
-                        'underline',
-						'subscript',
 						'strikethrough',
+						'underline',
+						'subscript',
+						'superscript',
+						'specialCharacters',
+						'removeFormat',
+						'|',
 						'bulletedList',
 						'numberedList',
-						'|',
 						'outdent',
 						'indent',
 						'|',
@@ -128,14 +138,17 @@ export default {
 						'blockQuote',
 						'insertTable',
 						'mediaEmbed',
-						'undo',
-						'redo',
-						'alignment',	
-						'restrictedEditingException',
-						'specialCharacters',
-						'removeFormat'
+						'fontBackgroundColor',
+						'fontColor',
+						'highlight',
+						'horizontalLine',
+						'imageInsert',
+						'pageBreak',
+						'|',
+						'wproofreader'
 					]
-            },
+				},
+			language: 'ru',
             wordCount: {
                 onUpdate: stats => {
                 // Prints the current content statistics.
@@ -144,14 +157,21 @@ export default {
                 
             }
             },
-            language: 'ru',
             image: {
                 toolbar: [
                     'imageTextAlternative',
-                    'imageStyle:full',
+                //    'imageStyle:full',
                     'imageStyle:side',
                     'toggleImageCaption'
                 ],
+            }, 
+            wproofreader: {
+                serviceId: 'zyHAR8htx1Tutf7',
+                srcUrl: 'https://svc.webspellchecker.net/spellcheck31/wscbundle/wscbundle.js',
+                lang:'ru_RU',
+                theme:'gray',
+                removeBranding:true,
+                localization:'ru',
             },
             table: {
                 contentToolbar: [
@@ -168,9 +188,15 @@ export default {
   },
   
   methods: {
-    reset ()
+    check ()
     {
-
+        let kek = this.current_part.text
+       let els = kek.match(/<figure class=\"image\".*?><\/figure>/ig);
+       console.log(els)
+       // var wscInstances = WEBSPELLCHECKER.getInstances();
+       // console.log(wscInstances[0])
+       // wscInstances[0].openDialog();
+        
     },
     add_lection_part()
     {
@@ -179,6 +205,10 @@ export default {
                 'part_data': this.new_part,
           })
         .then(response => (this.lection.parts.push(response.data)))
+        .finally(response => {
+            this.choose_part(this.lection.parts[this.lection.parts.length-1].id)
+            this.new_part = {name: ""}
+            })
     },
     choose_part(id)
     {
@@ -272,6 +302,7 @@ export default {
                     }
                 })
                 .finally ((response) =>{
+                    this.choose_part(this.lection.parts[this.lection.parts.length-1].id)
                     Swal.fire(
                     'Успех!',
                     'Раздел удален.',
@@ -299,7 +330,11 @@ export default {
                 this.lection = response.data
             })
             .finally (response => {
-                this.choose_part(this.lection.parts[0].id)
+                if (this.lection.parts.length > 0)
+                {
+                    this.choose_part(this.lection.parts[0].id)
+                }
+                
                 this.isBusy = false
             })
         })
