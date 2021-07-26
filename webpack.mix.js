@@ -76,6 +76,7 @@ const sassOptions = {
 
 // Core javascripts
 mixAssetsDir('vendor/js/**/*.js', (src, dest) => mix.scripts(src, dest));
+//mix.js('vendor/js/**/*.js', 'public').version();
 
 // Fonts
 mixAssetsDir('vendor/fonts/*.css', (src, dest) => mix.copy(src, dest));
@@ -87,8 +88,9 @@ mixAssetsDir('vendor/fonts/*/*', (src, dest) => mix.copy(src, dest));
  |--------------------------------------------------------------------------
  */
 
-mix.js('resources/assets/src/entry-point.js', 'public');
+mix.js('resources/assets/src/entry-point.js', 'public').version();
 
+mix.version();
 if (Mix.isUsing('hmr')) {
     mix.disableNotifications();
 } else {
