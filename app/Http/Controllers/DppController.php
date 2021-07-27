@@ -54,6 +54,7 @@ class DppController extends Controller
     {
         $dpp = new Dpp;
         $dpp->name = $request->name;
+        $dpp->total_hours = $request->total_hours;
         $dpp->dpp_type_id = $request->type;
         $dpp->author_id = Auth::user()->id;
         $dpp->save();

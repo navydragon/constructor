@@ -95,10 +95,10 @@ mixAssetsDir('vendor/fonts/*/*', (src, dest) => mix.copy(src, dest));
     }
 });
 
-mix.js('resources/assets/src/entry-point.js', 'public/entry-point.js').version();
+mix.js('resources/assets/src/entry-point.js', 'public');
 
 mix.version();
-if (Mix.isUsing('hmr')) {
+if (Mix.isUsing('hmr')) { 
     mix.disableNotifications();
 } else {
     mix.version();

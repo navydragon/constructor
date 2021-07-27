@@ -3,9 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class Knowledge extends Model
 {
+    use SoftDeletes;
+    
     function questions () {
         return $this->hasMany('App\Question','knowledge_id');
     }

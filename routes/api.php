@@ -74,7 +74,10 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/dpp_typology_parts/remove','TypologyController@dtp_remove');
   Route::post('/dpp_typology_parts/add_dtp','TypologyController@add_dtp');
   Route::post('/dpp_typology_parts/update_dtp','TypologyController@update_dtp');
+  Route::post('/dpp_typology_parts/choose_typology','TypologyController@choose_typology');
   Route::post('/typologies/remove_dtp','TypologyController@remove_dtp');
+  
+  
  
 
     
@@ -137,6 +140,7 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('/dpps/{dpp}/remove_knowledge_new/{zv}','ZunVersionController@remove_knowledge_new');
   Route::post('/dpps/{dpp}/update_knowledge','ZunVersionController@update_knowledge2');
   Route::post('/dpps/{dpp}/add_knowledge_link','ZunVersionController@add_knowledge_link2');
+  Route::post('/dpps/{dpp}/remove_knowledge_link','ZunVersionController@remove_knowledge_link2');
 
 
   Route::get('/dpps/{dpp}/structure/{sv}/get_sections','StructureSectionController@get_sections');

@@ -169,6 +169,14 @@
       :elems="nodes.filter(node => node.tags == 'ability')"
       :key="edit_elem.id"
     ></add-parent2>
+    <remove-parent2
+      v-if="edit_type=='remove_parent'"
+      @erase_parent="erase_parent"
+      :edit_elem="edit_elem"
+      :elems="links.filter(link => link.from == edit_elem.id)"
+      :nodes="nodes"
+      :key="'rp_'+edit_elem.id"
+    ></remove-parent2>
     <edit-skill2
       v-if="!isBusy&&edit_elem.id!='0'&&edit_type=='skill'"
       @update_skill="update_skill"
@@ -214,11 +222,13 @@ import NewAbility2 from "./NewAbility2";
 import NewKnowledge2 from "./NewKnowledge2";
 import NewCompetence2 from "./NewCompetence2";
 import AddParent2 from "./AddParent2";
+import RemoveParent2 from "./RemoveParent2";
 import EditSkill2 from "./EditSkill2";
 import EditAbility2 from "./EditAbility2";
 import EditKnowledge2 from "./EditKnowledge2";
 import EditCompetence2 from "./EditCompetence2";
 import OrderChildren from "./OrderChildren";
+import Swal from 'sweetalert2';
 
 export default {
   name: "zun2",
@@ -242,6 +252,7 @@ export default {
       stage: {},
       parts: [],
       errors: [],
+      elems: [],
       isBusy: true
     };
   },
@@ -256,7 +267,9 @@ export default {
     EditAbility2,
     EditKnowledge2,
     EditCompetence2,
-    OrderChildren
+    RemoveParent2,
+    OrderChildren,
+    Swal
   },
   methods: {
     get_zun_versions_data() {
@@ -600,6 +613,13 @@ export default {
                 icon: '<i class="fas fa-user-minus"></i>',
                 onClick: function(node) {
                   self.add_parent(node);
+                }
+              },
+              remove_parent: {
+                text: "Удалить дополнительную связь",
+                icon: '<i class="fas fa-user-minus"></i>',
+                onClick: function(node) {
+                  self.remove_parent(node);
                 }
               },
               disconnect: {
@@ -1197,6 +1217,15 @@ export default {
           self.$bvModal.hide("modal-editcompetence");
         });
     },
+    remove_parent(node) {
+      this.edit_elem = this.nodes.find(el => el.id == node);
+      this.edit_type = "remove_parent";
+      this.$nextTick(() => {
+        this.$bvModal.show("modal-removeparent");
+      });
+      //this.edit_elem.id = node
+      //this.chart.addSlink(node, 'a62', '', "blue")
+    },
     add_parent(node) {
       this.edit_elem = this.nodes.find(el => el.id == node);
       this.edit_type = "parent";
@@ -1217,6 +1246,27 @@ export default {
           self.chart.addSlink(self.edit_elem.id, data, "", "blue");
           self.$bvModal.hide("modal-addparent");
           self.chart.draw(OrgChart.action.init);
+        });
+    },
+    erase_parent (data)
+    {
+      var self = this;
+      axios
+        .post("/dpps/" + this.$route.params.dpp + "/remove_knowledge_link", {
+          knowledge_id: this.edit_elem.id,
+          ability_id: data
+        })
+        .then(function(response) {
+          self.chart.removeSlink(self.edit_elem.id, data)       
+          self.$bvModal.hide("modal-removeparent");
+          self.chart.draw(OrgChart.action.init);
+        })
+        .finally((response) => {
+          Swal.fire(
+              'Успех!',
+              'Дополнительная связь удалена',
+              'success'
+            )
         });
     },
     order_children(node) {

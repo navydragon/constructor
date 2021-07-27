@@ -109,7 +109,7 @@ export default {
       },
       change_nsi (data) {
        this.new_ability.nsis = data.nsi_data
-      },
+      }, 
   },
   mounted() {
     this.isBusy = false

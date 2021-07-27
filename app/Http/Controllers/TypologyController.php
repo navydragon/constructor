@@ -99,6 +99,11 @@ class TypologyController extends Controller
             $next->position = $next->position - 1;
             $next->save();
         }
+        foreach ($dtp->get_knowledges as $kn)
+        {
+            $kn->valid = false;
+            $kn->save();
+        }
         $dtp->get_knowledges()->detach();
         DppTypologyPart::destroy($request->id);
     }
@@ -144,6 +149,11 @@ class TypologyController extends Controller
             $pt->position = $pt->position - 1;
             $pt->save();
         }
+        foreach ($dtp->get_knowledges as $kn)
+        {
+            $kn->valid = false;
+            $kn->save();
+        }
         $dtp->get_knowledges()->detach();
         DppTypologyPart::destroy($dtp->id);
         $dtps = DppTypologyPart::where('ish_version_id','=',$dtp->ish_version_id)->orderBy('position','asc')->get();
@@ -162,6 +172,27 @@ class TypologyController extends Controller
                 $n++;
                 $part->save();
             }
+        }
+    }
+
+    public function choose_typology(Request $request)
+    {
+         $typology = Typology::find($request->typology_id);
+         $iv = IshVersion::find($request->ish_version_id);
+         foreach ($typology->typology_parts as $part)
+         {
+             $dtp = New DppTypologyPart;
+             $dtp->name = $part->name;
+             $dtp->dpp_id = $request->dpp_id;
+             $dtp->typology_id = $request->typology_id;
+             $dtp->ish_version_id = $request->ish_version_id;
+             $elems = $iv->typology_parts->count();
+             $dtp->position = $elems+1;
+             $dtp->save();
+             $iv->typology_id = $typology->id;
+             $iv->save();
+            dd($iv->typology_parts);
+             //return $iv->typology_parts;
         }
     }
 }

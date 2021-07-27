@@ -110,6 +110,7 @@
                 <b-form-group label="Часы по плану">
                   <b-form-input
                     v-model="new_dpp.total_hours"
+                    type="number"
                     required
                 ></b-form-input>
                 </b-form-group>
@@ -234,6 +235,7 @@
         axios
         .post('/store_dpp', {
             'name': this.new_dpp.name,
+            'total_hours': this.new_dpp.total_hours,
             'type': this.new_dpp.type
         })
         .then(response => (this.items.push(response.data)))

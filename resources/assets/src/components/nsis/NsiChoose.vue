@@ -59,7 +59,7 @@
                     text-field = "name"
                     @input="change_nsi"
                     stacked
-                ></b-form-checkbox-group>
+                ></b-form-checkbox-group> 
                 </b-form-group>
               </div>
               <div class="col-md-6 mb-3" v-if="ebss.length>0">

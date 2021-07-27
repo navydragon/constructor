@@ -68,7 +68,10 @@
                 <hr>
                 <h4>ТИПОВАЯ СТРУКТУРА ДПП</h4>
                 <h5>Разделы типологии:</h5>
+                <b-button-group>
+                <!-- <choose-dtp @choose_dtp="choose_dtp" :key="'choose_dtp'"></choose-dtp> -->
                 <new-dtp @add_dtp="add_typology_part" :key="'ds'"></new-dtp>
+                </b-button-group>
                 <div v-for="(elem,index) in ish_data.typology_parts" :key="elem.id" class="m-3">
                     <div class="row">
                         <div class="col-md-9">
@@ -152,9 +155,10 @@ import ChooseDolgkval from '@/components/dolgkvals/ChooseDolgkval'
 import ChooseFgos from '@/components/fgoses/ChooseFgos'
 import Swal from 'sweetalert2'
 import NewDtp from '@/components/typologies/NewDppTypologyPart'
+import ChooseDtp from '@/components/typologies/ChooseDtp'
 export default {
   name: "dpp_stage_work_ish",
-  components: {Nsis,ChooseProfstandart,ChooseDolgkval,ChooseFgos,NewDtp},
+  components: {Nsis,ChooseProfstandart,ChooseDolgkval,ChooseFgos,NewDtp,ChooseDtp},
   metaInfo: {
     title: "Разработка ДПП - Исходные данные"
   },
@@ -313,6 +317,18 @@ export default {
         axios.post("/dpp_typology_parts/move_down",{'part':elem.id})
         .then ((response) => (this.ish_data.typology_parts = response.data))
     },
+    choose_dtp(data)
+    {
+        axios.post("/dpp_typology_parts/choose_typology",{
+            dpp_id: this.$route.params.dpp,
+            ish_version_id: this.ish_data.id,
+            typology_id: data,
+            })
+        .then ((response) => {
+            //this.ish_data.typology_parts = response.data
+            console.log(response.data)
+        })
+    }
   },
   mounted() {
       axios

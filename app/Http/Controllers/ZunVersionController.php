@@ -1224,6 +1224,15 @@ class ZunVersionController extends Controller
         $kn->links()->attach($ability_id);
     }
 
+    public function remove_knowledge_link2(Dpp $dpp, Request $request)
+    {
+        $knowledge_id = substr($request->knowledge_id,1); 
+        $ability_id = substr($request->ability_id,1);
+        $kn = Knowledge::find($knowledge_id);
+        $kn->links()->detach($ability_id);
+    }
+    
+
     public function move_elem2(Request $request)
     {
         $elem_type = $request->elem_type; 

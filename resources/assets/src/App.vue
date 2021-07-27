@@ -13,6 +13,8 @@
 
 <style>
 .alert-info {color:#000}
+.alert-success {color:#000}
+.alert-danger {color:#000}
 </style>
 
 <script>
