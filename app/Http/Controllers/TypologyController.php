@@ -191,8 +191,8 @@ class TypologyController extends Controller
              $dtp->save();
              $iv->typology_id = $typology->id;
              $iv->save();
-            dd($iv->typology_parts);
-             //return $iv->typology_parts;
         }
+        $res = DppTypologyPart::where('ish_version_id','=',$iv->id)->orderBy('position','asc')->get();
+        return $res;
     }
 }

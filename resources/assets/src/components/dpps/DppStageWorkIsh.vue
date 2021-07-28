@@ -69,7 +69,7 @@
                 <h4>ТИПОВАЯ СТРУКТУРА ДПП</h4>
                 <h5>Разделы типологии:</h5>
                 <b-button-group>
-                <!-- <choose-dtp @choose_dtp="choose_dtp" :key="'choose_dtp'"></choose-dtp> -->
+                 <choose-dtp @choose_dtp="choose_dtp" :key="'choose_dtp'"></choose-dtp>
                 <new-dtp @add_dtp="add_typology_part" :key="'ds'"></new-dtp>
                 </b-button-group>
                 <div v-for="(elem,index) in ish_data.typology_parts" :key="elem.id" class="m-3">
@@ -325,8 +325,9 @@ export default {
             typology_id: data,
             })
         .then ((response) => {
-            //this.ish_data.typology_parts = response.data
             console.log(response.data)
+            this.ish_data.typology_parts = response.data
+            this.$bvModal.hide("modal-choosedtp")
         })
     }
   },

@@ -91,12 +91,12 @@ mixAssetsDir('vendor/fonts/*/*', (src, dest) => mix.copy(src, dest));
  mix.webpackConfig({
     output: {
         chunkFilename: "[name].[chunkhash:8].js",
-        filename: "[name].js",
+     //   filename: "[name].js",
     }
 });
 
 mix.js('resources/assets/src/entry-point.js', 'public');
-
+ 
 mix.version();
 if (Mix.isUsing('hmr')) { 
     mix.disableNotifications();
