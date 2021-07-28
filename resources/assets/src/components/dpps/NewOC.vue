@@ -273,26 +273,47 @@ export default {
   },
   methods: {
     get_zun_versions_data() {
-      axios
-        .get(
-          "/dpps/" +
-            this.$route.params.dpp +
-            "/get_links/" +
-            this.stage.zun_version_id
+      Promise.all(
+        [
+          axios.get("/dpps/" +this.$route.params.dpp +"/get_links/" +this.stage.zun_version_id), 
+          axios.get("/dpps/" + this.$route.params.dpp + "/get_typology"), 
+          axios.get("/dpps/" +this.$route.params.dpp +"/get_zun_version_data2/" +this.stage.zun_version_id)
+        ]
         )
-        .then(response => (this.links = response.data));
-      axios
-        .get("/dpps/" + this.$route.params.dpp + "/get_typology")
-        .then(response => (this.parts = response.data));
-      axios
-        .get(
-          "/dpps/" +
-            this.$route.params.dpp +
-            "/get_zun_version_data2/" +
-            this.stage.zun_version_id
-        )
-        .then(response => (this.nodes = response.data))
-        .finally(() => this.oc(this.$refs.tree, this.nodes));
+      .then((response) => 
+      {
+        
+        this.links = response[0].data
+        this.parts = response[1].data
+        this.nodes = response[2].data
+      })
+      .finally((response) =>
+      {
+        this.oc(this.$refs.tree, this.nodes)
+      })
+      // axios
+      //   .get(
+      //     "/dpps/" +
+      //       this.$route.params.dpp +
+      //       "/get_links/" +
+      //       this.stage.zun_version_id
+      //   )
+      //   .then(response => (this.links = response.data));
+      //   .finally((response) => {
+      //     axios
+      //     .get("/dpps/" + this.$route.params.dpp + "/get_typology")
+      //     .then(response => (this.parts = response.data));
+      //     axios
+      //       .get(
+      //         "/dpps/" +
+      //           this.$route.params.dpp +
+      //           "/get_zun_version_data2/" +
+      //           this.stage.zun_version_id
+      //       )
+      //       .then(response => (this.nodes = response.data))
+      //       .finally(() => this.oc(this.$refs.tree, this.nodes));
+      //   })
+      
     },
     oc: function(domEl, x) {
       //  OrgChart.templates.ula.exportMenuButton = '<div style="position:absolute;right:{p}px;top:{p}px; width:40px;height:50px;cursor:pointer" control-export-menu=""  ><i class="fas fa-file-export"></i></div>';

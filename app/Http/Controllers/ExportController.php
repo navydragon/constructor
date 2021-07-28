@@ -356,4 +356,136 @@ class ExportController extends Controller
 
         return response()->download(storage_path('Plan.docx'));
     }
+
+    public function export_dpp(Dpp $dpp)
+    {
+        $phpWord = new PhpWord();
+        $phpWord->getSettings()->setThemeFontLang(new Language(Language::RU_RU));
+        /* Стили */
+        $headFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 14, 'bold' => true);
+        $boldFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 14, 'bold' => true);
+        $normalFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 14, 'bold' => false);
+        $littleTableFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 10, 'bold' => false);
+        $redFont = array('name' => 'Times New Roman','color' => 'red', 'size' => 14, 'bold' => false);
+        $titleParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'indentation'=> ['firstLine' => 708.661417323]);        
+        $centerParagraph = array('alignment' => 'center','lineHeight' => 1.5,'spaceAfter' => 0);
+        $normalParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0);
+        $indentParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'indentation'=> ['firstLine' => 708.661417323]);
+        $normalLineH1Paragraph = array('alignment' => 'both','lineHeight' => 1,'spaceAfter' => 0);
+        $normalLineH1CenterParagraph = array('alignment' => 'center','lineHeight' => 1,'spaceAfter' => 0);
+        $tableFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 11, 'bold' => false);
+        $phpWord->addTitleStyle(0, $headFont,$titleParagraph);
+        $phpWord->addTitleStyle(1, $headFont,$titleParagraph);
+        $phpWord->addTitleStyle(2, $headFont,$titleParagraph);
+
+        $phpWord->addNumberingStyle(
+            'multilevel_line',
+            array(
+            'type' => 'multilevel',
+            'levels' => array(
+            array('format' => 'bullet', 'text' => '–'),
+            array('format' => 'bullet', 'text' => '–', 'left' => 720, 'hanging' => 360, 'tabPos' => 720),
+            )
+            )
+            );
+
+        $tableStyle = array( 'borderColor' => '000000', 'borderSize'  => 1, 'cellMargin'  => 50,'width'=> '100%');
+        $tableWOBordersStyle = array('cellMargin'  => 50,'width'=> '100%');
+        
+        $firstRowStyle = array('bgColor' => '000');
+        $phpWord->addTableStyle('standart_table', $tableStyle, $firstRowStyle);
+        $phpWord->addTableStyle('wo_borders_table', $tableWOBordersStyle, $firstRowStyle);
+
+        /* Section */
+        $sectionStyle = array(
+            'marginTop' => 1133.8582677,
+            'marginBottom' => 1133.8582677,
+            'marginLeft' => 1700.7874016,
+            'marginRight' => 850.39370079
+        );
+        $section = $phpWord->addSection($sectionStyle);
+        /* ТИТУЛ */
+
+        $section->addText('МИНИСТЕРСТВО ТРАНСПОРТА РОССИЙСКОЙ ФЕДЕРАЦИИ',$boldFont,$centerParagraph);
+        $section->addText('',$boldFont,$centerParagraph);
+        $section->addText('ФЕДЕРАЛЬНОЕ АВТОНОМНОЕ УЧРЕЖДЕНИЕ',$boldFont,$centerParagraph);
+        $section->addText('«РОССИЙСКИЙ ДОРОЖНЫЙ НАУЧНО-ИССЛЕДОВАТЕЛЬСКИЙ ИНСТИТУТ» (ФАУ «РОСДОРНИИ»)',$boldFont,$centerParagraph);
+        $section->addText('',$boldFont,$centerParagraph);
+        $section->addText('',$boldFont,$centerParagraph);
+        $table = $section->addTable('wo_borders_table');
+        $table->addRow();
+        $table->addCell(4592.125984252)->addText("");
+        $cell = $table->addCell(4762.204724409);
+        $cell->addText("УТВЕРЖДАЮ",$normalFont,$normalLineH1Paragraph);
+        $cell->addText("Генеральный директор",$normalFont,$normalLineH1Paragraph);
+        $cell->addText("ФАУ «РОСДОРНИИ»",$normalFont,$normalLineH1Paragraph);
+        $cell->addText("",$normalFont,$normalLineH1Paragraph);
+        $cell->addText("_______________ С.Ю. Набоко",$normalFont,$normalLineH1Paragraph);
+        $cell->addText("М.П.",$normalFont,$normalLineH1Paragraph);
+        $cell->addText("«____» _________________ 20__ г.",$normalFont,$normalLineH1Paragraph);
+        $section->addText(' ',$boldFont,$centerParagraph);
+        $section->addText(' ',$boldFont,$centerParagraph);
+        $section->addText(' ',$boldFont,$centerParagraph);
+        $section->addText('ПРИМЕРНАЯ',$boldFont,$centerParagraph);
+        $section->addText('ДОПОЛНИТЕЛЬНАЯ ПРОФЕССИОНАЛЬНАЯ ПРОГРАММА –',$boldFont,$centerParagraph);
+        $section->addText('ПРОГРАММА ПОВЫШЕНИЯ КВАЛИФИКАЦИИ',$boldFont,$centerParagraph);
+        $section->addText('«'.mb_strtoupper($dpp->name).'»',$normalFont,$centerParagraph);
+        $section->addText('по направлению подготовки 38.03.01 «Экономика»',$redFont,$centerParagraph);
+        $section->addText('по специальности 38.02.06 «Финансы»',$redFont,$centerParagraph);
+        $len = 13 - floor(strlen($dpp->name) / 40);
+        for ($i = 0; $i < $len; $i++)
+        {
+            $section->addText(' ',$boldFont,$centerParagraph);
+        }
+        
+        $section->addText('Москва '.date ( 'Y' ),$boldFont,$centerParagraph);
+        $section->addPageBreak();
+
+        /* Разработчики */
+        $section->addText('Список разработчиков',$boldFont,$centerParagraph);
+        $table = $section->addTable('wo_borders_table');
+
+        for ($i = 0; $i < 10; $i++)
+        {
+            $table->addRow();
+            $cell=$table->addCell(3123,779527559);
+            $cell=$table->addCell(272,125984252);
+            $cell=$table->addCell(1094,173228346);
+            $cell=$table->addCell(272,125984252);
+            $cell=$table->addCell(4773,543307087);
+            $table->addRow();
+            $cell=$table->addCell(3123,779527559)->addText('ученое звание, ученая степень',$littleTableFont,$normalLineH1CenterParagraph);
+            $cell=$table->addCell(272,125984252);
+            $cell=$table->addCell(1094,173228346)->addText('подпись',$littleTableFont,$normalLineH1CenterParagraph);
+            $cell=$table->addCell(272,125984252);
+            $cell=$table->addCell(4773,543307087)->addText('ФИО',$littleTableFont,$normalLineH1CenterParagraph);
+        }
+
+        $section->addPageBreak();
+        /* Содержание */
+        $section->addText('Содержание',$boldFont,$centerParagraph);
+        $section->addPageBreak();
+        /* 1.1.1 */ 
+        $section->addTitle('1 Общая характеристика программы',0);
+        $section->addTitle('1.1 Общие положения',1);
+        $section->addTitle('1.1.1 Нормативные правовые основания разработки',2);
+        $section->addText('Нормативные правовые основания для разработки примерной дополнительной профессиональной программы – программы повышения квалификации «'.$dpp->name.'» (далее – программа) составляют:',$normalFont,$indentParagraph);
+        $section->addListItem('Федеральный закон от 29 декабря 2012 г. № 273-ФЗ «Об образовании в Российской Федерации»;', 0, $normalFont,'multilevel_line' ,$indentParagraph);
+        $section->addListItem('Федеральный закон от 03 июля 2016 г. № 238-ФЗ «О независимой оценке квалификации»;', 0, $normalFont,'multilevel_line' ,$indentParagraph);
+        $section->addListItem('Постановление Правительства Российской Федерации от 22 января 2013 г. № 23 «О Правилах разработки, утверждения и применения профессиональных стандартов»;', 0, $normalFont,'multilevel_line' ,$indentParagraph);
+        $section->addListItem('приказ Минтруда России от 12 апреля 2013 г. № 148н «Об утверждении уровней квалификаций в целях разработки проектов профессиональных стандартов»;', 0, $normalFont,'multilevel_line' ,$indentParagraph);
+        $section->addListItem('приказ Минобрнауки России от 01 июля 2013 г. № 499 «Об утверждении Порядка организации и осуществления образовательной деятельности по дополнительным профессиональным программам»;', 0, $normalFont,'multilevel_line' ,$indentParagraph);
+        $section->addListItem('приказ Минтруда России от 01 ноября 2016 г. № 601н «Об утверждении Положения о разработке оценочных средств для проведения независимой оценки квалификации».', 0, $normalFont,'multilevel_line' ,$indentParagraph);		
+        
+
+        
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        try {
+            $objWriter->save(storage_path('ПрДПП.docx'));
+        } catch (Exception $e) {
+        }
+
+
+        return response()->download(storage_path('ПрДПП.docx'));
+    }
 }

@@ -91,7 +91,7 @@ mixAssetsDir('vendor/fonts/*/*', (src, dest) => mix.copy(src, dest));
  mix.webpackConfig({
     output: {
         chunkFilename: "[name].[chunkhash:8].js",
-     //   filename: "[name].js",
+        filename: "[name].js",
     }
 });
 

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-modal no-close-on-esc no-close-on-backdrop @ok="handle_ok" id="modal-removeparent" ok-title="Добавить связь" cancel-title="Закрыть" size="xl" title="Удаление дополнительной связи знания">
+        <b-modal no-close-on-esc no-close-on-backdrop @ok="handle_ok" id="modal-removeparent" ok-title="Удалить связь" cancel-title="Закрыть" size="xl" title="Удаление дополнительной связи знания">
             <b-alert show >Выберите умение, от которого следует удалить дополнительную связь знания</b-alert>
             <h5>Знание:</h5>
             <p>{{edit_elem.name}}</p>
