@@ -1244,6 +1244,7 @@ export default {
         })
         .then(function(response) {
           self.chart.addSlink(self.edit_elem.id, data, "", "blue");
+          self.links.push({from:self.edit_elem.id,to:data,label:"",template:"blue"})
           self.$bvModal.hide("modal-addparent");
           self.chart.draw(OrgChart.action.init);
         });
