@@ -13,6 +13,7 @@ use App\Knowledge;
 use App\Question;
 use App\StructureVersion;
 use App\StructureSection;
+use App\IshVersion;
 use \PhpOffice\PhpWord\PhpWord;
 use \PhpOffice\PhpWord\Style\Language;
 
@@ -361,6 +362,9 @@ class ExportController extends Controller
     {
         $phpWord = new PhpWord();
         $phpWord->getSettings()->setThemeFontLang(new Language(Language::RU_RU));
+        $phpWord->setDefaultFontName('Times New Roman');
+        $phpWord->setDefaultFontSize(14);
+        $phpWord->getSettings()->setUpdateFields(true);
         /* Стили */
         $headFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 14, 'bold' => true);
         $boldFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 14, 'bold' => true);
@@ -372,6 +376,7 @@ class ExportController extends Controller
         $titleParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'indentation'=> ['firstLine' => 708.661417323]);        
         $centerParagraph = array('alignment' => 'center','lineHeight' => 1.5,'spaceAfter' => 0);
         $normalParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0);
+        $tableNameParagraph = array('alignment' => 'both','lineHeight' => 1,'spaceAfter' => 0);
         $indentParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'indentation'=> ['firstLine' => 708.661417323]);
         $normalLineH1Paragraph = array('alignment' => 'both','lineHeight' => 1,'spaceAfter' => 0);
         $normalLineH1CenterParagraph = array('alignment' => 'center','lineHeight' => 1,'spaceAfter' => 0);
@@ -389,7 +394,7 @@ class ExportController extends Controller
             array('format' => 'bullet', 'text' => '–', 'left' => 720, 'hanging' => 360, 'tabPos' => 720),
             )));
 
-        $tableStyle = array( 'borderColor' => '000000', 'borderSize'  => 1, 'cellMargin'  => 107.716535433,'width'=> '100%');
+        $tableStyle = array( 'borderColor' => '000000', 'borderSize'  => 1, 'cellMarginLeft' => 107.716535433,'cellMarginRight' => 107.716535433, 'cellMarginTop'  => 0,'cellMarginBottom'  => 0,'width'=> '100%');
         $tableWOBordersStyle = array('cellMargin'  => 50,'width'=> '100%');
         
         $firstRowStyle = array();
@@ -432,7 +437,7 @@ class ExportController extends Controller
         $section->addText('«'.mb_strtoupper($dpp->name).'»',$normalFont,$centerParagraph);
         $section->addText('по направлению подготовки 38.03.01 «Экономика»',$redFont,$centerParagraph);
         $section->addText('по специальности 38.02.06 «Финансы»',$redFont,$centerParagraph);
-        $len = 13 - floor(strlen($dpp->name) / 40);
+        $len = 8 - floor(strlen($dpp->name) / 40);
         for ($i = 0; $i < $len; $i++)
         {
             $section->addText(' ',$boldFont,$centerParagraph);
@@ -444,15 +449,16 @@ class ExportController extends Controller
         /* Разработчики */
         $section->addText('Список разработчиков',$boldFont,$centerParagraph);
         $table = $section->addTable('wo_borders_table');
+        $cellBottomBorder = array('borderBottomSize' => 1,'borderBottomColor' => '000000');
 
         for ($i = 0; $i < 10; $i++)
         {
             $table->addRow();
-            $cell=$table->addCell(3123.779527559);
+            $cell=$table->addCell(3123.779527559,$cellBottomBorder);
+            $cell=$table->addCell(272.125984252,);
+            $cell=$table->addCell(1094.173228346,$cellBottomBorder);
             $cell=$table->addCell(272.125984252);
-            $cell=$table->addCell(1094.173228346);
-            $cell=$table->addCell(272.125984252);
-            $cell=$table->addCell(4773.543307087);
+            $cell=$table->addCell(4773.543307087,$cellBottomBorder);
             $table->addRow();
             $cell=$table->addCell(3123.779527559)->addText('ученое звание, ученая степень',$tableLittleFont,$normalLineH1CenterParagraph);
             $cell=$table->addCell(272.125984252);
@@ -464,10 +470,12 @@ class ExportController extends Controller
         $section->addPageBreak();
         /* Содержание */
         $section->addText('Содержание',$boldFont,$centerParagraph);
+        $tocStyle = array ('tabLeader' => 'dot');
+        $section->addTOC($normalFont, $tocStyle, 1, 2);
         $section->addPageBreak();
         /* 1.1.1 */ 
-        $section->addTitle('1 Общая характеристика программы',0);
-        $section->addTitle('1.1 Общие положения',1);
+        $section->addTitle('1 Общая характеристика программы',1);
+        $section->addTitle('1.1 Общие положения',2);
         $section->addText('1.1.1 Нормативные правовые основания разработки',$headFont,$titleParagraph);
         $section->addText('Нормативные правовые основания для разработки примерной дополнительной профессиональной программы – программы повышения квалификации «'.$dpp->name.'» (далее – программа) составляют:',$normalFont,$indentParagraph);
         $section->addListItem('Федеральный закон от 29 декабря 2012 г. № 273-ФЗ «Об образовании в Российской Федерации»;', 0, $normalFont,'multilevel_line' ,$indentParagraph);
@@ -482,24 +490,45 @@ class ExportController extends Controller
         $section->addText('Программа разработана на основе требований федерального государственного образовательного стандарта среднего профессионального образования по специальности 38.02.06 «Финансы», утвержденного приказом Минобрнауки России от 28 июля 2014 г. № 836, к результатам освоения образовательных программ.',$redFont,$indentParagraph);
         
         /* 1.1.2 */
+        $iv = IshVersion::find($dpp->ish_version_id);
+        $pl = $iv->prof_levels;
         $section->addText('1.1.2 Требования к обучающимся',$headFont,$titleParagraph);
         $section->addText('Требования к уровню профессионального образования:',$normalFont,$indentParagraph);
-        $section->addListItem('лица, имеющие высшее образование, лица, получающие высшее образование;', 0, $redFont,'multilevel_line' ,$indentParagraph);
-        $section->addListItem('лица, имеющие среднее профессиональное образование, лица, получающие среднее профессиональное образование', 0, $redFont,'multilevel_line' ,$indentParagraph);
-        $section->addText('Требование к квалификации: настоящая программа предназначена для повышения квалификации специалистов по ценообразованию и сметному делу в дорожном строительстве, включая инженеров-сметчиков, экономистов по договорной и претензионной работе, экономистов.',$redFont,$indentParagraph);
+        foreach ($pl as $elem)
+        {
+            $section->addListItem($elem->name, 0, $normalFont,'multilevel_line' ,$indentParagraph);
+        }
+        $textrun = $section->addTextRun($indentParagraph);
+        $textrun->addText('Требование к квалификации: ',$boldFont);
+        $textrun->addText($iv->req_user_kval, $normalFont);
         
         /* 1.1.3 */
         $section->addText('1.1.3 Форма обучения',$headFont,$titleParagraph);
         $section->addText('Повышение квалификации может проводиться по выбору образовательной организации в соответствии с учебным планом в очной, очно-заочной или заочной формах обучения с применением дистанционных образовательных технологий и (или) электронного обучения',$normalFont,$indentParagraph);
         /* 1.1.4 */
         $section->addText('1.1.4 Трудоемкость освоения',$headFont,$titleParagraph);
-        $section->addText('24 ак. часа, включая все виды контактной и самостоятельной работы обучающегося.',$redFont,$indentParagraph);
+        $section->addText($dpp->total_hours.' ак. ч., включая все виды контактной и самостоятельной работы обучающегося.',$normalFont,$indentParagraph);
 
         /* 1.1.5 */
+        $hours = $dpp->total_hours;
+        $o_days = ceil($hours / 8);
+        $z_days = ceil($hours / 4);
         $section->addText('1.1.5 Срок освоения',$headFont,$titleParagraph);
-        $section->addText('3 календарных дня для очной формы обучения или 7 календарных дней для очно-заочной и заочной форм обучения с применением дистанционных образовательных технологий.',$redFont,$indentParagraph);
+        switch ($o_days % 10)
+        {
+            case 0: $o_phrase = "календарных дней";break; case 1: $o_phrase = "календарный день";break;
+            case 2: case 3: case 4: $o_phrase = "календарных дня"; break;
+            case 5: case 6: case 7: case 8: case 9: $o_phrase = "календарных дней"; break;
+        }
+        switch ($z_days % 10)
+        {
+            case 0: $z_phrase = "календарных дней";break; case 1: $z_phrase = "календарный день";break;
+            case 2: case 3: case 4: $z_phrase = "календарных дня"; break;
+            case 5: case 6: case 7: case 8: case 9: $z_phrase = "календарных дней"; break;
+        }
+        $section->addText($o_days.' '.$o_phrase.' для очной формы обучения или '.$z_days.' '.$z_phrase.' для очно-заочной и заочной форм обучения с применением дистанционных образовательных технологий.',$normalFont,$indentParagraph);
         /* 1.2 */
-        $section->addTitle('1.2 Цель и задачи освоения',1);
+        $section->addTitle('1.2 Цель и задачи освоения',2);
         /* 1.2.1 */
         $section->addText('1.2.1 Цель освоения',$headFont,$titleParagraph);
         $section->addText('Целью освоения программы являются совершенствование профессиональных компетенций работников дорожного хозяйства, необходимых для решения задач профессиональной деятельности при формировании сметной стоимости работ по капитальному ремонту автомобильных дорог, повышение профессионального уровня в рамках имеющейся квалификации в области профессиональной деятельности.',$normalFont,$indentParagraph);
@@ -511,7 +540,7 @@ class ExportController extends Controller
         $section->addListItem('оценка достижений обучающимися планируемых результатов обучения.', 0, $normalFont,'multilevel_line' ,$indentParagraph);
 
          /* 1.3 */
-        $section->addTitle('1.3 Планируемые результаты освоения, соотнесенные с планируемыми результатами обучения',1);
+        $section->addTitle('1.3 Планируемые результаты освоения, соотнесенные с планируемыми результатами обучения',2);
         $section->addText('Таблица 1 – Планируемые результаты освоения:',$normalFont,$normalParagraph);
         $table = $section->addTable('standart_table');
         $table->addRow();
@@ -520,7 +549,7 @@ class ExportController extends Controller
         $cell=$table->addCell(5669.291338583)->addText('Планируемые результаты обучения',$tableBoldFont,$normalLineH1CenterParagraph);
 
         /* 1.4 */
-        $section->addTitle('1.4 Учебный план ',1);
+        $section->addTitle('1.4 Учебный план ',2);
         $section->addText('Таблица 2 – Учебный план',$normalFont,$normalParagraph);
         $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center');
         $cellRowContinue = array('vMerge' => 'continue');
@@ -624,18 +653,15 @@ class ExportController extends Controller
         }
 
          /* 1.5 */
-         $hours = $dpp->total_hours;
-         $o_days = ceil($hours / 8);
          $o_width = 4500 / $o_days;
-         $z_days = ceil($hours / 4);
          $z_width = 4500 / $z_days;
          $section->addText('',$headFont,$titleParagraph);
-         $section->addTitle('1.5 Календарный учебный график',1);
-         $section->addText('Таблица 3 – Календарный учебный график для очной формы обучения',$normalFont,$normalParagraph);
+         $section->addTitle('1.5 Календарный учебный график',2);
+         $section->addText('Таблица 3 – Календарный учебный график для очной формы обучения',$normalFont,$tableNameParagraph);
          $table = $section->addTable('standart_table');
          $table->addRow(null,array('tblHeader' => true));
          $table->addCell(null,$cellRowSpan)->addText("Наименование разделов",$tableBoldFont,$cellHCentered);
-         $table->addCell(4500,['gridSpan' => $o_days])->addText("Количество академических часов по дням",$tableBoldFont,$cellHCenteredNoSpace);
+         $table->addCell(null,['gridSpan' => $o_days])->addText("Количество академических часов по дням",$tableBoldFont,$cellHCenteredNoSpace);
          $table->addCell(1150,$cellRowSpan)->addText("ИТОГО",$tableBoldFont,$cellHCentered);
          $table->addRow(null,array('tblHeader' => true));
          $table->addCell(null, $cellRowContinue); // пустая
@@ -645,7 +671,130 @@ class ExportController extends Controller
          }
          $table->addCell(null, $cellRowContinue); // пустая 
         
+         $section->addText('',$headFont,$titleParagraph);
+         $section->addText('Таблица 4 – Календарный учебный график для очно-заочной формы обучения',$normalFont,$tableNameParagraph);
+         $table = $section->addTable('standart_table');
+         $table->addRow(null,array('tblHeader' => true));
+         $table->addCell(null,$cellRowSpan)->addText("Наименование разделов",$tableBoldFont,$cellHCentered);
+         $table->addCell(4500,['gridSpan' => $z_days])->addText("Количество академических часов по дням",$tableBoldFont,$cellHCenteredNoSpace);
+         $table->addCell(1150,$cellRowSpan)->addText("ИТОГО",$tableBoldFont,$cellHCentered);
+         $table->addRow(null,array('tblHeader' => true));
+         $table->addCell(null, $cellRowContinue); // пустая
+         for ($i = 1; $i <= $z_days; $i++)
+         {
+            $table->addCell($z_width)->addText('Д'.$i, $tableBoldFont,$cellAllCentered);
+         }
+         $table->addCell(null, $cellRowContinue); // пустая 
         
+         $section->addText('',$headFont,$titleParagraph);
+         $section->addText('Таблица 5 – Календарный учебный график для заочной формы обучения',$normalFont,$tableNameParagraph);
+         $table = $section->addTable('standart_table');
+         $table->addRow(null,array('tblHeader' => true));
+         $table->addCell(null,$cellRowSpan)->addText("Наименование разделов",$tableBoldFont,$cellHCentered);
+         $table->addCell(4500,['gridSpan' => $z_days])->addText("Количество академических часов по дням",$tableBoldFont,$cellHCenteredNoSpace);
+         $table->addCell(1150,$cellRowSpan)->addText("ИТОГО",$tableBoldFont,$cellHCentered);
+         $table->addRow(null,array('tblHeader' => true));
+         $table->addCell(null, $cellRowContinue); // пустая
+         for ($i = 1; $i <= $z_days; $i++)
+         {
+            $table->addCell($z_width)->addText('Д'.$i, $tableBoldFont,$cellAllCentered);
+         }
+         $table->addCell(null, $cellRowContinue); // пустая 
+
+        /* 1.6 */
+        $section->addText('',$headFont,$titleParagraph);
+        $section->addTitle('1.6 Рабочая программа дисциплины',2);
+        /* 1.6.1 */
+        $section->addText('1.6.1 Учебно-тематический план содержания тем лекционных занятий',$headFont,$titleParagraph); 
+
+        /* 1.6.2 */
+        $section->addText('1.6.2 Учебно-тематический план содержания практических занятий',$headFont,$titleParagraph); 
+        $section->addText('Таблица 6 – Содержание практических занятий',$normalFont,$tableNameParagraph);
+        $table = $section->addTable('standart_table');
+        $table->addRow(1701,array('tblHeader' => true));
+        $table->addCell(566,$cellRowSpanVerticalDirection)->addText("№ раздела",$tableBoldFont,$cellHCentered);
+        $table->addCell(2976)->addText("Темы практических занятий",$tableBoldFont,$cellHCenteredNoSpace);
+        $table->addCell(850,$cellRowSpanVerticalDirection)->addText("Трудоемкость, ак. час",$tableBoldFont,$cellHCenteredNoSpace);
+        $table->addCell(708,$cellRowSpanVerticalDirection)->addText("Текущий контроль",$tableBoldFont,$cellHCenteredNoSpace);
+        $table->addCell(null)->addText("Планируемые результаты обучения",$tableBoldFont,$cellHCenteredNoSpace);
+        
+        /* 1.7 */
+        $section->addText('',$headFont,$titleParagraph);
+        $section->addTitle('1.7 Организационно-педагогические условия',2);
+        $section->addText('Реализация программы осуществляется в полном соответствии с требованиями законодательства Российской Федерации в области образования, нормативными правовыми актами, регламентирующими данное направление деятельности.',$normalFont,$indentParagraph);
+
+        /* 1.7.1 */
+        $section->addText('1.7.1 Требования к квалификации педагогических кадров',$headFont,$titleParagraph); 
+        $section->addText('Реализация программы обеспечивается педагогическими работниками образовательной организации, а также лицами, привлекаемыми к ее реализации на иных условиях.',$normalFont,$indentParagraph);
+        $section->addText('Требования к образованию и обучению: высшее образование.',$normalFont,$indentParagraph);
+        $section->addText('Требования к опыту практической работы: опыт работы в области профессиональной деятельности, связанной с применением работником компетенций, подлежащих совершенствованию, формируемых в результате освоения программы (не менее 3-х лет).',$normalFont,$indentParagraph); 
+        
+        /* 1.7.2 */
+        $section->addText('1.7.2 Требования к материально-техническому обеспечению',$headFont,$titleParagraph); 
+        $section->addText('Материально-техническое обеспечение (далее – МТО) необходимо для проведения всех видов учебных занятий и аттестации, предусмотренных учебным планом по программе, и соответствует действующим санитарным и противопожарным нормам и правилам.',$normalFont,$indentParagraph);
+        $section->addText('МТО содержит специальные помещения: учебные аудитории для проведения лекций, практических (семинарских) занятий и итоговой аттестации (в соответствии с утвержденным расписанием учебных занятий).',$normalFont,$indentParagraph);
+        $section->addText('Специальные помещения укомплектованы специализированной мебелью, оборудованием, расходными материалами, программным обеспечением, техническими средствами обучения и иными средствами, служащими для представления учебной информации обучающимся.',$normalFont,$indentParagraph);
+        $section->addText('Таблица 7 – Состав МТО',$normalFont,$tableNameParagraph); 
+        $table = $section->addTable('standart_table'); 
+        $table->addRow(null,array('tblHeader' => true)); 
+        $table->addCell(2976)->addText("Наименование",$tableBoldFont,$cellHCenteredNoSpace); 
+        $table->addCell(1133)->addText("Кол-во",$tableBoldFont,$cellHCenteredNoSpace);
+        $table->addCell(1133)->addText("Ед. изм.",$tableBoldFont,$cellHCenteredNoSpace);
+        $table->addCell(4280)->addText("Примечание",$tableBoldFont,$cellHCenteredNoSpace);
+        $table->addRow(); 
+        $table->addCell(null,['gridSpan' => 4])->addText("1 Помещения",$tableBoldFont,$cellHCenteredNoSpace);
+        $table->addRow(); 
+        $table->addCell(null,['gridSpan' => 4])->addText("2 Мебель",$tableBoldFont,$cellHCenteredNoSpace);
+        $table->addRow(); 
+        $table->addCell(null,['gridSpan' => 4])->addText("3 Оборудование",$tableBoldFont,$cellHCenteredNoSpace);
+        $table->addRow(); 
+        $table->addCell(null,['gridSpan' => 4])->addText("4 Расходные материалы",$tableBoldFont,$cellHCenteredNoSpace);
+        $table->addRow(); 
+        $table->addCell(null,['gridSpan' => 4])->addText("5 Программное обеспечение",$tableBoldFont,$cellHCenteredNoSpace);
+        
+        /* 1.7.3 */
+        $section->addText('',$headFont,$titleParagraph);
+        $section->addText('1.7.3 Требования к информационному и учебно-методическому обеспечению',$headFont,$titleParagraph); 
+        $section->addText('МТО содержит специальные помещения: учебные аудитории для проведения лекций, практических (семинарских) занятий и итоговой аттестации (в соответствии с утвержденным расписанием учебных занятий).',$normalFont,$indentParagraph); 
+        $section->addText('Таблица 8 – Учебно-методическая документация, нормативные правовые акты, нормативная техническая документация, иная документация, учебная литература и иные издания, информационные ресурсы',$normalFont,$tableNameParagraph); 
+        $table = $section->addTable('standart_table'); 
+        $table->addRow(null,array('tblHeader' => false)); 
+        $table->addCell(9530)->addText("1 Учебно-методическая документация",$tableBoldFont,$cellHCenteredNoSpace);  
+        $table->addRow(null,array('tblHeader' => false)); 
+        $table->addCell(9530)->addText("2 Литература",$tableBoldFont,$cellHCenteredNoSpace);  
+        $table->addRow(null,array('tblHeader' => false)); 
+        $table->addCell(9530)->addText("3 Интернет ресурсы",$tableBoldFont,$cellHCenteredNoSpace);  
+        $table->addRow(null,array('tblHeader' => false)); 
+        $table->addCell(9530)->addText("4 Электронно-библиотечная система",$tableBoldFont,$cellHCenteredNoSpace);  
+
+        /* 1.7.4 */
+        $section->addText('',$headFont,$titleParagraph);
+        $section->addText('1.7.4 Общие требования к организации учебного процесса',$headFont,$titleParagraph); 
+        $section->addText('Общие требования к организации учебного процесса определяются локальными нормативными актами образовательной организации, реализующей программу.',$normalFont,$indentParagraph);
+
+         /* 1.8 */
+         $section->addText('',$headFont,$titleParagraph);
+         $section->addTitle('1.8 Формы аттестации',2);
+         $section->addText('К итоговой аттестации допускаются обучающиеся, не имеющие академической задолженности и в полном объеме выполнившие учебный план программы.',$normalFont,$indentParagraph);
+         $section->addText('Итоговая аттестация проводится в сроки и в формах, предусмотренных учебным планом и календарным графиком учебного процесса.',$normalFont,$indentParagraph);
+         $section->addText('Форма итоговой аттестации – зачет.',$normalFont,$indentParagraph);
+         $section->addText('Проверка знаний проводится в форме тестирования.',$normalFont,$indentParagraph);
+         $section->addText('Проверка умений, навыков проводится в форме выполнения практических заданий в реальных или модельных условиях',$normalFont,$indentParagraph);
+         $section->addText('Для прохождения итоговой аттестации необходимо:',$normalFont,$indentParagraph);
+         $section->addListItem('выполнить тестовые задания (не менее 75% правильных ответов);', 0, $normalFont,'multilevel_line' ,$indentParagraph);        
+         $section->addListItem('выполнить все практические задания.', 0, $normalFont,'multilevel_line' ,$indentParagraph); 
+
+         $section->addText('',$headFont,$titleParagraph);
+         $section->addTitle('2 Оценочные материалы',1);
+         $section->addText('Оценочные материалы обеспечивают проверку достижения планируемых результатов обучения по программе и используются в процедуре итоговой аттестации.',$normalFont,$indentParagraph);
+         $section->addText('Оценочные материалы состоят из базы тестовых заданий и практических заданий.',$normalFont,$indentParagraph);
+         $section->addText('Оценочные материалы приведены в приложении А.',$normalFont,$indentParagraph);
+         $section->addText('',$headFont,$titleParagraph);
+         $section->addTitle('3 Методические материалы',1);
+         $section->addText('Комплект документов, входящих в состав методических материалов, содержит:',$normalFont,$indentParagraph);
+         $section->addListItem('оценочные материалы (приложение А);', 0, $normalFont,'multilevel_line' ,$indentParagraph); 
+         $section->addListItem('конспект лекций (приложение Б);', 0, $normalFont,'multilevel_line' ,$indentParagraph); 
+         $section->addListItem('методические указания к организации и проведению практических занятий (приложение В).', 0, $normalFont,'multilevel_line' ,$indentParagraph); 
          
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         try {
