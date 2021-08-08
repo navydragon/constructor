@@ -1041,7 +1041,7 @@ class ZunVersionController extends Controller
         $knowledge->what = $data["what"];
         $knowledge->with = " ";
         $knowledge->where = " ";
-        if ($request->parent_node == '0')
+        if ($request->parent_node == 'th')
         {
             $knowledge->is_through = true;
             $knowledge->ability_id = null;
