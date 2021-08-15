@@ -63,12 +63,14 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('/mtos/get_mto/{mto}','MtoController@get_mto');
   Route::post('/mtos/remove_mto','MtoController@remove_mto');
 
+  Route::post('/mtos/add_base_mtos/{dpp}','MtoController@add_base_mtos');
+
   Route::get('/typologies/get_typologies','TypologyController@get_typologies');
   Route::post('/typologies/add_typology','TypologyController@add_typology');
   Route::post('/typologies/update_typology','TypologyController@update_typology');
   Route::post('/typologies/remove_part','TypologyController@remove_part');
 
-  /* Типовые разделы в ДПП */
+  /* пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ */
   Route::post('/dpp_typology_parts/move_up','TypologyController@dtp_move_up');
   Route::post('/dpp_typology_parts/move_down','TypologyController@dtp_move_down');
   Route::post('/dpp_typology_parts/remove','TypologyController@dtp_remove');

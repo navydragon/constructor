@@ -11,6 +11,8 @@ use App\Skill;
 use App\Ability;
 use App\Knowledge;
 use App\Question;
+use App\Mto;
+Use App\MtoType;
 use App\StructureVersion;
 use App\StructureSection;
 use App\IshVersion;
@@ -400,6 +402,18 @@ class ExportController extends Controller
         $firstRowStyle = array();
         $phpWord->addTableStyle('standart_table', $tableStyle);
         $phpWord->addTableStyle('wo_borders_table', $tableWOBordersStyle, $firstRowStyle);
+        
+        $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center');
+        $cellRowContinue = array('vMerge' => 'continue');
+        $cellColSpan2 = array('gridSpan' => 2, 'valign' => 'center');
+        $cellColSpan3 = array('gridSpan' => 3, 'valign' => 'center');
+        $cellHCentered = array('align' => 'center');
+        $cellHCenteredNoSpace = array('align' => 'center','spaceAfter' => 0);
+        $cellNoSpace = array('spaceAfter' => 0,'lineHeight' => 1);
+        $cellAllCentered = array('align' => 'center', 'valign' => 'center','spaceAfter' => 0);
+        $cellVCentered = array('valign' => 'center');
+        $cellVerticalDirection = array('textDirection' => 'btLr','align' => 'center');
+        $cellRowSpanVerticalDirection = array('textDirection' => 'btLr','vMerge' => 'restart', 'valign' => 'center');
 
         /* Section */
         $sectionStyle = array(
@@ -408,6 +422,9 @@ class ExportController extends Controller
             'marginLeft' => 1700.7874016,
             'marginRight' => 850.39370079
         );
+
+        
+
         $section = $phpWord->addSection($sectionStyle);
         /* ТИТУЛ */
 
@@ -435,9 +452,9 @@ class ExportController extends Controller
         $section->addText('ДОПОЛНИТЕЛЬНАЯ ПРОФЕССИОНАЛЬНАЯ ПРОГРАММА –',$boldFont,$centerParagraph);
         $section->addText('ПРОГРАММА ПОВЫШЕНИЯ КВАЛИФИКАЦИИ',$boldFont,$centerParagraph);
         $section->addText('«'.mb_strtoupper($dpp->name).'»',$normalFont,$centerParagraph);
-        $section->addText('по направлению подготовки 38.03.01 «Экономика»',$redFont,$centerParagraph);
-        $section->addText('по специальности 38.02.06 «Финансы»',$redFont,$centerParagraph);
-        $len = 8 - floor(strlen($dpp->name) / 40);
+        // $section->addText('по направлению подготовки 38.03.01 «Экономика»',$redFont,$centerParagraph);
+        // $section->addText('по специальности 38.02.06 «Финансы»',$redFont,$centerParagraph);
+        $len = 10 - floor(strlen($dpp->name) / 40);
         for ($i = 0; $i < $len; $i++)
         {
             $section->addText(' ',$boldFont,$centerParagraph);
@@ -543,25 +560,56 @@ class ExportController extends Controller
         $section->addTitle('1.3 Планируемые результаты освоения, соотнесенные с планируемыми результатами обучения',2);
         $section->addText('Таблица 1 – Планируемые результаты освоения:',$normalFont,$normalParagraph);
         $table = $section->addTable('standart_table');
-        $table->addRow();
-        $cell=$table->addCell(702.992125984)->addText('Код',$tableBoldFont,$normalLineH1CenterParagraph);
-        $cell=$table->addCell(3089.763779528)->addText('Планируемые результаты освоения',$tableBoldFont,$normalLineH1CenterParagraph);
-        $cell=$table->addCell(5669.291338583)->addText('Планируемые результаты обучения',$tableBoldFont,$normalLineH1CenterParagraph);
+        $table->addRow(null,array('tblHeader' => true));
+        $cell=$table->addCell(1985)->addText('Планируемые результаты освоения',$tableBoldFont,$normalLineH1CenterParagraph);
+        $cell=$table->addCell(7477)->addText('Планируемые результаты обучения',$tableBoldFont,$normalLineH1CenterParagraph);
+        $zv = $dpp->zun_version_id;
+        $competences = Competence::where('zun_version_id','=',$zv)->get();
+        foreach ($competences as $competence)
+        {
+            $table->addRow();
+            $cell=$table->addCell(1985)->addText($competence->name,$tableNormalFont,$cellNoSpace);
+            $cell=$table->addCell(7477);
+            $cell->addText('Знания:',$tableBoldFont,array('spaceAfter' => 0));
+            $kn_text = "";
+            $knowledges = Knowledge::where('zun_version_id','=',$zv)->get();
+            foreach($knowledges as $key=>$value) {
+                $kn_text .=$value->name;
+                if ($key != count($knowledges)-1)
+                {
+                    $kn_text .="; ";
+                }
+            }
+            $cell->addText($kn_text,$tableNormalFont,array('spaceAfter' => 0));
+            $cell->addText('Умения:',$tableBoldFont,array('spaceAfter' => 0));
+            $ab_text = "";
+            $abilities = Ability::where('zun_version_id','=',$zv)->get();
+            foreach($abilities as $key=>$value) {
+                $ab_text .=$value->name;
+                if ($key != count($abilities)-1)
+                {
+                    $ab_text .="; ";
+                }
+            }
+            $cell->addText($ab_text,$tableNormalFont,array('spaceAfter' => 0));
 
+            $cell->addText('Навыки:',$tableBoldFont,array('spaceAfter' => 0));
+            $sk_text = "";
+            $skills = Skill::where('zun_version_id','=',$zv)->get();
+            foreach($skills as $key=>$value) {
+                $sk_text .=$value->name;
+                if ($key != count($abilities)-1)
+                {
+                    $sk_text .="; ";
+                }
+            }
+            $cell->addText($sk_text,$tableNormalFont,array('spaceAfter' => 0));
+        }
+        
         /* 1.4 */
         $section->addTitle('1.4 Учебный план ',2);
         $section->addText('Таблица 2 – Учебный план',$normalFont,$normalParagraph);
-        $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center');
-        $cellRowContinue = array('vMerge' => 'continue');
-        $cellColSpan2 = array('gridSpan' => 2, 'valign' => 'center');
-        $cellColSpan3 = array('gridSpan' => 3, 'valign' => 'center');
-        $cellHCentered = array('align' => 'center');
-        $cellHCenteredNoSpace = array('align' => 'center','spaceAfter' => 0);
-        $cellNoSpace = array('spaceAfter' => 0,'lineHeight' => 1);
-        $cellAllCentered = array('align' => 'center', 'valign' => 'center','spaceAfter' => 0);
-        $cellVCentered = array('valign' => 'center');
-        $cellVerticalDirection = array('textDirection' => 'btLr','align' => 'center');
-        $cellRowSpanVerticalDirection = array('textDirection' => 'btLr','vMerge' => 'restart', 'valign' => 'center');
+       
 
         $table = $section->addTable('standart_table');
         $table->addRow(null,array('tblHeader' => true));
@@ -741,16 +789,52 @@ class ExportController extends Controller
         $table->addCell(1133)->addText("Кол-во",$tableBoldFont,$cellHCenteredNoSpace);
         $table->addCell(1133)->addText("Ед. изм.",$tableBoldFont,$cellHCenteredNoSpace);
         $table->addCell(4280)->addText("Примечание",$tableBoldFont,$cellHCenteredNoSpace);
-        $table->addRow(); 
-        $table->addCell(null,['gridSpan' => 4])->addText("1 Помещения",$tableBoldFont,$cellHCenteredNoSpace);
-        $table->addRow(); 
-        $table->addCell(null,['gridSpan' => 4])->addText("2 Мебель",$tableBoldFont,$cellHCenteredNoSpace);
-        $table->addRow(); 
-        $table->addCell(null,['gridSpan' => 4])->addText("3 Оборудование",$tableBoldFont,$cellHCenteredNoSpace);
-        $table->addRow(); 
-        $table->addCell(null,['gridSpan' => 4])->addText("4 Расходные материалы",$tableBoldFont,$cellHCenteredNoSpace);
-        $table->addRow(); 
-        $table->addCell(null,['gridSpan' => 4])->addText("5 Программное обеспечение",$tableBoldFont,$cellHCenteredNoSpace);
+        $parent_types= MtoType::where('parent_id','=',null)->get();
+        $f_n = 0;
+        foreach ($parent_types as $parent_type)
+        {
+           $children_types =  MtoType::where('parent_id','=',$parent_type->id)->get();
+           $this_mtos = Mto::where('type_id','=',$parent_type->id)->where('dpp_id','=',$dpp->id)->orderBy('position')->get();
+           if ($children_types->count() != 0 || $this_mtos->count() != 0)
+           {
+                $f_n++;
+                $table->addRow(); 
+                $table->addCell(null,['gridSpan' => 4])->addText($f_n." ".$parent_type->name,$tableBoldFont,$cellHCenteredNoSpace);
+           }
+           $s_n = 0;
+           foreach ($this_mtos as $mto)
+           {
+                $s_n++;
+                $table->addRow();
+                $table->addCell()->addText($f_n.".".$s_n." ".$mto->name,$tableNormalFont,$cellNoSpace);
+                $table->addCell()->addText( $mto->quantity,$tableNormalFont,$cellHCenteredNoSpace); 
+                $table->addCell()->addText( $mto->measure,$tableNormalFont,$cellHCenteredNoSpace);  
+                $table->addCell()->addText( $mto->note,$tableNormalFont,$cellNoSpace); 
+           } 
+
+           foreach ($children_types as $children_type)
+           {
+                $this_mtos = Mto::where('type_id','=',$children_type->id)->where('dpp_id','=',$dpp->id)->orderBy('position')->get();
+                if ($this_mtos->count() != 0)
+                {
+                    $s_n++;
+                    $table->addRow(); 
+                    $table->addCell(null,['gridSpan' => 4])->addText($f_n.".".$s_n." ".$children_type->name,$tableNormalFont,$cellNoSpace);
+                        
+                }
+                $t_n = 0;
+                foreach ($this_mtos as $mto)
+                {
+                    $t_n++; 
+                    $table->addRow();
+                    $table->addCell()->addText($f_n.".".$s_n.".".$t_n." ".$mto->name,$tableNormalFont,$cellNoSpace);
+                    $table->addCell()->addText( $mto->quantity,$tableNormalFont,$cellHCenteredNoSpace); 
+                    $table->addCell()->addText( $mto->measure,$tableNormalFont,$cellHCenteredNoSpace);  
+                    $table->addCell()->addText( $mto->note,$tableNormalFont,$cellNoSpace);    
+                } 
+           }
+        }
+        
         
         /* 1.7.3 */
         $section->addText('',$headFont,$titleParagraph);

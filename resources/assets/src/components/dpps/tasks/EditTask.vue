@@ -201,7 +201,7 @@ export default {
         q_k: "qk",
         q_e_k:"qek",
         isBusy: true,
-        zuns: Array,
+        zuns: [],
         task_subject_types: [],
         errors: [],
         stage: {},
@@ -411,24 +411,39 @@ export default {
       axios
         .get('/dpps/'+this.$route.params.dpp+'/get_stage_data/'+ this.$route.params.stage)
         .then(response => (this.stage = response.data))
-        .finally (function (response){ 
-            axios
-            .get('/nsis/'+self.stage.ish_version_id)
-            .then((response) => (self.nsis = response.data))
+        .finally ((response) => { 
+          Promise.all([
+            axios.get('/nsis/'+self.stage.ish_version_id),
+            axios.get("/dpps/"+self.$route.params.dpp + "/get_zuns_to_om/" + self.stage.zun_version_id),
+            axios.get('/dpps/get_task_data/'+ self.$route.params.task)
+          ])
+          .then ((response) => {
+            console.log(response)
+            this.nsis = response[0].data
+            this.zuns = response[1].data
+            this.new_task = response[2].data
+          }) 
+          .finally ((response) =>{
+             this.isBusy = false
+          })
+            // axios
+            // .get('/nsis/'+self.stage.ish_version_id)
+            // .then((response) => (self.nsis = response.data))
 
-            axios
-            .get("/dpps/"+self.$route.params.dpp + "/get_zuns_to_om/" + self.stage.zun_version_id)
-            .then(response => (self.zuns = response.data));
-            })
+            // axios
+            // .get("/dpps/"+self.$route.params.dpp + "/get_zuns_to_om/" + self.stage.zun_version_id)
+            // .then(response2 => (self.zuns = response2.data));
+            // })
+            // .finally((response2) => (console.log(response2)))
 
-            axios
-            .get('/dpps/get_task_data/'+ this.$route.params.task)
-            .then(function (response){ 
-            console.log(response.data)
-            self.new_task = response.data
-            self.isBusy = false
-            })
-
+            // axios
+            // .get('/dpps/get_task_data/'+ this.$route.params.task)
+            // .then(function (response3){ 
+            // console.log(response3.data)
+            // self.new_task = response3.data
+            // self.isBusy = false
+            // })
+        })
   }
 }
 </script>

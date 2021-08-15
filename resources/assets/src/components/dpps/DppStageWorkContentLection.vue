@@ -15,17 +15,18 @@
                     <b-row>
                         <b-col cols="3">
                             <h5>Структура лекции</h5>
-                            <em v-if="lection.parts.length==0">Лекция пока не содержит разделы.</em>
+                            <em v-if="lection.parts.length<2">Лекция пока не содержит разделы.</em>
                             <b-list-group v-else>
-                            <b-list-group-item v-for="part in lection.parts" :id="'p'+part.id" :key="'p'+part.id" button @click="choose_part(part.id)" class="flex-column align-items-start pt-1 pr-1">
+                            <div v-for="part in lection.parts" :key="'p'+part.id">
+                            <b-list-group-item  v-if="part.position > 0" :id="'p'+part.id"  button @click="choose_part(part.id)" class="flex-column align-items-start pt-1 pr-1">
                                 <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">
                                 # {{lection.parent.position}}.{{lection.section.position}}.{{part.position}}
                                 </h5>
                                 <small>
-                                    <b-button-group>
-                                        <b-btn size="sm" v-if="part.position != 1" variant="info icon-btn" class="btn" @click.prevent="move_up(part.id)"><i class="ion ion-md-arrow-round-up"></i></b-btn>
-                                        <b-btn size="sm" v-if="part.position != lection.parts.length" variant="info icon-btn" class="btn" @click.prevent="move_down(part.id)"><i class="ion ion-md-arrow-round-down"></i></b-btn>
+                                    <b-button-group> 
+                                        <b-btn size="sm" v-if="part.position > 1" variant="info icon-btn" class="btn" @click.prevent="move_up(part.id)"><i class="ion ion-md-arrow-round-up"></i></b-btn>
+                                        <b-btn size="sm" v-if="part.position != lection.parts.length-1" variant="info icon-btn" class="btn" @click.prevent="move_down(part.id)"><i class="ion ion-md-arrow-round-down"></i></b-btn>
                                         <b-btn size="sm" variant="danger icon-btn" class="btn" @click.prevent="delete_part(part.id)"><i class="ion ion-md-close"></i></b-btn>                
                                     </b-button-group>
                                 </small>
@@ -35,6 +36,7 @@
                                 </p>
                                 <small>Слов: {{part.words}} Символов: {{part.symbols}}</small>
                             </b-list-group-item>
+                            </div>
                             </b-list-group>
                             <hr>
                             <b-button  v-b-modal="'new_part'" size="sm" variant="primary">Добавить раздел</b-button>
@@ -45,10 +47,10 @@
                             </b-modal>
                         </b-col>
                         <b-col cols="9">
-                            <b-form-group v-if="lection.parts.length>0" label="Название раздела">
+                            <b-form-group v-if="lection.parts.length>1" label="Название раздела">
                                 <b-form-input v-model="current_part.name" trim></b-form-input>
                             </b-form-group>
-                            <b-form-group v-if="lection.parts.length>0" label="Контент раздела">
+                            <b-form-group v-if="lection.parts.length>1" label="Контент раздела">
                                 <ckeditor :editor="editor" v-model="current_part.text" :config="editorConfig"></ckeditor>
                             </b-form-group>
                             <b-form-group v-else label="Контент лекции">
@@ -216,8 +218,10 @@ export default {
         [].forEach.call(elems, function(el) {
             el.classList.remove("active");
         });
-            
-        document.getElementById('p'+id).classList.add("active")
+        if (this.lection.parts.length > 1)
+        {
+            document.getElementById('p'+id).classList.add("active")
+        }    
         this.current_part = this.lection.parts.find(el => el.id == id)
     },
     update_part()
@@ -332,7 +336,7 @@ export default {
             .finally (response => {
                 if (this.lection.parts.length > 0)
                 {
-                    this.choose_part(this.lection.parts[0].id)
+                    this.choose_part(this.lection.parts[this.lection.parts.length-1].id)
                 }
                 
                 this.isBusy = false

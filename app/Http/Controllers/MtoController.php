@@ -52,4 +52,9 @@ class MtoController extends Controller
     {
         Mto::destroy($request->mto_id);
     }
+
+    public function add_base_mtos(Dpp $dpp)
+    {
+        $dpp->add_base_mtos;
+    }
 }

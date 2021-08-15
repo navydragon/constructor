@@ -19,6 +19,12 @@ class LectionController extends Controller
         $lection->name = $request->theme["name"];
         $lection->position = $lections_count+1;
         $lection->save();
+        $part = new Content;
+        $part->position = 0;
+        $part->name = "no";
+        $part->text = "<p> </p>";
+        $part->lection_id = $lection->id;
+        $part->save();
         return $lection;
     }
 
@@ -68,7 +74,7 @@ class LectionController extends Controller
     {
         $parts = Content::where('lection_id',$lection->id)->get();
         $part = new Content;
-        $part->position = $parts->count()+1;
+        $part->position = $parts->count();
         $part->name = $request->part_data["name"];
         $part->text = "<p> </p>";
         $part->lection_id = $lection->id;

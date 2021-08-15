@@ -10,23 +10,50 @@
               <hr>
               <div v-for="(type,index_a) in parent_types" :key="'t'+type.id">
                 <h5>{{index_a+1}}. {{type.name}}</h5>
-                <div v-for="(c_type,index_b) in children_types(type.id)" :key="'t'+c_type.id">
-                  <h6>{{index_a+1}}.{{index_b+1}}. {{c_type.name}}</h6>
-                  <b-list-group>
-                  <b-list-group-item v-for="mto in mtos.filter(el => el.type_id == c_type.id)" :key="'mto_'+mto.id">
-                    <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click.prevent="edit_mto(mto.id)"><i class="ion ion-md-create"></i></b-btn>
-                    <b-btn v-if="!mode" variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_mto(mto)">X</b-btn>
-                    &nbsp;{{mto.name}}, единица измерения: {{mto.measure}}
-                  </b-list-group-item>
-                  </b-list-group>     
+                <div v-if="children_types(type.id).length!=0">
+                  <div v-for="(c_type,index_b) in children_types(type.id)" :key="'t'+c_type.id">
+                    <h6>{{index_a+1}}.{{index_b+1}}. {{c_type.name}}</h6>
+
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr><th>Наименование</th><th>Кол-во</th><th>Ед. изм.</th><th>Примечание</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr v-for="mto in mtos.filter(el => el.type_id == c_type.id)" :key="'mto_'+mto.id">
+                          <td>
+                            <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click.prevent="edit_mto(mto.id)"><i class="ion ion-md-create"></i></b-btn>
+                            <b-btn v-if="!mode" variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_mto(mto)">X</b-btn>
+                            &nbsp;{{mto.name}}
+                          </td>
+                          <td>{{mto.measure}}</td>
+                          <td>{{mto.quantity}}</td>
+                          <td>{{mto.note}}</td>
+                        </tr>
+                        <tr><td colspan="4" v-if="mtos.filter(el => el.type_id == c_type.id).length==0"><em>Пока не добавлено ни одного МТО в данной категории</em></td></tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-                <b-list-group>
-                  <b-list-group-item v-for="mto in mtos.filter(el => el.type_id == type.id)" :key="'mto_'+mto.id">
-                    <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click.prevent="edit_mto(mto.id)"><i class="ion ion-md-create"></i></b-btn>
-                    <b-btn v-if="!mode" variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_mto(mto)">X</b-btn>
-                    &nbsp;{{mto.name}}, единица измерения: {{mto.measure}}
-                  </b-list-group-item>
-                  </b-list-group>
+                <div v-else>
+                 <table class="table table-bordered">
+                    <thead>
+                      <tr><th>Наименование</th><th>Кол-во</th><th>Ед. изм.</th><th>Примечание</th></tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="mto in mtos.filter(el => el.type_id == type.id)" :key="'mto_'+mto.id">
+                        <td>
+                          <b-btn variant="outline-primary icon-btn btn-xs" class="btn" @click.prevent="edit_mto(mto.id)"><i class="ion ion-md-create"></i></b-btn>
+                          <b-btn v-if="!mode" variant="outline-danger icon-btn btn-xs" class="btn" @click="remove_mto(mto)">X</b-btn>
+                          &nbsp;{{mto.name}}
+                        </td>
+                        <td>{{mto.measure}}</td>
+                        <td>{{mto.quantity}}</td>
+                        <td>{{mto.note}}</td>
+                      </tr>
+                      <tr><td colspan="4" v-if="mtos.filter(el => el.type_id == type.id).length==0"><em>Пока не добавлено ни одного МТО в данной категории</em></td></tr>
+                    </tbody>
+                  </table>
+                </div>
               </div> 
         </div>
        <!-- <edit-nsi @update_nsi="update_nsi" v-if="show_edit_window" :nsi_id="nsi_to_edit" :types="types" :key="nsi_to_edit"></edit-nsi>-->
