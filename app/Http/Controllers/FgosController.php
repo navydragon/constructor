@@ -8,6 +8,48 @@ use App\FgosLevel;
 
 class FgosController extends Controller
 {
+
+    public function index()
+    {
+        $fgoses = Fgos::with('fgos_level:name')->orderBy('fgos_level_id')->get();
+        return $fgoses;
+    }
+
+    public function show($id)
+    {
+        $fgos = Fgos::findOrFail($id);
+        return $fgos;
+    }
+
+    public function store(Request $request)
+    {
+        $doc = $request->document;
+        $fgos = new Fgos;
+        $fgos->name = $doc["name"];
+        $fgos->code = $doc["code"];
+        $fgos->save();
+        return $fgos;
+    }
+
+
+    public function update($id, Request $request)
+    {
+        $doc = $request->document;
+        $fgos = Fgos::findOrFail($id);
+        $fgos->name = $doc["name"];
+        $fgos->code = $doc["code"];
+        $fgos->save();
+        return $fgos;
+    }
+
+
+    public function destroy($id)
+    {
+        Fgos::destroy($id);
+        return $id;
+    }
+
+
     public function get_fgos_levels()
     {
         $fls = FgosLevel::all();

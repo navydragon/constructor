@@ -16,6 +16,8 @@ Use App\MtoType;
 use App\StructureVersion;
 use App\StructureSection;
 use App\IshVersion;
+use Carbon\Carbon;
+use App\Content;
 use \PhpOffice\PhpWord\PhpWord;
 use \PhpOffice\PhpWord\Style\Language;
 
@@ -376,7 +378,9 @@ class ExportController extends Controller
         $tableBoldFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 12, 'bold' => true);
         $redFont = array('name' => 'Times New Roman','color' => 'red', 'size' => 14, 'bold' => false);
         $titleParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'indentation'=> ['firstLine' => 708.661417323]);        
+        $annotationTitleParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'spaceBefore' => 12, 'indentation'=> ['firstLine' => 708.661417323]);        
         $centerParagraph = array('alignment' => 'center','lineHeight' => 1.5,'spaceAfter' => 0);
+        $rightParagraph = array('alignment' => 'right','lineHeight' => 1.5,'spaceAfter' => 0);
         $normalParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0);
         $tableNameParagraph = array('alignment' => 'both','lineHeight' => 1,'spaceAfter' => 0);
         $indentParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'indentation'=> ['firstLine' => 708.661417323]);
@@ -420,20 +424,28 @@ class ExportController extends Controller
             'marginTop' => 1133.8582677,
             'marginBottom' => 1133.8582677,
             'marginLeft' => 1700.7874016,
-            'marginRight' => 850.39370079
+            'marginRight' => 850.39370079,
+            'pageNumberingStart' => 2,
+        );
+        $titleSectionStyle = array(
+            'marginTop' => 1133.8582677,
+            'marginBottom' => 2000,
+            'marginLeft' => 1700.7874016,
+            'marginRight' => 850.39370079,
+            'footerHeight'=>1134
         );
 
         
 
-        $section = $phpWord->addSection($sectionStyle);
+        $section = $phpWord->addSection($titleSectionStyle);
         /* ТИТУЛ */
 
-        $section->addText('МИНИСТЕРСТВО ТРАНСПОРТА РОССИЙСКОЙ ФЕДЕРАЦИИ',$boldFont,$centerParagraph);
+        $section->addText('МИНИСТЕРСТВО ТРАНСПОРТА РОССИЙСКОЙ ФЕДЕРАЦИИ',$boldFont,$normalLineH1CenterParagraph);
         $section->addText('',$boldFont,$centerParagraph);
-        $section->addText('ФЕДЕРАЛЬНОЕ АВТОНОМНОЕ УЧРЕЖДЕНИЕ',$boldFont,$centerParagraph);
-        $section->addText('«РОССИЙСКИЙ ДОРОЖНЫЙ НАУЧНО-ИССЛЕДОВАТЕЛЬСКИЙ ИНСТИТУТ» (ФАУ «РОСДОРНИИ»)',$boldFont,$centerParagraph);
-        $section->addText('',$boldFont,$centerParagraph);
-        $section->addText('',$boldFont,$centerParagraph);
+        $section->addText('ФЕДЕРАЛЬНОЕ АВТОНОМНОЕ УЧРЕЖДЕНИЕ',$boldFont,$normalLineH1CenterParagraph);
+        $section->addText('«РОССИЙСКИЙ ДОРОЖНЫЙ НАУЧНО-ИССЛЕДОВАТЕЛЬСКИЙ ИНСТИТУТ» (ФАУ «РОСДОРНИИ»)',$boldFont,$normalLineH1CenterParagraph);
+        $section->addText('',$boldFont,$normalLineH1CenterParagraph);
+        $section->addText('',$boldFont,$normalLineH1CenterParagraph);
         $table = $section->addTable('wo_borders_table');
         $table->addRow();
         $table->addCell(4592.125984252)->addText("");
@@ -448,23 +460,40 @@ class ExportController extends Controller
         $section->addText(' ',$boldFont,$centerParagraph);
         $section->addText(' ',$boldFont,$centerParagraph);
         $section->addText(' ',$boldFont,$centerParagraph);
-        $section->addText('ПРИМЕРНАЯ',$boldFont,$centerParagraph);
-        $section->addText('ДОПОЛНИТЕЛЬНАЯ ПРОФЕССИОНАЛЬНАЯ ПРОГРАММА –',$boldFont,$centerParagraph);
-        $section->addText('ПРОГРАММА ПОВЫШЕНИЯ КВАЛИФИКАЦИИ',$boldFont,$centerParagraph);
-        $section->addText('«'.mb_strtoupper($dpp->name).'»',$normalFont,$centerParagraph);
+        $section->addText('ПРИМЕРНАЯ',$boldFont,$normalLineH1CenterParagraph);
+        $section->addText('ДОПОЛНИТЕЛЬНАЯ ПРОФЕССИОНАЛЬНАЯ ПРОГРАММА –',$boldFont,$normalLineH1CenterParagraph);
+        $section->addText('ПРОГРАММА ПОВЫШЕНИЯ КВАЛИФИКАЦИИ',$boldFont,$normalLineH1CenterParagraph);
+        $section->addText('«'.mb_strtoupper($dpp->name).'»',$normalFont,$normalLineH1CenterParagraph);
         // $section->addText('по направлению подготовки 38.03.01 «Экономика»',$redFont,$centerParagraph);
         // $section->addText('по специальности 38.02.06 «Финансы»',$redFont,$centerParagraph);
-        $len = 10 - floor(strlen($dpp->name) / 40);
+        $len = 5;
         for ($i = 0; $i < $len; $i++)
         {
             $section->addText(' ',$boldFont,$centerParagraph);
         }
         
-        $section->addText('Москва '.date ( 'Y' ),$boldFont,$centerParagraph);
-        $section->addPageBreak();
+        $footer = $section->addFooter();
+        $footer->firstPage();
+        $footer->addText('Москва '.date ( 'Y' ),$boldFont,$centerParagraph);
+        //$section->addPageBreak();
 
+        $section = $phpWord->addSection($sectionStyle);
+        /* АННОТАЦИЯ */
+        $section->addText('АННОТАЦИЯ',$boldFont,$normalLineH1CenterParagraph);
+        $section->addText('',$normalFont,$normalParagraph);
+        $section->addText($dpp->name,$boldFont,$indentParagraph);
+        $section->addText('Описание программы:',$boldFont,$annotationTitleParagraph);
+        $section->addText('Требования к обучающимся. Эта программа для вас, если вы:',$boldFont,$annotationTitleParagraph);
+        $section->addText('Цели и задачи освоения:',$boldFont,$annotationTitleParagraph);
+        $section->addText('Результаты и перспективы освоения:',$boldFont,$annotationTitleParagraph);
+        $section->addText('Форма и технология обучения:',$boldFont,$annotationTitleParagraph);
+        $section->addText('Количество часов, отведенных на изучение дисциплины:',$boldFont,$annotationTitleParagraph);
+        $section->addText('Срок освоения:',$boldFont,$annotationTitleParagraph);
+        $section->addText('Форма аттестации:',$boldFont,$annotationTitleParagraph);
+        
+        $section->addPageBreak();
         /* Разработчики */
-        $section->addText('Список разработчиков',$boldFont,$centerParagraph);
+        $section->addText('СПИСОК РАЗРАБОТЧИКОВ',$boldFont,$centerParagraph);
         $table = $section->addTable('wo_borders_table');
         $cellBottomBorder = array('borderBottomSize' => 1,'borderBottomColor' => '000000');
 
@@ -485,12 +514,17 @@ class ExportController extends Controller
         }
 
         $section->addPageBreak();
+
+        $section = $phpWord->addSection($sectionStyle);
+        $footer = $section->addFooter();
+        $footer->addPreserveText('{PAGE}',$tableNormalFont,$rightParagraph);
         /* Содержание */
         $section->addText('Содержание',$boldFont,$centerParagraph);
         $tocStyle = array ('tabLeader' => 'dot');
         $section->addTOC($normalFont, $tocStyle, 1, 2);
         $section->addPageBreak();
         /* 1.1.1 */ 
+        $iv = IshVersion::find($dpp->ish_version_id);
         $section->addTitle('1 Общая характеристика программы',1);
         $section->addTitle('1.1 Общие положения',2);
         $section->addText('1.1.1 Нормативные правовые основания разработки',$headFont,$titleParagraph);
@@ -501,13 +535,96 @@ class ExportController extends Controller
         $section->addListItem('приказ Минтруда России от 12 апреля 2013 г. № 148н «Об утверждении уровней квалификаций в целях разработки проектов профессиональных стандартов»;', 0, $normalFont,'multilevel_line' ,$indentParagraph);
         $section->addListItem('приказ Минобрнауки России от 01 июля 2013 г. № 499 «Об утверждении Порядка организации и осуществления образовательной деятельности по дополнительным профессиональным программам»;', 0, $normalFont,'multilevel_line' ,$indentParagraph);
         $section->addListItem('приказ Минтруда России от 01 ноября 2016 г. № 601н «Об утверждении Положения о разработке оценочных средств для проведения независимой оценки квалификации».', 0, $normalFont,'multilevel_line' ,$indentParagraph);		
+        /*ПРОФСТАНДАРТЫ */
+        $pss = $iv->prof_standarts;
+        if (count($pss) > 0)
+        {
+            $textrun = $section->addTextRun($indentParagraph);
+            if (count($pss) == 1) {
+                $textrun->addText('Программа разработана на основе профессионального стандарта ',$normalFont);
+                $value = $pss[0];
+                $od = Carbon::parse($value->orderDate)->format('d.m.Y');
+                $rd = Carbon::parse($value->registrationDate)->format('d.m.Y');
+                
+                $textrun->addText($value->nameCode." ".$value->nameText." (утвержден приказом Минтруда России от ".$od." г. №".$value->orderNumber."н, зарегистрирован Министерством юстиции Российской Федерации ".$rd." г., регистрационный № ".$value->registrationNumber.").",$normalFont);
+            }else
+            {
+                $textrun->addText('Программа разработана на основе профессиональных стандартов:',$normalFont);
+                foreach($pss as $key=>$value) {
+                    $od = Carbon::parse($value->orderDate)->format('d.m.Y');
+                    $rd = Carbon::parse($value->registrationDate)->format('d.m.Y');
+                    if ($key != count($pss)-1)
+                    {
+                        $section->addListItem($value->nameCode." ".$value->nameText." (утвержден приказом Минтруда России от ".$od." г. №".$value->orderNumber."н, зарегистрирован Министерством юстиции Российской Федерации ".$rd." г., регистрационный № ".$value->registrationNumber.");", 0, $normalFont,'multilevel_line' ,$indentParagraph);		
+                    }else{
+                        $section->addListItem($value->nameCode." ".$value->nameText." (утвержден приказом Минтруда России от ".$od." г. №".$value->orderNumber."н, зарегистрирован Министерством юстиции Российской Федерации ".$rd." г., регистрационный № ".$value->registrationNumber.").", 0, $normalFont,'multilevel_line' ,$indentParagraph);		
+                    }
+                }    
+            }
+            
+        }
+
+        /* ФГОСы */
+        $spos = $iv->fgoses()->where((function ($q) {$q->where("fgos_level_id",1)->orWhere("fgos_level_id",5);}))->get();
+        if (count($spos) > 0)
+        {
+            $textrun = $section->addTextRun($indentParagraph);
+            if (count($spos) == 1) {
+                $textrun->addText('Программа разработана на основе требований федерального государственного образовательного стандарта среднего профессионального образования по ',$normalFont);
+                $value = $spos[0];
+                if ($value->fgos_level_id == 1) {$word = 'профессии';}else{$word = 'специальности';}
+                $textrun->addText($word." ",$normalFont);
+                $textrun->addText($value->code." «".$value->name."»",$normalFont);
+                $textrun->addText(", к результатам освоения образовательных программ.");
+            }else{
+                $textrun->addText('Программа разработана на основе требований федеральных государственных образовательных стандартов среднего профессионального образования к результатам освоения образовательных программ по:',$normalFont);
+                foreach($spos as $key=>$value) {
+                    if ($value->fgos_level_id == 1) {$word = 'профессии';}else{$word = 'специальности';}
+                    if ($key != count($spos)-1)
+                    {
+                        $section->addListItem($word." ".$value->code." «".$value->name."»;",0, $normalFont,'multilevel_line', $indentParagraph);		
+                    }else{
+                        $section->addListItem($word." ".$value->code." «".$value->name."».",0, $normalFont,'multilevel_line', $indentParagraph);		
+                    }
+                }    
+            }
+        }
+        $vpos = $iv->fgoses()->where((function ($q) {$q->where("fgos_level_id","<>",1)->where("fgos_level_id","<>",5);}))->get();
+        if (count($vpos) > 0)
+        {
+            $textrun = $section->addTextRun($indentParagraph);
+            if (count($vpos) == 1) {
+                $textrun->addText('Программа разработана на основе требований федерального государственного образовательного стандарта высшего профессионального образования по ',$normalFont);
+                $value = $vpos[0];
+                if ($value->fgos_level_id == 3) {$word = 'специальности';}else{$word = 'направлению подготовки';}
+                $textrun->addText($word." ",$normalFont);
+                $textrun->addText($value->code." «".$value->name."»",$normalFont);
+                if ($value->fgos_level_id == 2) {$word = ' (уровень бакалавриата)';}
+                if ($value->fgos_level_id == 3) {$word = ' (уровень специалитета)';}
+                if ($value->fgos_level_id == 4) {$word = ' (уровень магистратуры)';}
+                if ($value->fgos_level_id == 6) {$word = ' (уровень аспирантуры)';}
+                $textrun->addText($word);
+                $textrun->addText(", к результатам освоения образовательных программ.");
+            }else{
+                $textrun->addText('Программа разработана на основе требований федеральных государственных образовательных стандартов высшего профессионального образования к результатам освоения образовательных программ по:',$normalFont);
+                foreach($vpos as $key=>$value) {
+                    if ($value->fgos_level_id == 3) {$word = 'специальности';}else{$word = 'направлению подготовки';}
+                    if ($value->fgos_level_id == 2) {$word2 = ' (уровень бакалавриата)';}
+                    if ($value->fgos_level_id == 3) {$word2 = ' (уровень специалитета)';}
+                    if ($value->fgos_level_id == 4) {$word2 = ' (уровень магистратуры)';}
+                    if ($value->fgos_level_id == 6) {$word2 = ' (уровень аспирантуры)';}
+                    if ($key != count($spos)-1)
+                    {
+                        $section->addListItem($word." ".$value->code." «".$value->name."» ".$word2.";",0, $normalFont,'multilevel_line', $indentParagraph);		
+                    }else{
+                        $section->addListItem($word." ".$value->code." «".$value->name."» ".$word2.".",0, $normalFont,'multilevel_line', $indentParagraph);		
+                    }
+                }    
+            }
+        }
         
-        $section->addText('Программа разработана на основе профессионального стандарта, утвержденного приказом Минтруда России от 18 июля 2019 г. № 504н «Об утверждении профессионального стандарта 16.033 «Специалист в области планово-экономического обеспечения строительного производства».',$redFont,$indentParagraph);
-        $section->addText('Программа разработана на основе требований федерального государственного образовательного стандарта высшего образования по направлению подготовки бакалавров 38.03.01 «Экономика» (уровень бакалавриата), утвержденного приказом Минобрнауки России от 12 ноября 2015 г. № 1327, к результатам освоения образовательных программ.',$redFont,$indentParagraph);
-        $section->addText('Программа разработана на основе требований федерального государственного образовательного стандарта среднего профессионального образования по специальности 38.02.06 «Финансы», утвержденного приказом Минобрнауки России от 28 июля 2014 г. № 836, к результатам освоения образовательных программ.',$redFont,$indentParagraph);
         
         /* 1.1.2 */
-        $iv = IshVersion::find($dpp->ish_version_id);
         $pl = $iv->prof_levels;
         $section->addText('1.1.2 Требования к обучающимся',$headFont,$titleParagraph);
         $section->addText('Требования к уровню профессионального образования:',$normalFont,$indentParagraph);
@@ -705,6 +822,7 @@ class ExportController extends Controller
          $z_width = 4500 / $z_days;
          $section->addText('',$headFont,$titleParagraph);
          $section->addTitle('1.5 Календарный учебный график',2);
+         /* ОЧНЫЕ ДНИ */
          $section->addText('Таблица 3 – Календарный учебный график для очной формы обучения',$normalFont,$tableNameParagraph);
          $table = $section->addTable('standart_table');
          $table->addRow(null,array('tblHeader' => true));
@@ -719,7 +837,76 @@ class ExportController extends Controller
          }
          $table->addCell(null, $cellRowContinue); // пустая 
         
+         $sections = StructureSection::where('parent_id','=', null)->where('st_version_id','=', $sv->id)->orderBy('position')->get();
+         
+         $busy_cells = 0;
+         $free_hours = 8;
+         $days_time = [0];
+         foreach ($sections as $sect)
+         {
+            $table->addRow(null);
+            $table->addCell(null)->addText($sect->position." ".$sect->name,$tableNormalFont,$cellNoSpace);
+            for ($i = 0; $i < $busy_cells; $i++)
+            {
+                $table->addCell($o_width);
+            }
+            if ($sect->total_hours < $free_hours)
+            { 
+                $table->addCell($o_width)->addText($sect->total_hours,$tableNormalFont,$cellHCenteredNoSpace);
+                $free_hours -= $sect->total_hours;
+                $skip_cells = $o_days - $busy_cells-1;
+                $days_time[$busy_cells]+= $sect->total_hours;
+            }
+            else if ($sect->total_hours == $free_hours)
+            {
+                $table->addCell($o_width)->addText($sect->total_hours,$tableNormalFont,$cellHCenteredNoSpace);
+                $days_time[$busy_cells]+= $sect->total_hours;
+                $days_time[$busy_cells+1] = 0;
+                $busy_cells++;
+                $free_hours = 8;
+                $skip_cells = $o_days - $busy_cells;
+            }
+            else if ($sect->total_hours > $free_hours)
+            {
+                $to_serve = $sect->total_hours;
+                while ($to_serve > 0)
+                {
+                    if ($to_serve >= $free_hours)
+                    {
+                        $table->addCell($o_width)->addText($free_hours,$tableNormalFont,$cellHCenteredNoSpace);
+                        if ($to_serve > $free_hours) {$skip_cells--;}
+                        $to_serve -= $free_hours;
+                        $days_time[$busy_cells]+= $free_hours;
+                        $days_time[$busy_cells+1] = 0;
+                        $busy_cells++;
+                        $free_hours = 8;
+                    }else{
+                        $table->addCell($o_width)->addText($to_serve,$tableNormalFont,$cellHCenteredNoSpace);
+                        $free_hours -= $to_serve;
+                        $days_time[$busy_cells]+= $to_serve;
+                        $to_serve = 0;
+                    }
+                }
+               // $skip_cells = $o_days - $busy_cells-1;
+            }
+            
+            for ($i = 0; $i<$skip_cells; $i++)
+            {
+                $table->addCell($o_width);
+            }
+            $table->addCell($o_width)->addText($sect->total_hours,$tableBoldFont,$cellHCenteredNoSpace);
+         }
+         $table->addRow(null);
+         $table->addCell()->addText('Всего ак. часов',$tableBoldFont,$cellHCenteredNoSpace);
+         if ($days_time[count($days_time)-1] == 0) {array_pop($days_time);}
+         foreach ($days_time as $key=>$value)
+         {
+            $table->addCell($o_width)->addText($value,$tableBoldFont,$cellHCenteredNoSpace);
+         }
+         $table->addCell()->addText(array_sum($days_time),$tableBoldFont,$cellHCenteredNoSpace);
+         
          $section->addText('',$headFont,$titleParagraph);
+         /* ОЧНО-ЗАОЧНЫЕ ДНИ */
          $section->addText('Таблица 4 – Календарный учебный график для очно-заочной формы обучения',$normalFont,$tableNameParagraph);
          $table = $section->addTable('standart_table');
          $table->addRow(null,array('tblHeader' => true));
@@ -733,7 +920,72 @@ class ExportController extends Controller
             $table->addCell($z_width)->addText('Д'.$i, $tableBoldFont,$cellAllCentered);
          }
          $table->addCell(null, $cellRowContinue); // пустая 
-        
+         $busy_cells = 0;
+         $free_hours = 4;
+         $days_time = [0];
+         foreach ($sections as $sect)
+         {
+            $table->addRow(null);
+            $table->addCell(null)->addText($sect->position." ".$sect->name,$tableNormalFont,$cellNoSpace);
+            for ($i = 0; $i < $busy_cells; $i++)
+            {
+                $table->addCell($z_width);
+            }
+            if ($sect->total_hours < $free_hours)
+            { 
+                $table->addCell($z_width)->addText($sect->total_hours,$tableNormalFont,$cellHCenteredNoSpace);
+                $free_hours -= $sect->total_hours;
+                $skip_cells = $z_days - $busy_cells-1;
+                $days_time[$busy_cells]+= $sect->total_hours;
+            }
+            else if ($sect->total_hours == $free_hours)
+            {
+                $table->addCell($z_width)->addText($sect->total_hours,$tableNormalFont,$cellHCenteredNoSpace);
+                $days_time[$busy_cells]+= $sect->total_hours;
+                $days_time[$busy_cells+1] = 0;
+                $busy_cells++;
+                $free_hours = 4;
+                $skip_cells = $z_days - $busy_cells;
+            }
+            else if ($sect->total_hours > $free_hours)
+            {
+                $to_serve = $sect->total_hours;
+                while ($to_serve > 0)
+                {
+                    if ($to_serve >= $free_hours)
+                    {
+                        $table->addCell($z_width)->addText($free_hours,$tableNormalFont,$cellHCenteredNoSpace);
+                        if ($to_serve > $free_hours) {$skip_cells--;}
+                        $to_serve -= $free_hours;
+                        $days_time[$busy_cells]+= $free_hours;
+                        $days_time[$busy_cells+1] = 0;
+                        $busy_cells++;
+                        $free_hours = 4;
+                    }else{
+                        $table->addCell($z_width)->addText($to_serve,$tableNormalFont,$cellHCenteredNoSpace);
+                        $free_hours -= $to_serve;
+                        $days_time[$busy_cells]+= $to_serve;
+                        $to_serve = 0;
+                        //$skip_cells = $z_days - $busy_cells;
+                    }
+                }
+            }
+            
+            for ($i = 0; $i<$skip_cells; $i++)
+            {
+                $table->addCell($z_width);
+            }
+            $table->addCell($z_width)->addText($sect->total_hours,$tableBoldFont,$cellHCenteredNoSpace);
+         }
+         $table->addRow(null);
+         $table->addCell()->addText('Всего ак. часов',$tableBoldFont,$cellHCenteredNoSpace);
+         if ($days_time[count($days_time)-1] == 0) {array_pop($days_time);}
+         foreach ($days_time as $key=>$value)
+         {
+            $table->addCell($o_width)->addText($value,$tableBoldFont,$cellHCenteredNoSpace);
+         }
+         $table->addCell()->addText(array_sum($days_time),$tableBoldFont,$cellHCenteredNoSpace);
+
          $section->addText('',$headFont,$titleParagraph);
          $section->addText('Таблица 5 – Календарный учебный график для заочной формы обучения',$normalFont,$tableNameParagraph);
          $table = $section->addTable('standart_table');
@@ -748,7 +1000,71 @@ class ExportController extends Controller
             $table->addCell($z_width)->addText('Д'.$i, $tableBoldFont,$cellAllCentered);
          }
          $table->addCell(null, $cellRowContinue); // пустая 
-
+         $busy_cells = 0;
+         $free_hours = 4;
+         $days_time = [0];
+         foreach ($sections as $sect)
+         {
+            $table->addRow(null);
+            $table->addCell(null)->addText($sect->position." ".$sect->name,$tableNormalFont,$cellNoSpace);
+            for ($i = 0; $i < $busy_cells; $i++)
+            {
+                $table->addCell($z_width);
+            }
+            if ($sect->total_hours < $free_hours)
+            { 
+                $table->addCell($z_width)->addText($sect->total_hours,$tableNormalFont,$cellHCenteredNoSpace);
+                $free_hours -= $sect->total_hours;
+                $skip_cells = $z_days - $busy_cells-1;
+                $days_time[$busy_cells]+= $sect->total_hours;
+            }
+            else if ($sect->total_hours == $free_hours)
+            {
+                $table->addCell($z_width)->addText($sect->total_hours,$tableNormalFont,$cellHCenteredNoSpace);
+                $days_time[$busy_cells]+= $sect->total_hours;
+                $days_time[$busy_cells+1] = 0;
+                $busy_cells++;
+                $free_hours = 4;
+                $skip_cells = $z_days - $busy_cells;
+            }
+            else if ($sect->total_hours > $free_hours)
+            {
+                $to_serve = $sect->total_hours;
+                while ($to_serve > 0)
+                {
+                    if ($to_serve >= $free_hours)
+                    {
+                        $table->addCell($z_width)->addText($free_hours,$tableNormalFont,$cellHCenteredNoSpace);
+                        if ($to_serve > $free_hours) {$skip_cells--;}
+                        $to_serve -= $free_hours;
+                        $days_time[$busy_cells]+= $free_hours;
+                        $days_time[$busy_cells+1] = 0;
+                        $busy_cells++;
+                        $free_hours = 4;
+                    }else{
+                        $table->addCell($z_width)->addText($to_serve,$tableNormalFont,$cellHCenteredNoSpace);
+                        $free_hours -= $to_serve;
+                        $days_time[$busy_cells]+= $to_serve;
+                        $to_serve = 0;
+                        //$skip_cells = $z_days - $busy_cells;
+                    }
+                }
+            }
+            
+            for ($i = 0; $i<$skip_cells; $i++)
+            {
+                $table->addCell($z_width);
+            }
+            $table->addCell($z_width)->addText($sect->total_hours,$tableBoldFont,$cellHCenteredNoSpace);
+         }
+         $table->addRow(null);
+         $table->addCell()->addText('Всего ак. часов',$tableBoldFont,$cellHCenteredNoSpace);
+         if ($days_time[count($days_time)-1] == 0) {array_pop($days_time);}
+         foreach ($days_time as $key=>$value)
+         {
+            $table->addCell($o_width)->addText($value,$tableBoldFont,$cellHCenteredNoSpace);
+         }
+         $table->addCell()->addText(array_sum($days_time),$tableBoldFont,$cellHCenteredNoSpace);
         /* 1.6 */
         $section->addText('',$headFont,$titleParagraph);
         $section->addTitle('1.6 Рабочая программа дисциплины',2);
@@ -888,5 +1204,99 @@ class ExportController extends Controller
 
 
         return response()->download(storage_path('ПрДПП.docx'));
+    }
+
+    function export_content(Dpp $dpp)
+    {
+        $phpWord = new PhpWord();
+        $phpWord->getSettings()->setThemeFontLang(new Language(Language::RU_RU));
+        $phpWord->setDefaultFontName('Times New Roman');
+        $phpWord->setDefaultFontSize(14);
+        $phpWord->getSettings()->setUpdateFields(true);
+        /* Стили */
+        $headFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 14, 'bold' => true);
+        $boldFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 14, 'bold' => true);
+        $normalFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 14, 'bold' => false);
+        $tableLittleFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 10, 'bold' => false);
+        $tableNormalFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 12, 'bold' => false);
+        $tableBoldFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 12, 'bold' => true);
+        $redFont = array('name' => 'Times New Roman','color' => 'red', 'size' => 14, 'bold' => false);
+        $titleParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'indentation'=> ['firstLine' => 708.661417323]);        
+        $annotationTitleParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'spaceBefore' => 12, 'indentation'=> ['firstLine' => 708.661417323]);        
+        $centerParagraph = array('alignment' => 'center','lineHeight' => 1.5,'spaceAfter' => 0);
+        $rightParagraph = array('alignment' => 'right','lineHeight' => 1.5,'spaceAfter' => 0);
+        $normalParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0);
+        $tableNameParagraph = array('alignment' => 'both','lineHeight' => 1,'spaceAfter' => 0);
+        $indentParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'indentation'=> ['firstLine' => 708.661417323]);
+        $normalLineH1Paragraph = array('alignment' => 'both','lineHeight' => 1,'spaceAfter' => 0);
+        $normalLineH1CenterParagraph = array('alignment' => 'center','lineHeight' => 1,'spaceAfter' => 0);
+        $tableFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 11, 'bold' => false);
+        $phpWord->addTitleStyle(0, $headFont,$titleParagraph);
+        $phpWord->addTitleStyle(1, $headFont,$titleParagraph);
+        $phpWord->addTitleStyle(2, $headFont,$titleParagraph);
+
+        $phpWord->addNumberingStyle(
+            'multilevel_line',
+            array(
+            'type' => 'multilevel',
+            'levels' => array(
+            array('format' => 'bullet', 'text' => '–'),
+            array('format' => 'bullet', 'text' => '–', 'left' => 720, 'hanging' => 360, 'tabPos' => 720),
+            )));
+
+        $tableStyle = array( 'borderColor' => '000000', 'borderSize'  => 1, 'cellMarginLeft' => 107.716535433,'cellMarginRight' => 107.716535433, 'cellMarginTop'  => 0,'cellMarginBottom'  => 0,'width'=> '100%');
+        $tableWOBordersStyle = array('cellMargin'  => 50,'width'=> '100%');
+        
+        $firstRowStyle = array();
+        $phpWord->addTableStyle('standart_table', $tableStyle);
+        $phpWord->addTableStyle('wo_borders_table', $tableWOBordersStyle, $firstRowStyle);
+        
+        $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center');
+        $cellRowContinue = array('vMerge' => 'continue');
+        $cellColSpan2 = array('gridSpan' => 2, 'valign' => 'center');
+        $cellColSpan3 = array('gridSpan' => 3, 'valign' => 'center');
+        $cellHCentered = array('align' => 'center');
+        $cellHCenteredNoSpace = array('align' => 'center','spaceAfter' => 0);
+        $cellNoSpace = array('spaceAfter' => 0,'lineHeight' => 1);
+        $cellAllCentered = array('align' => 'center', 'valign' => 'center','spaceAfter' => 0);
+        $cellVCentered = array('valign' => 'center');
+        $cellVerticalDirection = array('textDirection' => 'btLr','align' => 'center');
+        $cellRowSpanVerticalDirection = array('textDirection' => 'btLr','vMerge' => 'restart', 'valign' => 'center');
+            
+        /* Section */
+        $sectionStyle = array(
+            'marginTop' => 1133.8582677,
+            'marginBottom' => 1133.8582677,
+            'marginLeft' => 1700.7874016,
+            'marginRight' => 850.39370079,
+            'pageNumberingStart' => 2,
+        );
+        $titleSectionStyle = array(
+            'marginTop' => 1133.8582677,
+            'marginBottom' => 2000,
+            'marginLeft' => 1700.7874016,
+            'marginRight' => 850.39370079,
+            'footerHeight'=>1134
+        );
+
+
+        $objReader = \PhpOffice\PhpWord\IOFactory::createReader('Word2007');
+        $source = storage_path('test_docx.docx'); 
+        $phpWord = $objReader->load($source); 
+        foreach($phpWord->getSections() as $section) 
+        {
+            $arrays = $section->getElements();
+        }
+        dd($arrays);
+        // $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        // try {
+        //     $objWriter->save(storage_path('test.docx'));
+        // } catch (Exception $e) {
+        // }
+        $phpWord = \PhpOffice\PhpWord\IOFactory::load(storage_path('test_doc.docx'));
+        $htmlWriter = new \PhpOffice\PhpWord\Writer\HTML($phpWord);
+        $htmlWriter->save(storage_path('test_doc.html'));
+
+        return response()->download(storage_path('test_doc.html'));
     }
 }

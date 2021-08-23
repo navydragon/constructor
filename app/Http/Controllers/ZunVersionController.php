@@ -14,6 +14,125 @@ use App\Competence;
 use App\Question;
 class ZunVersionController extends Controller
 {
+
+    public function show(Dpp $dpp,ZunVersion $zv)
+    {
+        $result = [];
+        $zuns = [];
+        $competences = Competence::where('zun_version_id',$zv->id)->get();
+        $skills = Skill::where('zun_version_id',$zv->id)->orderBy('position','asc')->get();
+        $abilities = Ability::where('zun_version_id',$zv->id)->orderBy('position','asc')->get();
+        $knowledges = Knowledge::where('zun_version_id',$zv->id)->where('is_through',false)->orderBy('position','asc')->get();
+        $th_knowledges = Knowledge::where('zun_version_id',$zv->id)->where('is_through',true)->orderBy('position','asc')->get();
+        foreach ($competences as $competence)
+        {
+            $row = [];
+            $row["id"] = 'c'.$competence->id;
+            $row["name"] = $competence->name;
+            $row["pid"] = null;
+            $row["type"] = "Компетенция";
+            $row["valid"] = $competence->valid;
+            $row["tags"][0] = 'competence';
+            array_push($zuns,$row);                    
+        }
+        foreach ($skills as $skill)
+        {
+            $row = [];
+            $row["id"] = 's'.$skill->id;
+            $row["name"] = $skill->name;
+            $row["what"] = $skill->what;
+            $row["with"] = $skill->with;
+            $row["where"] = $skill->where;
+            $row["pid"] = 'c'.$skill->competence_id;
+            $row["type"] = "Навык";
+            $row["valid"] = $skill->valid;
+            $row["tags"][0] = 'skill';
+            array_push($zuns,$row);                    
+        }
+        foreach ($abilities as $ability)
+        {
+            $row = [];
+            $row["id"] = 'a'.$ability->id;
+            $row["name"] = $ability->name;
+            $row["what"] = $ability->what;
+            $row["with"] = $ability->with;
+            $row["where"] = $ability->where;
+            if ($ability->has_parent_comp == true)
+            {
+                $row["pid"] = 'c'.$ability->competence_id;
+            }else{
+                $row["pid"] = 's'.$ability->skill_id;
+            }
+            $row["type"] = "Умение";
+            $row["valid"] = $ability->valid;
+            $row["tags"][0] = 'ability';
+            array_push($zuns,$row);                    
+        }
+        foreach ($knowledges as $knowledge)
+        {
+            $row = [];
+            $row["id"] = 'k'.$knowledge->id;
+            $row["name"] = $knowledge->name;
+            $row["what"] = $knowledge->what;
+            $row["pid"] = 'a'.$knowledge->ability_id;
+            $row["type"] = "Знание";
+            $row["valid"] = $knowledge->valid;
+            $row["position"] = $knowledge->position;
+            $row["tags"][0] = 'knowledge';
+            array_push($zuns,$row);                    
+        }
+        foreach ($th_knowledges as $knowledge)
+        {
+            $row = [];
+            $row["id"] = 'k'.$knowledge->id;
+            $row["name"] = $knowledge->name;
+            $row["pid"] = 'th';
+            $row["type"] = "Знание";
+            $row["what"] = $knowledge->what;
+            $row["valid"] = $knowledge->valid;
+            $row["tags"][0] = 'knowledge';
+            array_push($zuns,$row);                    
+        }
+        $row = [];
+        $row["id"] = 'th';
+        $row["name"] = 'СКВОЗНЫЕ ЗНАНИЯ';
+        $row["pid"] = null;
+        $row["type"] = "Сквозные знания";
+        $row["tags"][0] = 'through';
+        array_push($zuns,$row);
+        
+        //links
+        $additionalLinks = [];
+        $knowledges = Knowledge::where('zun_version_id',$zv->id)->get();
+        foreach ($knowledges as $knowledge)
+        {
+            $links = $knowledge->links;
+
+            foreach ($links as $link)
+            {
+                $row = [];
+                $row["from"] = 'k'.$knowledge->id;
+                $row["to"] = 'a'.$link->id;
+                $row["label"] = '';
+                $row["template"] = 'blue';
+                array_push($additionalLinks,$row);
+            }
+        }
+        
+        //typology
+        $tp = [];
+        $iv = IshVersion::find($dpp->ish_version_id);
+        foreach($iv->typology_parts as $part)
+        {
+            $part->knowledges = $part->get_knowledges;
+            array_push($tp,$part);
+        }
+        $result["zoons"] = $zuns;
+        $result["links"] = $additionalLinks;
+        $result["typologyParts"] = $tp;
+        return json_encode($result);
+    }
+
     public function add_skill(Dpp $dpp,ZunVersion $zv, Request $request)
     {
         $data = $request->skill;
@@ -513,6 +632,7 @@ class ZunVersionController extends Controller
     public function get_zun_version_data2(Dpp $dpp,ZunVersion $zv)
     {
         $result = [];
+        $zuns = 
         $competences = Competence::where('zun_version_id',$zv->id)->get();
         $skills = Skill::where('zun_version_id',$zv->id)->orderBy('position','asc')->get();
         $abilities = Ability::where('zun_version_id',$zv->id)->orderBy('position','asc')->get();
@@ -594,7 +714,26 @@ class ZunVersionController extends Controller
         $row["type"] = "Сквозные знания";
         $row["tags"][0] = 'through';
         array_push($result,$row);
+        
+        //links
+        $additionalLinks = [];
+        $knowledges = Knowledge::where('zun_version_id',$zv->id)->get();
+        foreach ($knowledges as $knowledge)
+        {
+            $links = $knowledge->links;
+
+            foreach ($links as $link)
+            {
+                $row = [];
+                $row["from"] = 'k'.$knowledge->id;
+                $row["to"] = 'a'.$link->id;
+                $row["label"] = '';
+                $row["template"] = 'blue';
+                array_push($additionalLinks,$row);
+            }
+        }
         return json_encode($result);
+        
     }
 
     
@@ -1288,6 +1427,41 @@ class ZunVersionController extends Controller
         ], 200);
     }
 
+    public function disconnect_node(Request $request)
+    {
+        $el = $request->node;
+        $el["id"] = substr($el["id"],1);
+        switch ($el["type"]) {
+            case 'Знание':
+                $kn = Knowledge::find($el["id"]);
+                $kn->ability_id = null;
+                $kn->is_through = false;
+                $kn->save();
+            break;
+            case 'Умение':
+                $ab = Ability::find($el["id"]);
+                if ($ab->has_parent_comp == true)
+                {
+                    $ab->competence_id = null;
+                }else{
+                    $ab->skill_id = null;
+                }
+                $ab->save();
+            break;
+            
+            case 'Навык':
+                $sk = Skill::find($el["id"]);
+                $sk->competence_id = null;
+                $sk->save();
+            break;
+
+            default:
+                # code...
+                break;
+        }
+        return response()->json(['message'=>'success'],200);
+    }
+
     public function disconnect2(Request $request)
     {
         $el = $request->elem;
@@ -1330,9 +1504,6 @@ class ZunVersionController extends Controller
         {
             $links = $knowledge->links;
 
-            if (count($links) > 0) {
-
-            }
             foreach ($links as $link)
             {
                 $row = [];

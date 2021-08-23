@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Dpp;
 use App\Question;
+use App\QuestionType;
 use App\OmVersion;
+use App\Knowledge;
 use App\SingleChoiceAnswer;
 use App\MultiChoiceAnswer;
 use App\FreeChoiceAnswer;
@@ -19,6 +22,286 @@ use App\TaskQuestion;
 use Auth;
 class OmVersionController extends Controller
 {
+    public function show(Dpp $dpp,OmVersion $ov)
+    {
+        $knowledges = $dpp->knowledges()->get();
+        foreach ($knowledges as $elem)
+        {
+            $elem->value = $elem->id;
+            $elem->text = $elem->name;
+            $kn = Knowledge::find($elem->id);
+            $elem->questions = $kn->questions;
+            foreach ($elem->questions as $q)
+            {
+                $q->type_name = $q->type->name;
+                switch ($q->type->type)
+                {
+                    case 'one-answer':
+                        $q->answers = $q->single_choice_answers;
+                    break;
+                    case 'multi-answer':
+                        $q->answers = $q->multi_choice_answers;
+                    break;
+                    case 'open-answer':
+                        $q->answers = $q->free_choice_answers;
+                    break;
+                    case 'sequence-answer':
+                        $q->answers = $q->sequence_choice_answers;
+                    break;
+                    case 'conformity-answer':
+                        $q->answers = $q->accordance_choice_answers;
+                    break;
+                }
+                $q->questionType = $q->type->type;
+            }
+        }
+        $result = [];
+        $result["knowledges"] = $knowledges;
+        $result["questionTypes"] = QuestionType::all();
+        return json_encode($result);
+    }
+
+    public function question_store(OmVersion $ov,Request $request)
+    {
+        $q_d = $request["questionData"];
+        $q = new Question;
+        $q->om_version_id = $ov->id;
+        $q->author_id = Auth::user()->id;
+        $q->knowledge_id = $q_d["knowledgeId"];
+        $qt = QuestionType::where('type',$q_d["questionType"])->get()->first();
+        $q->question_type_id = $qt["id"];
+        $q->text = $q_d["text"];
+        $q->save();
+        $q->questionType = $q->type->type;
+        $answers = $q_d["answers"];
+        switch ($q_d["questionType"]) 
+        {
+            case 'one-answer':
+                foreach ($answers as $elem)
+                {
+                    $ans = new SingleChoiceAnswer;
+                    $ans->author_id = Auth::user()->id;
+                    $ans->question_id = $q->id;
+                    $ans->text = $elem["text"];
+                    $ans->is_right = $elem["isCorrect"];
+                    $ans->save();
+                }
+                $q->answers = $q->single_choice_answers;
+            break;
+            case 'multi-answer':
+                foreach ($answers as $elem)
+                {
+                    $ans = new MultiChoiceAnswer;
+                    $ans->author_id = Auth::user()->id;
+                    $ans->question_id = $q->id;
+                    $ans->text = $elem["text"];
+                    $ans->is_right = $elem["isCorrect"];
+                    $ans->save();
+                }
+                $q->answers = $q->multi_choice_answers;
+            break;
+            case 'open-answer':
+                foreach ($answers as $elem)
+                {
+                    $ans = new FreeChoiceAnswer;
+                    $ans->author_id = Auth::user()->id;
+                    $ans->question_id = $q->id;
+                    $ans->text = $elem["text"];
+                    $ans->is_right = $elem["isCorrect"];
+                    $ans->save();
+                }
+                $q->answers = $q->free_choice_answers;
+            break;
+
+            case 'sequence-answer':
+                $n = 1;
+                foreach ($answers as $elem)
+                {
+                    $ans = new SequenceChoiceAnswer;
+                    $ans->author_id = Auth::user()->id;
+                    $ans->question_id = $q->id;
+                    $ans->text = $elem["text"];
+                    $ans->is_right = true;
+                    $ans->position = $n;
+                    $ans->save();
+                    $n++;
+                }
+                $q->answers = $q->sequence_choice_answers;
+            break;
+
+            case 'conformity-answer':
+                foreach ($answers as $elem)
+                {
+                    $ans = new AccordanceChoiceAnswer;
+                    $ans->author_id = Auth::user()->id;
+                    $ans->question_id = $q->id;
+                    $ans->text = $elem["firstPart"];
+                    $ans->text2 = $elem["secondPart"];
+                    $ans->is_right = true;
+                    $ans->save();
+                }
+                $q->answers = $q->accordance_choice_answers;
+            break;
+        }
+
+        return $q;
+    }
+
+    public function question_update(OmVersion $ov, Question $q, Request $request)
+    {
+        $q_d = $request["questionData"];
+
+        $q->text = $q_d["text"];
+        $q->save();
+        $qt = QuestionType::where('type',$q_d["questionType"])->get()->first();
+        $q->question_type_id = $qt["id"];
+        $q->questionType = $q->type->type;
+        
+        $answers = $q_d["answers"];
+        switch ($q_d["questionType"]) 
+        {
+            case 'one-answer':
+                $ans_arr = $q->single_choice_answers;
+                foreach ($ans_arr as $ans)
+                {
+                    SingleChoiceAnswer::destroy($ans->id);
+                }
+                foreach ($answers as $elem)
+                {
+                    $ans = new SingleChoiceAnswer;
+                    $ans->author_id = Auth::user()->id;
+                    $ans->question_id = $q->id;
+                    $ans->text = $elem["text"];
+                    $ans->is_right = $elem["isCorrect"];
+                    $ans->save();
+                }
+                $q->answers = $q->single_choice_answers()->get();;
+            break;
+            case 'multi-answer':
+                $ans_arr = $q->multi_choice_answers;
+                foreach ($ans_arr as $ans)
+                {
+                    MultiChoiceAnswer::destroy($ans->id);
+                }
+                foreach ($answers as $elem)
+                {
+                    $ans = new MultiChoiceAnswer;
+                    $ans->author_id = Auth::user()->id;
+                    $ans->question_id = $q->id;
+                    $ans->text = $elem["text"];
+                    $ans->is_right = $elem["isCorrect"];
+                    $ans->save();
+                }
+                $q->answers = $q->multi_choice_answers()->get();
+            break;
+            case 'open-answer':
+                $ans_arr = $q->free_choice_answers;
+                foreach ($ans_arr as $ans)
+                {
+                    FreeChoiceAnswer::destroy($ans->id);
+                }
+                foreach ($answers as $elem)
+                {
+                    $ans = new FreeChoiceAnswer;
+                    $ans->author_id = Auth::user()->id;
+                    $ans->question_id = $q->id;
+                    $ans->text = $elem["text"];
+                    $ans->is_right = $elem["isCorrect"];
+                    $ans->save();
+                }
+                $q->answers = $q->free_choice_answers()->get();;
+            break;
+
+            case 'sequence-answer':
+                $ans_arr = $q->sequence_choice_answers;
+                foreach ($ans_arr as $ans)
+                {
+                    SequenceChoiceAnswer::destroy($ans->id);
+                }
+                $n = 1;
+                foreach ($answers as $elem)
+                {
+                    $ans = new SequenceChoiceAnswer;
+                    $ans->author_id = Auth::user()->id;
+                    $ans->question_id = $q->id;
+                    $ans->text = $elem["text"];
+                    $ans->is_right = true;
+                    $ans->position = $n;
+                    $ans->save();
+                    $n++;
+                }
+                $q->answers = $q->sequence_choice_answers()->get();;
+            break;
+
+            case 'conformity-answer':
+                $ans_arr = $q->accordance_choice_answers;
+                foreach ($ans_arr as $ans)
+                {
+                    AccordanceChoiceAnswer::destroy($ans->id);
+                }
+                foreach ($answers as $elem)
+                {
+                    $ans = new AccordanceChoiceAnswer;
+                    $ans->author_id = Auth::user()->id;
+                    $ans->question_id = $q->id;
+                    $ans->text = $elem["firstPart"];
+                    $ans->text2 = $elem["secondPart"];
+                    $ans->is_right = true;
+                    $ans->save();
+                }
+                $q->answers = $q->accordance_choice_answers()->get();;
+            break;
+        }
+        
+        return $q;
+    }
+
+    public function question_destroy(OmVersion $ov, Question $q)
+    {
+        switch ($q["question_type_id"]) {
+            case 1:
+                $ans_arr = $q->single_choice_answers;
+                foreach ($ans_arr as $ans)
+                {
+                    SingleChoiceAnswer::destroy($ans->id);
+                }
+            break;
+            case 2:
+                $ans_arr = $q->multi_choice_answers;
+                foreach ($ans_arr as $ans)
+                {
+                    MultiChoiceAnswer::destroy($ans->id);
+                }
+            break;
+            case 3:
+                $ans_arr = $q->free_choice_answers;
+                foreach ($ans_arr as $ans)
+                {
+                    FreeChoiceAnswer::destroy($ans->id);
+                }
+            break;
+            case 4:
+                $ans_arr = $q->sequence_choice_answers;
+                foreach ($ans_arr as $ans)
+                {
+                    SequenceChoiceAnswer::destroy($ans->id);
+                }
+            break;
+            case 5:
+                $ans_arr = $q->accordance_choice_answers;
+                foreach ($ans_arr as $ans)
+                {
+                    AccordanceChoiceAnswer::destroy($ans->id);
+                }
+            break;            
+            default:
+                # code...
+            break;
+        }
+        Question::destroy($q->id);
+        return response()->json(['message'=>'success'],200);
+    }
+
     public function add_question(OmVersion $ov,Request $request)
     {
         $q_d = $request["question_data"];
@@ -64,6 +347,7 @@ class OmVersionController extends Controller
                     }
                     $ans->save();
                 }
+                $q->answers = $q->multi_choice_answers;
             break;
             case 3:
                 $arr = $q_d["free_choice_answers"];
@@ -76,6 +360,7 @@ class OmVersionController extends Controller
                     $ans->is_right = true;
                     $ans->save();
                 }
+                $q->answers = $q->free_choice_answers;
             break;
             case 4:
                 $arr = $q_d["sequence_choice_answers"];
@@ -91,6 +376,7 @@ class OmVersionController extends Controller
                     $ans->save();
                     $n++;
                 }
+                $q->answers = $q->sequence_choice_answers;
             break;
             case 5:
                 $arr = $q_d["accordance_choice_answers"];

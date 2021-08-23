@@ -19,6 +19,7 @@ class DolgKvalController extends Controller
         return $ps;
     }
 
+    /** */
     public function add_dolgkval(Request $request)
     {
         $ps = new DolgKval;

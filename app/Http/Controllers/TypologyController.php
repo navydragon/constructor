@@ -78,6 +78,7 @@ class TypologyController extends Controller
 
     public function add_dtp(Request $request)
     {
+        //$doc = $request->part;
         $dtp = New DppTypologyPart;
         $dtp->name = $request->dtp_name;
         $dtp->dpp_id = $request->dpp_id;
@@ -195,4 +196,7 @@ class TypologyController extends Controller
         $res = DppTypologyPart::where('ish_version_id','=',$iv->id)->orderBy('position','asc')->get();
         return $res;
     }
+
+
+
 }

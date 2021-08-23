@@ -8,9 +8,10 @@ class ProfStandartController extends Controller
 {
     public function get_profstandarts()
     {
-        $ps = ProfStandart::orderBy('code')->get();
+        $ps = ProfStandart::orderBy('nameCode')->get();
         return $ps;
     }
+
 
     public function get_profstandart(Request $request)
     {
@@ -35,11 +36,61 @@ class ProfStandartController extends Controller
         $ps->save();
         return $ps;
     }
+
+
     public function remove_profstandart(Request $request)
     {
         ProfStandart::destroy($request->id);
         return $request->id;
     }
 
-    
+    public function index()
+    {
+        $ps = ProfStandart::orderBy('nameText')->get();
+        return $ps;
+    }
+
+    public function show($id)
+    {
+        $ps = ProfStandart::findOrFail($id);
+        return $ps;
+    }
+
+    public function store(Request $request)
+    {
+        $doc = $request->document;
+        $ps = new ProfStandart;
+        $ps->nameText = $doc["nameText"];
+        $ps->nameCode = $doc["nameCode"];
+        $ps->orderDate = $doc["orderDate"];
+        $ps->orderNumber = $doc["orderNumber"];
+        $ps->registrationDate = $doc["registrationDate"];
+        $ps->registrationNumber = $doc["registrationNumber"];
+        $ps->linkQual = $doc["linkQual"];
+        $ps->nameQual = $doc["nameQual"];
+        $ps->save();
+        return $ps;
+    }
+
+    public function update($id, Request $request)
+    {
+        $doc = $request->document;
+        $ps = ProfStandart::findOrFail($id);
+        $ps->nameText = $doc["nameText"];
+        $ps->nameCode = $doc["nameCode"];
+        $ps->orderDate = $doc["orderDate"];
+        $ps->orderNumber = $doc["orderNumber"];
+        $ps->registrationDate = $doc["registrationDate"];
+        $ps->registrationNumber = $doc["registrationNumber"];
+        $ps->linkQual = $doc["linkQual"];
+        $ps->nameQual = $doc["nameQual"];
+        $ps->save();
+        return $ps;
+    }
+
+    public function destroy($id)
+    {
+        ProfStandart::destroy($id);
+        return $id;
+    }
 }

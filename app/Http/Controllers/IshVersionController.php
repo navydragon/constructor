@@ -11,6 +11,7 @@ use App\Nsi;
 use App\Typology;
 use App\TypologyPart;
 use App\DppTypologyPart;
+use App\CorporateRequirement;
 use Auth;
 class IshVersionController extends Controller
 {
@@ -36,6 +37,11 @@ class IshVersionController extends Controller
         $iv->prof_standarts = $iv->prof_standarts;
         $iv->dolg_kvals = $iv->dolg_kvals;
         $iv->fgoses = $iv->fgoses;
+        $iv->ektses = $iv->ektses;
+        $iv->ekses = $iv->ekses;
+        $iv->world_skills = $iv->world_skills;
+        $iv->corporate_requirements = $iv->corporate_requirements;
+        $iv->nsis = Nsi::where('ish_version_id',$iv->id)->with('type')->orderByDesc('id')->get();
         return $iv;
     }
 
@@ -48,6 +54,108 @@ class IshVersionController extends Controller
             $el->text = $el->name;
         }
         return $pl;
+    }
+
+
+    public function create_parts()
+    {
+        $dpps = Dpp::all();
+        foreach ($dpps as $dpp)
+        {
+        try 
+        {
+        //$dpp = Dpp::findOrFail($dpp_id);
+        $iv = IshVersion::findOrFail($dpp->ish_version_id);
+        $typology = Typology::findOrFail($iv->typology_id);
+        $parts = $typology->typology_parts;
+        $k = 1;
+        foreach ($parts as $part)
+        {
+            $dtp = new DppTypologyPart;
+            $dtp->dpp_id = $dpp->id;
+            $dtp->typology_id = $typology->id;
+            $dtp->ish_version_id = $iv->id;
+            $dtp->name = $part->name;
+            $dtp->not_necessary = $part->not_necessary;
+            $dtp->position = $k;
+            $dtp->save();
+            $k++;
+        }
+        }catch(Exception  $e) {echo $e;}
+        }
+    }
+
+    public function select_profstandarts(IshVersion $iv, Request $request)
+    {
+        $iv->prof_standarts()->sync($request->data);
+        return $iv->prof_standarts;
+    }
+
+    public function select_corporate_requirements(IshVersion $iv, Request $request)
+    {
+        $iv->corporate_requirements()->sync($request->data);
+        return $iv->corporate_requirements;
+    }
+
+    public function select_ektses(IshVersion $iv, Request $request)
+    {
+        $iv->ektses()->sync($request->data);
+        return $iv->ektses;
+    }
+
+    public function select_ekses(IshVersion $iv, Request $request)
+    {
+        $iv->ekses()->sync($request->data);
+        return $iv->ekses;
+    }
+
+    public function select_world_skills(IshVersion $iv, Request $request)
+    {
+        $iv->world_skills()->sync($request->data);
+        return $iv->world_skills;
+    }
+
+    public function select_fgoses(IshVersion $iv, Request $request)
+    {
+        $iv->fgoses()->sync($request->data);
+        return $iv->fgoses;
+    }
+
+    public function unselect_qual_based (IshVersion $iv, Request $request)
+    {
+        switch ($request->type)
+        {
+            case "prof": $iv->prof_standarts()->detach($request->id); return $iv->prof_standarts; break; 
+            case "fgos": $iv->fgoses()->detach($request->id); return $iv->fgoses; break; 
+            case "etkc": $iv->ektses()->detach($request->id); return $iv->ektses; break; 
+            case "ekc": $iv->ekses()->detach($request->id); return $iv->ekses; break; 
+            case "ws": $iv->world_skills()->detach($request->id); return $iv->world_skills; break; 
+            case "cr": $iv->corporate_requirements()->detach($request->id); return $iv->corporate_requirements; break;
+        }
+    }
+
+    public function update_requirements(IshVersion $iv, Request $request)
+    {
+        
+        $iv->prof_levels()->sync(array_column($request->profLevels,'id'));
+        $iv->req_user_kval = $request->userQualification;
+        $iv->save();
+        return response()->json(['message'=>'success'],200);
+    }
+
+    public function update_results(IshVersion $iv, Request $request)
+    {
+        $iv->make_new_competence = $request->newCompetence;
+        $iv->save();
+        return response()->json(['message'=>'success'],200);
+    }
+
+    /* OLD */
+    public function select_dolgkvals(Dpp $dpp, IshVersion $iv, Request $request)
+    {
+        
+        $iv->dolg_kvals()->sync($request->data);
+        return $iv->dolg_kvals;
     }
 
     public function update_ish_version_data(Dpp $dpp,IshVersion $iv, Request $request)
@@ -165,49 +273,6 @@ class IshVersionController extends Controller
         Nsi::destroy($request->nsi_id);
         return $request->nsi_id;
     }
-
-    public function create_parts()
-    {
-        $dpps = Dpp::all();
-        foreach ($dpps as $dpp)
-        {
-        try 
-        {
-        //$dpp = Dpp::findOrFail($dpp_id);
-        $iv = IshVersion::findOrFail($dpp->ish_version_id);
-        $typology = Typology::findOrFail($iv->typology_id);
-        $parts = $typology->typology_parts;
-        $k = 1;
-        foreach ($parts as $part)
-        {
-            $dtp = new DppTypologyPart;
-            $dtp->dpp_id = $dpp->id;
-            $dtp->typology_id = $typology->id;
-            $dtp->ish_version_id = $iv->id;
-            $dtp->name = $part->name;
-            $dtp->not_necessary = $part->not_necessary;
-            $dtp->position = $k;
-            $dtp->save();
-            $k++;
-        }
-        }catch(Exception  $e) {echo $e;}
-        }
-    }
-
-    public function select_profstandarts(Dpp $dpp, IshVersion $iv, Request $request)
-    {
-        $iv->prof_standarts()->sync($request->data);
-        return $iv->prof_standarts;
-    }
-    public function select_dolgkvals(Dpp $dpp, IshVersion $iv, Request $request)
-    {
-        $iv->dolg_kvals()->sync($request->data);
-        return $iv->dolg_kvals;
-    }
-
-    public function select_fgoses(Dpp $dpp, IshVersion $iv, Request $request)
-    {
-        $iv->fgoses()->sync($request->data);
-        return $iv->fgoses;
-    }
+    /* --- */
+   
 }
