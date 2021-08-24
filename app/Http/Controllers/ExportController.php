@@ -1210,58 +1210,58 @@ class ExportController extends Controller
     {
         $phpWord = new PhpWord();
         $phpWord->getSettings()->setThemeFontLang(new Language(Language::RU_RU));
-        $phpWord->setDefaultFontName('Times New Roman');
-        $phpWord->setDefaultFontSize(14);
-        $phpWord->getSettings()->setUpdateFields(true);
+        //$phpWord->setDefaultFontName('Times New Roman');
+        //$phpWord->setDefaultFontSize(14);
+        //$phpWord->getSettings()->setUpdateFields(true);
         /* Стили */
-        $headFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 14, 'bold' => true);
-        $boldFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 14, 'bold' => true);
-        $normalFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 14, 'bold' => false);
-        $tableLittleFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 10, 'bold' => false);
-        $tableNormalFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 12, 'bold' => false);
-        $tableBoldFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 12, 'bold' => true);
-        $redFont = array('name' => 'Times New Roman','color' => 'red', 'size' => 14, 'bold' => false);
-        $titleParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'indentation'=> ['firstLine' => 708.661417323]);        
-        $annotationTitleParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'spaceBefore' => 12, 'indentation'=> ['firstLine' => 708.661417323]);        
-        $centerParagraph = array('alignment' => 'center','lineHeight' => 1.5,'spaceAfter' => 0);
-        $rightParagraph = array('alignment' => 'right','lineHeight' => 1.5,'spaceAfter' => 0);
-        $normalParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0);
-        $tableNameParagraph = array('alignment' => 'both','lineHeight' => 1,'spaceAfter' => 0);
-        $indentParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'indentation'=> ['firstLine' => 708.661417323]);
-        $normalLineH1Paragraph = array('alignment' => 'both','lineHeight' => 1,'spaceAfter' => 0);
-        $normalLineH1CenterParagraph = array('alignment' => 'center','lineHeight' => 1,'spaceAfter' => 0);
-        $tableFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 11, 'bold' => false);
-        $phpWord->addTitleStyle(0, $headFont,$titleParagraph);
-        $phpWord->addTitleStyle(1, $headFont,$titleParagraph);
-        $phpWord->addTitleStyle(2, $headFont,$titleParagraph);
+        // $headFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 14, 'bold' => true);
+        // $boldFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 14, 'bold' => true);
+        // $normalFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 14, 'bold' => false);
+        // $tableLittleFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 10, 'bold' => false);
+        // $tableNormalFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 12, 'bold' => false);
+        // $tableBoldFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 12, 'bold' => true);
+        // $redFont = array('name' => 'Times New Roman','color' => 'red', 'size' => 14, 'bold' => false);
+        // $titleParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'indentation'=> ['firstLine' => 708.661417323]);        
+        // $annotationTitleParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'spaceBefore' => 12, 'indentation'=> ['firstLine' => 708.661417323]);        
+        // $centerParagraph = array('alignment' => 'center','lineHeight' => 1.5,'spaceAfter' => 0);
+        // $rightParagraph = array('alignment' => 'right','lineHeight' => 1.5,'spaceAfter' => 0);
+        // $normalParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0);
+        // $tableNameParagraph = array('alignment' => 'both','lineHeight' => 1,'spaceAfter' => 0);
+        // $indentParagraph = array('alignment' => 'both','lineHeight' => 1.5,'spaceAfter' => 0,'indentation'=> ['firstLine' => 708.661417323]);
+        // $normalLineH1Paragraph = array('alignment' => 'both','lineHeight' => 1,'spaceAfter' => 0);
+        // $normalLineH1CenterParagraph = array('alignment' => 'center','lineHeight' => 1,'spaceAfter' => 0);
+        // $tableFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 11, 'bold' => false);
+        // $phpWord->addTitleStyle(0, $headFont,$titleParagraph);
+        // $phpWord->addTitleStyle(1, $headFont,$titleParagraph);
+        // $phpWord->addTitleStyle(2, $headFont,$titleParagraph);
 
-        $phpWord->addNumberingStyle(
-            'multilevel_line',
-            array(
-            'type' => 'multilevel',
-            'levels' => array(
-            array('format' => 'bullet', 'text' => '–'),
-            array('format' => 'bullet', 'text' => '–', 'left' => 720, 'hanging' => 360, 'tabPos' => 720),
-            )));
+        // $phpWord->addNumberingStyle(
+        //     'multilevel_line',
+        //     array(
+        //     'type' => 'multilevel',
+        //     'levels' => array(
+        //     array('format' => 'bullet', 'text' => '–'),
+        //     array('format' => 'bullet', 'text' => '–', 'left' => 720, 'hanging' => 360, 'tabPos' => 720),
+        //     )));
 
-        $tableStyle = array( 'borderColor' => '000000', 'borderSize'  => 1, 'cellMarginLeft' => 107.716535433,'cellMarginRight' => 107.716535433, 'cellMarginTop'  => 0,'cellMarginBottom'  => 0,'width'=> '100%');
-        $tableWOBordersStyle = array('cellMargin'  => 50,'width'=> '100%');
+        // $tableStyle = array( 'borderColor' => '000000', 'borderSize'  => 1, 'cellMarginLeft' => 107.716535433,'cellMarginRight' => 107.716535433, 'cellMarginTop'  => 0,'cellMarginBottom'  => 0,'width'=> '100%');
+        // $tableWOBordersStyle = array('cellMargin'  => 50,'width'=> '100%');
         
-        $firstRowStyle = array();
-        $phpWord->addTableStyle('standart_table', $tableStyle);
-        $phpWord->addTableStyle('wo_borders_table', $tableWOBordersStyle, $firstRowStyle);
+        // $firstRowStyle = array();
+        // $phpWord->addTableStyle('standart_table', $tableStyle);
+        // $phpWord->addTableStyle('wo_borders_table', $tableWOBordersStyle, $firstRowStyle);
         
-        $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center');
-        $cellRowContinue = array('vMerge' => 'continue');
-        $cellColSpan2 = array('gridSpan' => 2, 'valign' => 'center');
-        $cellColSpan3 = array('gridSpan' => 3, 'valign' => 'center');
-        $cellHCentered = array('align' => 'center');
-        $cellHCenteredNoSpace = array('align' => 'center','spaceAfter' => 0);
-        $cellNoSpace = array('spaceAfter' => 0,'lineHeight' => 1);
-        $cellAllCentered = array('align' => 'center', 'valign' => 'center','spaceAfter' => 0);
-        $cellVCentered = array('valign' => 'center');
-        $cellVerticalDirection = array('textDirection' => 'btLr','align' => 'center');
-        $cellRowSpanVerticalDirection = array('textDirection' => 'btLr','vMerge' => 'restart', 'valign' => 'center');
+        // $cellRowSpan = array('vMerge' => 'restart', 'valign' => 'center');
+        // $cellRowContinue = array('vMerge' => 'continue');
+        // $cellColSpan2 = array('gridSpan' => 2, 'valign' => 'center');
+        // $cellColSpan3 = array('gridSpan' => 3, 'valign' => 'center');
+        // $cellHCentered = array('align' => 'center');
+        // $cellHCenteredNoSpace = array('align' => 'center','spaceAfter' => 0);
+        // $cellNoSpace = array('spaceAfter' => 0,'lineHeight' => 1);
+        // $cellAllCentered = array('align' => 'center', 'valign' => 'center','spaceAfter' => 0);
+        // $cellVCentered = array('valign' => 'center');
+        // $cellVerticalDirection = array('textDirection' => 'btLr','align' => 'center');
+        // $cellRowSpanVerticalDirection = array('textDirection' => 'btLr','vMerge' => 'restart', 'valign' => 'center');
             
         /* Section */
         $sectionStyle = array(
@@ -1283,20 +1283,103 @@ class ExportController extends Controller
         $objReader = \PhpOffice\PhpWord\IOFactory::createReader('Word2007');
         $source = storage_path('test_docx.docx'); 
         $phpWord = $objReader->load($source); 
-        foreach($phpWord->getSections() as $section) 
+        $sections = $phpWord->getSections();
+        foreach($phpWord->getSections() as $ks => $section) 
         {
-            $arrays = $section->getElements();
+            $elems = $section->getElements();
+            foreach ($elems as $ke => $elem)
+            {
+                $class = class_basename($elem);
+
+                if ($class == 'TextRun')
+                {
+                    $elem->getParagraphStyle()->setIndentation(['firstLine' => 708.661417323]);
+                    foreach ($elem->getElements() as $part)
+                    {
+                        //$part->getParagraphStyle()->setIndentation(2500);
+                    }
+                }
+              //  $elems[$ke] = $elem;
+            }
+            //$section->setElements($elems);
+            //dd($section);
+            //dd($sections[$ks]);
+            //= $section;
         }
-        dd($arrays);
+        
+       // $newDoc = new PhpWord();
+       // $newDoc->getSettings()->setThemeFontLang(new Language(Language::RU_RU));
+        
+        // foreach($phpWord->getSections() as $section)
+        // {
+        //      dd($section);
+        //     $a = $newDoc->addSection($section);
+        //     dd($a);
+        // }
+        
+       //dd($phpWord);
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        $objWriter->save(storage_path('test_doc.docx'));
+        return response()->download(storage_path('test_doc.docx'));
+        //$htmlWriter = new \PhpOffice\PhpWord\Writer\HTML($phpWord);
+        //dd($arrays);
         // $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         // try {
         //     $objWriter->save(storage_path('test.docx'));
         // } catch (Exception $e) {
         // }
-        $phpWord = \PhpOffice\PhpWord\IOFactory::load(storage_path('test_doc.docx'));
-        $htmlWriter = new \PhpOffice\PhpWord\Writer\HTML($phpWord);
-        $htmlWriter->save(storage_path('test_doc.html'));
+        //$phpWord = \PhpOffice\PhpWord\IOFactory::load(storage_path('test_doc.docx'));
+        //$htmlWriter = new \PhpOffice\PhpWord\Writer\HTML($phpWord);
+        //$htmlWriter->save(storage_path('test_doc.html'));
 
-        return response()->download(storage_path('test_doc.html'));
+       
+    }
+
+    public function export_om (Dpp $dpp)
+    {
+        $t = new \PhpOffice\PhpWord\TemplateProcessor(storage_path('/templates/make_om.docx'));
+        //ТИТУЛ
+        $t->setValue('dppName', $dpp->name);
+        $t->setValue('year', date("Y"));
+
+        //ТАБЛИЦА 2 
+        $zv = $dpp->zun_version_id;
+        $competences = Competence::where('zun_version_id','=',$zv)->get();
+        $t->cloneRow('competence', $competences->count());
+        foreach ($competences as $index => $competence)
+        {
+            $i = $index +1;
+            $t->setValue('competence#'.$i, $competence->name);
+            
+            $knowledges = Knowledge::where('zun_version_id','=',$zv)->get()->pluck("name")->toArray();
+            $knowledges = implode("; ",$knowledges);
+            $t->setValue('knowledges#'.$i, $knowledges);
+
+            $abilities = Ability::where('zun_version_id','=',$zv)->get()->pluck("name")->toArray();
+            $abilities = implode("; ",$abilities);
+            $t->setValue('abilities#'.$i, $abilities);
+
+            $skills = Skill::where('zun_version_id','=',$zv)->get()->pluck("name")->toArray();
+            $skills = implode("; ",$skills);
+            $t->setValue('skills#'.$i, $skills);
+        }
+
+        // ТАБЛИЦА 3 
+        //$t->cloneBlock('qtn', 3);
+        $t->cloneBlock('CLONEME', 3);
+        $knowledges = Knowledge::where('zun_version_id','=',$zv)->get();
+        $t->cloneRow('knowledge', $knowledges->count());
+       
+        foreach ($knowledges as  $index => $knowledge)
+        {
+            $i = $index + 1;
+            
+            
+            $t->setValue('knowledge#'.$i, $knowledge->name);
+        }
+        
+        $pathToSave = storage_path('test_om.docx');
+        $t->saveAs($pathToSave);
+        return response()->download(storage_path('test_om.docx'));
     }
 }

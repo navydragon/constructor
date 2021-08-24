@@ -55,9 +55,17 @@ class OmVersionController extends Controller
                 $q->questionType = $q->type->type;
             }
         }
+        $tasks = Task::where('om_version_id','=',$ov->id)->get();
+        foreach ($tasks as $task)
+        {
+            $task->name = $task->name.$task->position;
+            $task->type_name = $task->task_type->short_name;
+        }
+
         $result = [];
         $result["knowledges"] = $knowledges;
         $result["questionTypes"] = QuestionType::all();
+        $result["tasks"] = $tasks;
         return json_encode($result);
     }
 
@@ -300,6 +308,25 @@ class OmVersionController extends Controller
         }
         Question::destroy($q->id);
         return response()->json(['message'=>'success'],200);
+    }
+
+
+    function task_store (OmVersion $ov,Request $request)
+    {
+        $doc = $request->task;
+        $tasks_count = Task::where("om_version_id","=", $ov->id)->get()->count();
+        $task = new Task;
+        $task->task_type_id = $doc["type"];
+        $task->om_version_id = $ov->id;
+        $task->position = $tasks_count+1;
+        $task->description = $doc["description"];
+        $task->place = $doc["place"];
+        $task->time = $doc["time"];
+        $task->portfolioStructureReq = $doc["portfolioStructureReq"];
+        $task->portfolioPresentationReq = $doc["portfolioPresentationReq"];
+        $task->portfolioProcedure = $doc["portfolioProcedure"];
+        $task->save();
+        return $task;
     }
 
     public function add_question(OmVersion $ov,Request $request)

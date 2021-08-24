@@ -27,10 +27,12 @@ class EktsController extends Controller
         $ekts->chapterName = $doc["chapterName"];
         $ekts->nameProfession = $doc["nameProfession"];
         $ekts->issueNumber = $doc["issueNumber"];
-        $ekts->editionDate = $doc["rank"];
-        $ekts->editionDate = $doc["organType"];
-        $ekts->editionDate = $doc["documentType"];
-        $ekts->editionDate = $doc["editionNumber"];
+        $ekts->rank = $doc["rank"];
+        $ekts->organType = $doc["organType"];
+        $ekts->documentType = $doc["documentType"];
+        $ekts->editionDate = $doc["editionDate"];
+        $ekts->editionNumber = $doc["editionNumber"];
+        $ekts->full_name = $doc["fullName"];
         $ekts->save();
         return $ekts;
     }
@@ -43,11 +45,12 @@ class EktsController extends Controller
         $ekts->chapterName = $doc["chapterName"];
         $ekts->nameProfession = $doc["nameProfession"];
         $ekts->issueNumber = $doc["issueNumber"];
+        $ekts->rank = $doc["rank"];
+        $ekts->organType = $doc["organType"];
+        $ekts->documentType = $doc["documentType"];
         $ekts->editionDate = $doc["editionDate"];
-        $ekts->editionDate = $doc["rank"];
-        $ekts->editionDate = $doc["organType"];
-        $ekts->editionDate = $doc["documentType"];
-        $ekts->editionDate = $doc["editionNumber"];
+        $ekts->editionNumber = $doc["editionNumber"];
+        $ekts->full_name = $doc["fullName"];
         $ekts->save();
         return $ekts;
     }
@@ -55,6 +58,11 @@ class EktsController extends Controller
 
     public function destroy($id)
     {
+        $doc = Ekts::findOrFail($id);
+        if (count($doc->dpps) > 0)
+        {
+            return response()->json(['message'=>'forbidden'],403);
+        }
         Ekts::destroy($id);
         return $id;
     }

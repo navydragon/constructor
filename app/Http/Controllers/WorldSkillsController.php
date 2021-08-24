@@ -25,7 +25,6 @@ class WorldSkillsController extends Controller
         $ws = new WorldSkills;
         $ws->name = $doc["name"];
         $ws->code = $doc["code"];
-        $ws->full_name = $doc["fullName"];
         $ws->save();
         return $ws;
     }
@@ -36,13 +35,17 @@ class WorldSkillsController extends Controller
         $ws = WorldSkills::findOrFail($id);
         $ws->name = $doc["name"];
         $ws->code = $doc["code"];
-        $eks->full_name = $doc["fullName"];
         $ws->save();
         return $ws;
     }
 
     public function destroy($id)
     {
+        $doc = WorldSkills::findOrFail($id);
+        if (count($doc->dpps) > 0)
+        {
+            return response()->json(['message'=>'forbidden'],403);
+        }
         WorldSkills::destroy($id);
         return $id;
     }

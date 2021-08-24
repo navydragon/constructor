@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddChangesToProfstandarts extends Migration
+class AddKindIdToProfStandarts extends Migration
 {
     /**
      * Run the migrations.
@@ -14,12 +14,9 @@ class AddChangesToProfstandarts extends Migration
     public function up()
     {
         Schema::table('prof_standarts', function (Blueprint $table) {
-            $table->longText('nameText')->nullable();
-            $table->string('nameCode')->nullable();
-            $table->date('orderDate')->nullable();
-            $table->string('orderNumber')->nullable();
-            $table->date('registrationDate')->nullable();
-            $table->string('registrationNumber')->nullable();
+            $table->unsignedBigInteger('kind_id')->nullable();
+            $table->foreign('kind_id')->references('id')->on('prof_standart_kinds');
+            $table->string('url')->nullable();
         });
     }
 
@@ -30,7 +27,7 @@ class AddChangesToProfstandarts extends Migration
      */
     public function down()
     {
-        Schema::table('profstandarts', function (Blueprint $table) {
+        Schema::table('prof_standarts', function (Blueprint $table) {
             //
         });
     }

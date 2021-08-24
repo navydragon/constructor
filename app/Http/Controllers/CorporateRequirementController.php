@@ -35,7 +35,7 @@ class CorporateRequirementController extends Controller
     {
         $doc = $request->document;
         $cr = CorporateRequirement::findOrFail($id);
-        $$cr->name = $doc["name"];
+        $cr->name = $doc["name"];
         $cr->text = $doc["text"];
         $cr->full_name = $doc["fullName"];
         $cr->save();
@@ -45,6 +45,11 @@ class CorporateRequirementController extends Controller
 
     public function destroy($id)
     {
+        $doc = CorporateRequirement::findOrFail($id);
+        if (count($doc->dpps) > 0)
+        {
+            return response()->json(['message'=>'forbidden'],403);
+        }
         CorporateRequirement::destroy($id);
         return $id;
     }

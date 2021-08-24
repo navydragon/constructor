@@ -10,4 +10,9 @@ class Fgos extends Model
     {
         return $this->belongsTo('App\FgosLevel','fgos_level_id');
     }
+
+    function dpps () 
+    {
+        return $this->belongsToMany('App\IshVersion', 'dpp_fgoses', 'fgos_id','ish_version_id');
+    }
 }

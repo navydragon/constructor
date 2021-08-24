@@ -1391,6 +1391,7 @@ class ZunVersionController extends Controller
 
                 if ($to_type == 'Умение') 
                 {
+                    $kn->is_through = false;
                     $kn->ability_id = $to_id;
                 }
                 $kn->save();
@@ -1422,9 +1423,7 @@ class ZunVersionController extends Controller
             default:
             break;
         }
-        return response([
-            'status' => 'success',
-        ], 200);
+        return response(['message' => 'success',], 200);
     }
 
     public function disconnect_node(Request $request)

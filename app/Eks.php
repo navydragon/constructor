@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Eks extends Model
 {
-    protected $appends = array('fullName');
-    
-    public function getFullNameAttribute(){
-        return $this->attributes['full_name'];
+    function dpps () 
+    {
+        return $this->belongsToMany('App\IshVersion', 'dpp_eks', 'eks_id','ish_version_id');
     }
 }

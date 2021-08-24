@@ -17,7 +17,7 @@ if (window.location.host == '127.0.0.1:8000')
 {
   axios.defaults.baseURL = 'http://127.0.0.1:8000/api';
 }else{
-  axios.defaults.baseURL = 'https://constructor.emiit.ru/api';
+  axios.defaults.baseURL = 'https://constructor.emiit.ru:8887/api';
 }
 
 

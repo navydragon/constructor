@@ -26,7 +26,6 @@ class EksController extends Controller
         $eks->chapterName = $doc["chapterName"];
         $eks->nameProfession = $doc["nameProfession"];
         $eks->editionDate = $doc["editionDate"];
-        $eks->full_name = $doc["fullName"];
         $eks->save();
         return $eks;
     }
@@ -39,7 +38,6 @@ class EksController extends Controller
         $eks->chapterName = $doc["chapterName"];
         $eks->nameProfession = $doc["nameProfession"];
         $eks->editionDate = $doc["editionDate"];
-        $eks->full_name = $doc["fullName"];
         $eks->save();
         return $eks;
     }
@@ -47,6 +45,11 @@ class EksController extends Controller
 
     public function destroy($id)
     {
+        $doc = Eks::findOrFail($id);
+        if (count($doc->dpps) > 0)
+        {
+            return response()->json(['message'=>'forbidden'],403);
+        }
         Eks::destroy($id);
         return $id;
     }

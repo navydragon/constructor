@@ -42,7 +42,7 @@ class IshVersionController extends Controller
         $iv->world_skills = $iv->world_skills;
         $iv->corporate_requirements = $iv->corporate_requirements;
         $iv->nsis = Nsi::where('ish_version_id',$iv->id)->with('type')->orderByDesc('id')->get();
-        return $iv;
+        return json_encode($iv);
     }
 
     public function get_prof_levels()
@@ -136,7 +136,6 @@ class IshVersionController extends Controller
 
     public function update_requirements(IshVersion $iv, Request $request)
     {
-        
         $iv->prof_levels()->sync(array_column($request->profLevels,'id'));
         $iv->req_user_kval = $request->userQualification;
         $iv->save();

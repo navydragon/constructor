@@ -45,6 +45,11 @@ class FgosController extends Controller
 
     public function destroy($id)
     {
+        $doc = Fgos::findOrFail($id);
+        if (count($doc->dpps) > 0)
+        {
+            return response()->json(['message'=>'forbidden'],403);
+        }
         Fgos::destroy($id);
         return $id;
     }

@@ -111,6 +111,8 @@ Route::group(['middleware' => 'jwt.auth'], function(){
     /* НСИ */
       Route::post('/ish_version_data/{iv}/nsis/','NsiController@store');
       Route::get('/ish_version_data/{iv}/nsis','NsiController@index');
+      Route::get('/ish_version_data/{iv}/nsis/{nsi}','NsiController@show');
+      Route::post('/ish_version_data/{iv}/nsis/{nsi}/update','NsiController@update');
       Route::post('/ish_version_data/{iv}/nsis/{nsi}/destroy','NsiController@destroy');
 
     /* ПРИСОЕДЕНИЕ/ОТСОЕДЕНИЕ НОРМАТИВНЫХ ОСНОВАНИЙ К ДПП */
@@ -182,11 +184,11 @@ Route::group(['middleware' => 'jwt.auth'], function(){
     Route::post('/om/{ov}/questions','OmVersionController@question_store');
     Route::post('/om/{ov}/questions/{q}/destroy','OmVersionController@question_destroy');
     Route::post('/om/{ov}/questions/{q}/update','OmVersionController@question_update');
+  
+  
+    Route::post('om/{ov}/tasks','OmVersionController@task_store');
 
-    Route::get('/dpps/get_question_data/{question}','OmVersionController@get_question_data');
 
-    
-    Route::post('/om_version/{ov}/update_question','OmVersionController@update_question');
 
     Route::get('/dpps/get_tasks/{ov}','OmVersionController@get_tasks');
     Route::post('/dpps/add_task','OmVersionController@add_task');
@@ -236,8 +238,8 @@ Route::group(['middleware' => 'jwt.auth'], function(){
     Route::get('/profstandarts','ProfStandartController@index');
     Route::get('/profstandarts/{ps}','ProfStandartController@show');
     Route::post('/profstandarts','ProfStandartController@store');
-    Route::patch('/profstandarts/{ps}','ProfStandartController@update');
-    Route::delete('/profstandarts/{ps}','ProfStandartController@destroy');
+    Route::post('/profstandarts/{ps}/update','ProfStandartController@update');
+    Route::post('/profstandarts/{ps}/destroy','ProfStandartController@destroy');
   /* КОНЕЦ ПС */
 
   /*ТИПЫ НСИ */
@@ -248,41 +250,41 @@ Route::group(['middleware' => 'jwt.auth'], function(){
     Route::get('/ekts','EktsController@index');
     Route::get('/ekts/{ekts}','EktsController@show');
     Route::post('/ekts','EktsController@store');
-    Route::patch('/ekts/{ekts}','EktsController@update');
-    Route::delete('/ekts/{ekts}','EktsController@destroy');
+    Route::post('/ekts/{ekts}/update','EktsController@update');
+    Route::post('/ekts/{ekts}/destroy','EktsController@destroy');
   /* КОНЕЦ ЕКТС */
 
   /* ЕКС */
     Route::get('/eks','EksController@index');
     Route::get('/eks/{eks}','EksController@show');
     Route::post('/eks','EksController@store');
-    Route::patch('/eks/{eks}','EksController@update');
-    Route::delete('/eks/{eks}','EksController@destroy');
-  /* КОНЕЦ ЕКС */
+    Route::post('/eks/{eks}/update','EksController@update');
+    Route::post('/eks/{eks}/destroy','EksController@destroy');
+/* КОНЕЦ ЕКС */
 
   /* WORLD SKILLS */
     Route::get('/ws','WorldSkillsController@index');
     Route::get('/ws/{ws}','WorldSkillsController@show');
     Route::post('/ws','WorldSkillsController@store');
-    Route::patch('/ws/{ws}','WorldSkillsController@update');
-    Route::delete('/ws/{ws}','WorldSkillsController@destroy');
-  /* КОНЕЦ WORLD SKILLS */
+    Route::post('/ws/{ws}/update','WorldSkillsController@update');
+    Route::post('/ws/{ws}/destroy','WorldSkillsController@destroy');
+/* КОНЕЦ WORLD SKILLS */
 
   /* ФГОСы */
     Route::get('/fgoses','FgosController@index');
     Route::get('/fgoses/{fgos}','FgosController@show');
     Route::post('/fgoses','FgosController@store');
-    Route::patch('/fgoses/{fgos}','FgosController@update');
-    Route::delete('/fgoses/{fgos}','FgosController@destroy');
-  /* КОНЕЦ ФГОСы */
+    Route::post('/fgoses/{fgos}/update','FgosController@update');
+    Route::post('/fgoses/{fgos}/destroy','FgosController@destroy');
+/* КОНЕЦ ФГОСы */
 
-      /* КОРПОРАТИВНЫЕ ТРЕБОВАНИЯ */
-      Route::get('/crs','CorporateRequirementController@index');
-      Route::get('/crs/{cr}','CorporateRequirementController@show');
-      Route::post('/crs','CorporateRequirementController@store');
-      Route::post('/crs/{cr}/update','CorporateRequirementController@update');
-      Route::post('/crs/{cr}/destroy','CorporateRequirementController@destroy');
-    /* КОНЕЦ КТ */
+  /* КОРПОРАТИВНЫЕ ТРЕБОВАНИЯ */
+    Route::get('/crs','CorporateRequirementController@index');
+    Route::get('/crs/{cr}','CorporateRequirementController@show');
+    Route::post('/crs','CorporateRequirementController@store');
+    Route::post('/crs/{cr}/update','CorporateRequirementController@update');
+    Route::post('/crs/{cr}/destroy','CorporateRequirementController@destroy');
+  /* КОНЕЦ КТ */
 
   ///////////////////////////////////////////////////////////////////////////////////////////////
   /* ЗУНЫ СТАРОЕ */
@@ -366,7 +368,9 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   /* СТАРОЕ 3 этап */
   Route::post('/om_version/{ov}/add_question','OmVersionController@add_question');
   Route::post('/questions/delete','OmVersionController@delete_question');
+  Route::get('/dpps/get_question_data/{question}','OmVersionController@get_question_data');
 
+  Route::post('/om_version/{ov}/update_question','OmVersionController@update_question');
   
 });
 Route::group(['middleware' => 'jwt.refresh'], function(){

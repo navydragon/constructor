@@ -15,9 +15,9 @@ class AddFieldsToEkts extends Migration
     {
         Schema::table('ekts', function (Blueprint $table) {
             $table->string('rank');
-            $table->string('organType');
-            $table->string('documentType');
-            $table->string('editionNumber');
+            $table->string('organType')->nullable();
+            $table->string('documentType')->nullable();
+            $table->string('editionNumber')->nullable();
         });
     }
 
