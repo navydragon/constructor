@@ -30,7 +30,7 @@
         "numeral": "~2.0.6",
         "perfect-scrollbar": "~1.4.0",
         "plyr": "~2.0.18",
-        "resolve-url-loader": "^3.1.4",
+        "resolve-url-loader": "^5.0.0",
         "sass": "^1.35.2",
         "sass-loader": "~8.0.0",
         "simplemde": "~1.11.2",
