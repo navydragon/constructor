@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        'App\Console\Commands\ParseFgoses',
+        'App\Console\Commands\ParseProfstandarts'
     ];
 
     /**
@@ -26,6 +27,10 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+
+        $schedule->command('parse:fgoses')->daily()->appendOutputTo(storage_path('/logs/parse_fgoses.log'));
+        $schedule->command('parse:profstandarts')->daily()->appendOutputTo(storage_path('/logs/parse_profstandarts.log'));
+       // $schedule->call('App\Http\Controllers\ParseController@profstandarts')->daily();   
     }
 
     /**

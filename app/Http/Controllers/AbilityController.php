@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Ability;
+use App\Skill;
+use App\Competence;
 use App\ZunVersion;
 
 class AbilityController extends Controller
@@ -21,8 +23,7 @@ class AbilityController extends Controller
     public function store(ZunVersion $zv, Request $request)
     {
         $data = $request->node;
-        if ($data["pid"] != ''){ $parent_node = substr($data["pid"],1); 
-        }else { $parent_node = null;} 
+
         $ability = new Ability;
         $ability->dpp_id = $zv->dpp_id;
         $ability->zun_version_id = $zv->id;
@@ -31,26 +32,14 @@ class AbilityController extends Controller
         $ability->what = $data["what"];
         $ability->with = $data["with"];
         $ability->where = $data["where"];
-        if ($parent_node == null)
-        {
-            $ability->has_parent_comp = false;
-        }
-        if (substr($data["pid"], 0, 1) == 's')
-        {
-            $ability->has_parent_comp = false;
-            $ability->skill_id = $parent_node;
-            $abs_c = Ability::where('skill_id','=',$parent_node)->get()->count();
-            $ability->position = $abs_c + 1;
-        }
-        if (substr($data["pid"], 0, 1) == 'c')
-        {
-            $ability->has_parent_comp = true;
-            $ability->competence_id = $parent_node;
-        }
+        $ability->position = 0;
+        //$ability->save();
+        $ability->setPositionAndParent($data["pid"]);
         $ability->save();
         switch ($data["justificationType"]) {
             case '0':
                 $ability->is_by_expert = 0;
+                $ability->note = $data["note"];
                 $ability->save();
                 $ability->nsis()->sync($data["nsis"]);
                 if (count($data["nsis"]) > 0){ $ability->valid = true; }else{ $ability->valid = false; }
@@ -73,49 +62,37 @@ class AbilityController extends Controller
         $row = [];
         $row["id"] = 'a'.$ability->id;
         $row["name"] = $ability->name;
-        $row["pid"] = $data["pid"];
+        $row["pid"] = $data["pid"] ? $data["pid"] : "c";
         $row["type"] = "Умение";
-        $row["valid"] = $ability->valid;
+        $row["valid"] = $ability->valid ? 0 : 1;
         $row["what"] = $ability->what;
+        $row["where"] = $ability->where;
+        $row["with"] = $ability->with;
         $row["position"] = $ability->position;
         $row["tags"][0] = 'ability';
+        $row["nsis"] = $ability->nsis()->pluck('id');
+        $row["justificationType"] = $ability->is_by_expert;
+        $row["expertOpinion"] = $ability->expert_answer;
+        $row["note"] = $ability->note;
         return json_encode($row);
     }
 
-    public function update(ZunVersion $zv, Request $request)
+    public function update(ZunVersion $zv,$id, Request $request)
     {
         $data = $request->node;
-        $id = substr($data["id"],1); 
-        if ($data["pid"] != ''){ $parent_node = substr($data["pid"],1); 
-        }else { $parent_node = null;} 
+        $id = substr($id,1); 
         $ability = Ability::findOrFail($id);
-        $ability->dpp_id = $zv->dpp_id;
-        $ability->zun_version_id = $zv->id;
+
         $ability->name = $data["name"];
         $ability->keyword = 'Уметь';
         $ability->what = $data["what"];
         $ability->with = $data["with"];
         $ability->where = $data["where"];
-        if ($parent_node == null)
-        {
-            $ability->has_parent_comp = false;
-        }
-        if (substr($data["pid"], 0, 1) == 's')
-        {
-            $ability->has_parent_comp = false;
-            $ability->skill_id = $parent_node;
-            $abs_c = Ability::where('skill_id','=',$parent_node)->get()->count();
-            $ability->position = $abs_c + 1;
-        }
-        if (substr($data["pid"], 0, 1) == 'c')
-        {
-            $ability->has_parent_comp = true;
-            $ability->competence_id = $parent_node;
-        }
         $ability->save();
         switch ($data["justificationType"]) {
             case '0':
                 $ability->is_by_expert = 0;
+                $ability->note = $data["note"];
                 $ability->save();
                 $ability->nsis()->sync($data["nsis"]);
                 if (count($data["nsis"]) > 0){ $ability->valid = true; }else{ $ability->valid = false; }
@@ -140,10 +117,16 @@ class AbilityController extends Controller
         $row["name"] = $ability->name;
         $row["pid"] = $data["pid"];
         $row["type"] = "Умение";
-        $row["valid"] = $ability->valid;
+        $row["valid"] = $ability->valid ? 0 : 1;
         $row["what"] = $ability->what;
+        $row["where"] = $ability->where;
+        $row["with"] = $ability->with;
         $row["position"] = $ability->position;
         $row["tags"][0] = 'ability';
+        $row["nsis"] = $ability->nsis()->pluck('id');
+        $row["justificationType"] = $ability->is_by_expert;
+        $row["expertOpinion"] = $ability->expert_answer;
+        $row["note"] = $ability->note;
         return json_encode($row);
     }
 
@@ -151,7 +134,6 @@ class AbilityController extends Controller
     {
         $id = substr($request->nodeId,1); 
         $ab = Ability::find($id);
-        $ab->nsis()->detach();
         Ability::destroy($id);
         return json_encode("a".$id);
     }

@@ -6,6 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model
 {
+
+    protected  $appends = ['questionType'];
+
+    public function getQuestionTypeAttribute()
+    {
+        switch ($this->question_type_id)
+        {
+            case 1: return "one-answer"; break;
+            case 2: return "multi-answer"; break;
+            case 3: return "open-answer"; break;
+            case 4: return "sequence-answer"; break;
+            case 5: return "conformity-answer"; break;
+        }
+        return "no";
+
+    }
+
     public function type()
     {
         return $this->belongsTo('App\QuestionType','question_type_id');

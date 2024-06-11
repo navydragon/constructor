@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Nsi;
 use App\IshVersion;
+use App\Dpp;
 use Auth;
 class NsiController extends Controller
 {
@@ -41,6 +42,7 @@ class NsiController extends Controller
         $nsi->nsiPages = $data["nsiPages"];
         $nsi->nsiLink = $data["nsiLink"];
         $nsi->nsiFullName = $data["nsiFullName"];
+        $nsi->nsiMinistry = $data["nsiMinistry"];
 
         $nsi->ish_version_id = $iv->id;
         $nsi->author_id = Auth::user()->id;
@@ -55,6 +57,7 @@ class NsiController extends Controller
         $nsi->skills()->detach();
         $nsi->abilities()->detach();
         $nsi->knowledges()->detach();
+        $nsi->tasks()->detach();
         Nsi::destroy($id);
         return $id;
     }
@@ -81,9 +84,23 @@ class NsiController extends Controller
         $nsi->nsiPages = $data["nsiPages"];
         $nsi->nsiLink = $data["nsiLink"];
         $nsi->nsiFullName = $data["nsiFullName"];
+        $nsi->nsiMinistry = $data["nsiMinistry"];
         $nsi->save();
         $nsi->type = $nsi->type;
         return $nsi;
+    }
+
+    public function move_nsi(Request $request)
+    {
+        $dpp_from = Dpp::findOrFail($request->from);
+        $dpp_to = Dpp::findOrFail($request->to);
+        foreach ($dpp_from->ish_version->nsis as $nsi)
+        {
+            $nsi->ish_version_id = $dpp_to->ish_version->id;
+            $nsi->save();
+        }
+
+        return response()->json(['status'=>'OK'],200);
     }
 
 }

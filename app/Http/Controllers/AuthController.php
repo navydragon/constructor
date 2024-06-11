@@ -16,7 +16,7 @@ class AuthController extends Controller
         $user->email = $request->email;
         $user->firstname = $request->firstname;
         $user->lastname = $request->lastname;
-        $user->middlename = $request->middlename;
+        $user->middlename = $request->middlename ?? "";
         $user->phone = $request->phone;
         $user->fullname = $request->lastname." ".$request->firstname." ".$request->middlename;
         $user->password = bcrypt($request->password);
@@ -50,6 +50,7 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         $user = User::find(Auth::user()->id);
+        $user->middlename = $user->middlename ?? "";
         $user->rights = $user->get_rights->shortname;
         return response([
             'status' => 'success',

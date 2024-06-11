@@ -7,6 +7,8 @@ use App\Typology;
 use App\TypologyPart;
 use App\DppTypologyPart;
 use App\IshVersion;
+use App\StructureSection;
+use App\Knowledge;
 
 class DppTypologyPartController extends Controller
 {
@@ -26,7 +28,6 @@ class DppTypologyPartController extends Controller
     public function destroy(IshVersion $iv,$id)
     {
         $dtp = DppTypologyPart::find($id);
-        $dtp->get_knowledges()->detach();
         DppTypologyPart::destroy($id);
         return $id;
     }
@@ -45,10 +46,25 @@ class DppTypologyPartController extends Controller
         $dtps = DppTypologyPart::where('ish_version_id','=',$iv->id)->orderBy('position','asc')->get();
         foreach ($dtps as $dtp)
         {
+            foreach ($dtp->get_knowledges as $knowledge)
+            {
+                $kn = Knowledge::find($knowledge->id);
+                $knowledge->valid = false;
+                $knowledge->save();
+                $knowledge->sections()->detach();
+            }
             $dtp->get_knowledges()->detach();
+            foreach ($dtp->sections() as $section)
+            {
+                $section->knowledges()->detach();
+                $section->abilities()->detach();
+                $section->skills()->detach();
+                StructureSection::destroy($section->id);
+            }
             DppTypologyPart::destroy($dtp->id);
         }
         $typology = Typology::find($request->id);
+        $position = 1;
         foreach ($typology->typology_parts as $part)
         {
             $dtp = New DppTypologyPart;
@@ -56,9 +72,9 @@ class DppTypologyPartController extends Controller
             $dtp->dpp_id = $iv->dpp_id;
             $dtp->typology_id = $request->id;
             $dtp->ish_version_id = $iv->id;
-            $elems = $iv->typology_parts->count();
-            $dtp->position = $elems+1;
-            $dtp->save();    
+            $dtp->position = $position;
+            $dtp->save();
+            $position++;
         }
         $iv->typology_id = $typology->id;
         $iv->save();

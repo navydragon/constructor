@@ -19,7 +19,7 @@ class CreateTaskMtosTable extends Migration
             $table->foreign('task_id')->references('id')->on('tasks');
             $table->unsignedBigInteger('mto_id');
             $table->foreign('mto_id')->references('id')->on('mtos');
-            $table->integer('quantity');
+           // $table->integer('quantity');
             $table->timestamps();
         });
     }

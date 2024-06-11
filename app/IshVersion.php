@@ -51,5 +51,34 @@ class IshVersion extends Model
     {
         return $this->belongsToMany('App\DolgKval', 'dpp_dolg_kvals', 'ish_version_id', 'dolg_kval_id');
     }
+ 
+    function direction () {
+        return $this->belongsTo('App\ProgramDirection','direction_id');
+    }
+
+    public function dpp()
+    {
+        return $this->belongsTo('App\Dpp','dpp_id');
+    }
+
+    public function professional_field()
+    {
+        return $this->belongsTo('App\ProfessionalField','professional_field_id');
+    }
+
+    public function qualification_requirements()
+    {
+        return $this->hasMany('App\QualificationRequirement','ish_version_id')->orderBy('position');
+    }
+
+    public function professional_objects()
+    {
+        return $this->hasMany('App\ProfessionalObject','ish_version_id')->orderBy('position');
+    }
+
+    public function digital_sphere()
+    {
+        return $this->belongsTo('App\DigitalSphere','digital_sphere_id');
+    }
     
 }

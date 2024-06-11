@@ -7,9 +7,68 @@ use App\Typology;
 use App\TypologyPart;
 use App\DppTypologyPart;
 use App\IshVersion;
+use App\Http\Resources\Typology as TypologyResource;
+use App\Http\Resources\TypologyCollection;
+use App\Http\Requests\TypologyRequest;
 
 class TypologyController extends Controller
 {
+
+    public function index()
+    {
+        $typologies = Typology::all();
+        return new TypologyCollection($typologies);
+    }
+
+    public function show(Typology $typology)
+    {
+        return new TypologyResource($typology);
+    }
+
+    public function store(TypologyRequest $request)
+    {
+        $typology = new Typology;
+        $typology->name = $request->input('typology.name');
+        $typology->save();
+        $parts = $request->input('typology.parts');
+        $position = 1;
+        foreach($parts as $item)
+        {
+            $part = new TypologyPart;
+            $part->name = $item["name"];
+            $part->typology_id = $typology->id;
+            $part->position = $position;
+            $position++;
+            $part->save();
+        }
+        return new TypologyResource($typology);
+    }
+
+    public function update(Typology $typology, TypologyRequest $request)
+    {
+        $typology->name = $request->input('typology.name');
+        $typology->save();
+        $typology->typology_parts()->delete();
+        $parts = $request->input('typology.parts');
+        $position = 1;
+        foreach($parts as $item)
+        {
+            $part = new TypologyPart;
+            $part->name = $item["name"];
+            $part->typology_id = $typology->id;
+            $part->position = $position;
+            $position++;
+            $part->save();
+        }
+        return new TypologyResource($typology);
+    }
+
+    public function destroy(Typology $typology)
+    {
+        $typology->typology_parts()->delete();
+        $typology->delete();
+        return $typology->id;
+    }
 
     public function get_typologies()
     {
@@ -180,6 +239,7 @@ class TypologyController extends Controller
     {
          $typology = Typology::find($request->typology_id);
          $iv = IshVersion::find($request->ish_version_id);
+         $position = 1;
          foreach ($typology->typology_parts as $part)
          {
              $dtp = New DppTypologyPart;
@@ -187,12 +247,13 @@ class TypologyController extends Controller
              $dtp->dpp_id = $request->dpp_id;
              $dtp->typology_id = $request->typology_id;
              $dtp->ish_version_id = $request->ish_version_id;
-             $elems = $iv->typology_parts->count();
-             $dtp->position = $elems+1;
+             //$elems = $iv->typology_parts->count();
+             $dtp->position = $position;
              $dtp->save();
-             $iv->typology_id = $typology->id;
-             $iv->save();
+             $position++;
         }
+        $iv->typology_id = $typology->id;
+        $iv->save();
         $res = DppTypologyPart::where('ish_version_id','=',$iv->id)->orderBy('position','asc')->get();
         return $res;
     }

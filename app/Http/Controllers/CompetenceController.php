@@ -25,12 +25,13 @@ class CompetenceController extends Controller
         $comp->dpp_id = $zv->dpp_id;
         $comp->zun_version_id = $zv->id;
         $comp->name = $data["name"];
-        $comp->keyword = "Копетенция";
+        $comp->keyword = 'Способен';
         $comp->what = $data["what"];
         $comp->with = $data["with"];
         $comp->where = $data["where"];
         $comp->valid = true;
         $comp->save();
+        $position = 1;
         foreach ($request->nodesId as $elem)
         {
             $type = substr($elem, 0, 1);
@@ -39,13 +40,16 @@ class CompetenceController extends Controller
             {
                 $sk = Skill::find($elem);
                 $sk->competence_id = $comp->id;
+                $sk->position = $position;
                 $sk->save();
             }elseif ($type == 'a'){
                 $ab = Ability::find($elem);
                 $ab->competence_id = $comp->id;
                 $ab->has_parent_comp = true;
+                $ab->position = $position;
                 $ab->save();
             }
+            $position++;
         }
         
         $row = [];
@@ -53,8 +57,10 @@ class CompetenceController extends Controller
         $row["name"] = $comp->name;
         $row["pid"] = "";
         $row["type"] = "Компетенция";
-        $row["valid"] = $comp->valid;
+        $row["valid"] = $comp->valid ? 0 : 1;
         $row["what"] = $comp->what;
+        $row["with"] = $comp->with;
+        $row["where"] = $comp->where;
         $row["position"] = $comp->position;
         $row["tags"][0] = 'competence';
         return json_encode($row);
@@ -71,14 +77,13 @@ class CompetenceController extends Controller
     {
         $data = $request->node;
         $id = substr($data["id"],1);
-        $competence = Competence::findOrFail($id);
-
-        $competence->name = $request->competence_name;
-        $competence->keyword = $data["keyword"];
-        $competence->what = $data["what"];
-        $competence->with = $data["with"];
-        $competence->where = $data["where"];
-        $competence->save();
+        $comp = Competence::findOrFail($id);
+        $comp->name = $data["name"];
+        $comp->keyword = 'Способен';
+        $comp->what = $data["what"];
+        $comp->with = $data["with"];
+        $comp->where = $data["where"];
+        $comp->save();
         
         $row = [];
         $row["id"] = 'c'.$comp->id;
@@ -87,7 +92,10 @@ class CompetenceController extends Controller
         $row["type"] = "Компетенция";
         $row["valid"] = $comp->valid;
         $row["what"] = $comp->what;
-        $row["position"] = $comp->position;
+        $row["with"] = $comp->with;
+        $row["where"] = $comp->where;
+        $row["valid"] = $comp->valid ? 0 : 1;
+        //$row["position"] = $comp->position;
         $row["tags"][0] = 'competence';
         return json_encode($row);
     }

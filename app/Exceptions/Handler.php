@@ -44,8 +44,40 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $exception
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $exception)
+    public function render($request, Exception $e)
     {
-        return parent::render($request, $exception);
+            if ($e instanceof \Illuminate\Validation\ValidationException) {
+                return response([
+                    'status' => 'error',
+                    'error' => $e->errors()
+                ], 422);
+            }
+
+            if ($e instanceof \Illuminate\Auth\Access\AuthorizationException) {
+                return response([
+                    'status' => 'error',
+                    'error' => $e->getMessage()
+                ], 403);
+            }
+
+            if ($e instanceof \Illuminate\Database\Eloquent\ModelNotFoundException ||
+                $e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+            ) {
+                return response([
+                    'status' => 'error',
+                    'error' => $e->getMessage()
+                ], 404);
+            }
+
+            if ($e instanceof \Illuminate\Auth\AuthenticationException) {
+                return response([
+                    'status' => 'error',
+                    'error' => $e->getMessage()
+                ], 401);
+            }
+            dd($e);
+            return response(['status' => 'Error', 'error' => 'Line:'.$e->getLine()." - ".$e->getMessage(),'full' => $e], 500);
+        parent::render($request, $e);
+              
     }
 }

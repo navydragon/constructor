@@ -4,12 +4,18 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use App\Lection;
 
 class StructureVersion extends Model
 {
     public function get_sections()
     {
         return $this->hasMany('App\StructureSection','st_version_id');
+    }
+
+    public function parent_sections()
+    {
+        return $this->hasMany('App\StructureSection','st_version_id')->where('parent_id',null);
     }
 
     public function dpp()
@@ -29,6 +35,10 @@ class StructureVersion extends Model
                 $theme->knowledges()->detach();
                 $theme->abilities()->detach();
                 $theme->skills()->detach();
+                foreach ($theme->contents as $lection)
+                {
+                    Lection::destroy($lection->id);
+                }
                 StructureSection::destroy($theme->id);
             }
             $section->knowledges()->detach();
@@ -43,6 +53,7 @@ class StructureVersion extends Model
             $section->name = $tp->name;
             $section->position = $n;
             $section->st_version_id = $this->id;
+            $section->dtp_id = $tp->id;
             $section->save();
             $n++;
             $m=1;
@@ -74,6 +85,8 @@ class StructureVersion extends Model
                 $theme->position = $m;
                 $theme->st_version_id = $this->id;
                 $theme->parent_id = $section->id;
+                $theme->dtp_id = $tp->id;
+                $theme->knowledge_id = $kn->id;
                 $theme->save();
                 $m++;
                 $theme->knowledges()->attach($kn->id);
@@ -86,5 +99,61 @@ class StructureVersion extends Model
         $section->position = $n;
         $section->st_version_id = $this->id;
         $section->save();
+    }
+
+    public function reattach_practice()
+    {
+        $sections = StructureSection::where('st_version_id',$this->id)->where('parent_id',null)->get();
+        foreach ($sections as $section)
+        {
+            $section->abilities()->detach();
+            $section->skills()->detach();
+        }
+        $themes = StructureSection::where('st_version_id',$this->id)->where('parent_id','<>',null)->get();
+        foreach ($themes as $theme)
+        {
+            $theme->abilities()->detach();
+            $theme->skills()->detach();
+            if ($theme->practice_hours > 0 || $theme->lab_hours > 0)
+            {
+                $section = StructureSection::find($theme->parent_id);
+                $knowledges = $theme->knowledges;
+                foreach ($knowledges as $knowledge)
+                {
+                    if ($knowledge->ability_id != null)
+                    {
+                        $ability = Ability::find($knowledge->ability_id);
+                        $theme->abilities()->syncWithoutDetaching($ability->id);
+                        $section->abilities()->syncWithoutDetaching($ability->id);
+                        if ($ability->skill_id != null)
+                        {
+                            $theme->skills()->syncWithoutDetaching($ability->skill_id);
+                            $section->skills()->syncWithoutDetaching($ability->skill_id);
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+
+    public function recount_section_hours()
+    {
+        $parent_sections = StructureSection::where('st_version_id',$this->id)->where('parent_id',null)->where('name','<>','Итоговая аттестация')->get();
+        foreach ($parent_sections as $section)
+        {
+            $section->lection_hours = 0; $section->practice_hours = 0; $section->self_hours = 0;
+            $section->total_hours = 0; $section->lab_hours = 0; $section->attestation_hours = 0;
+            foreach ($section->themes as $theme)
+            {
+                $section->lection_hours += $theme->lection_hours;
+                $section->practice_hours += $theme->practice_hours;
+                $section->self_hours += $theme->self_hours;
+                $section->total_hours += $theme->total_hours;
+                $section->lab_hours += $theme->lab_hours;
+                $section->attestation_hours += $theme->attestation_hours;
+            }
+            $section->save();
+        }
     }
 }

@@ -9,18 +9,27 @@ use App\ProfLevel;
 use App\NsiType;
 use App\Nsi;
 use App\Typology;
+use App\Ministry;
 use App\TypologyPart;
 use App\DppTypologyPart;
 use App\CorporateRequirement;
+use App\Http\Resources\IshVersionResource;
+use App\Http\Resources\ProgramDirectionResource;
+use Illuminate\Support\Facades\DB;
 use Auth;
 class IshVersionController extends Controller
 {
-    public function get_ish_version_data(Dpp $dpp,IshVersion $iv)
+    public function get_ish_version_data(Dpp $dpp,$iv)
     {
         $arr = [];
-        if ($iv->req_user_edulevel == null) {$iv->req_user_edulevel="";}
-        if ($iv->req_user_kval == null) {$iv->req_user_kval="";}
-        if ($iv->target == null) {$iv->target="";}
+        if ($dpp->ish_version_id == null) {
+            $iv = $dpp->create_iv();
+        }else{
+            $iv = IshVersion::find($iv);
+        }
+        if ($iv->req_user_edulevel == null) {$iv->req_user_edulevel=" ";}
+        if ($iv->req_user_kval == null) {$iv->req_user_kval=" ";}
+        if ($iv->target == null) {$iv->target=" ";}
         foreach ($iv->prof_levels as $el)
         {
             $arr[] = $el->id;
@@ -41,8 +50,26 @@ class IshVersionController extends Controller
         $iv->ekses = $iv->ekses;
         $iv->world_skills = $iv->world_skills;
         $iv->corporate_requirements = $iv->corporate_requirements;
-        $iv->nsis = Nsi::where('ish_version_id',$iv->id)->with('type')->orderByDesc('id')->get();
+        $nsis = Nsi::where('ish_version_id',$iv->id)->with('type')->get();
+        $iv->nsis = $nsis;
+        $iv->total_hours = $dpp->total_hours;
+        $iv->type = $dpp->dpp_type_id;
+        $iv->ministries = Ministry::all();
+        // $nsis = Nsi::where('ish_version_id',$iv->id)->orderBy(
+        //     NsiType::select('position')
+        //         ->where('id','nsis.id')
+        //         ->limit(1));
+        //$iv->nsis2 = $nsis->hasType()->get();
+        
+        // $iv->nsis = Nsi::where('ish_version_id',$iv->id)->with(['type' => function ($q){
+        //     $q->orderBy('position');
+        // }])->get();
         return json_encode($iv);
+    }
+
+
+    function get_ish_version_data2(Dpp $dpp, IshVersion $iv) {
+        return new IshVersionResource($iv);
     }
 
     public function get_prof_levels()
@@ -137,19 +164,81 @@ class IshVersionController extends Controller
     public function update_requirements(IshVersion $iv, Request $request)
     {
         $iv->prof_levels()->sync(array_column($request->profLevels,'id'));
-        $iv->req_user_kval = $request->userQualification;
+        $iv->req_user_kval = $request->reqQualification;
+        if ($request->has('qualification')) {
+            $iv->qualification = $request->qualification;
+        }
         $iv->save();
         return response()->json(['message'=>'success'],200);
     }
 
-    public function update_results(IshVersion $iv, Request $request)
+    public function update_period(IshVersion $iv, Request $request)
     {
-        $iv->make_new_competence = $request->newCompetence;
+        $dpp = Dpp::find ($iv->dpp_id);
+        $dpp->total_hours = $request->input('total_hours');
+        $dpp->save();
+        
+        $iv->edu_period_name = $request->input('edu_period_name');
+        $iv->edu_period_duration = $request->input('edu_period_duration');
+        $iv->save();
+
+        return response()->json(['message'=>'success'],200);
+    }
+
+    public function update_description(IshVersion $iv, Request $request)
+    {
+        $desc = $request->programDescription;
+        $iv->annotationDescription = $desc;
         $iv->save();
         return response()->json(['message'=>'success'],200);
     }
 
-    /* OLD */
+
+    public function update_hours(IshVersion $iv, Request $request)
+    {
+        $dpp = $iv->dpp;
+        $dpp->total_hours = $request->total_hours;
+        $dpp->save();
+        return response()->json(['message'=>'success'],200);
+    }
+
+    public function update_form(IshVersion $iv, Request $request)
+    {
+        $iv->edu_form = $request->input('edu_form');
+        $iv->edu_form_dot = $request->input('edu_form_dot');
+        $iv->edu_practic = $request->input('edu_practic');
+        $iv->save();
+        return response()->json(['message'=>'success'],200);
+    }
+
+    public function update_digital_sphere(IshVersion $iv, Request $request)
+    {
+        $iv->digital_sphere_id = $request->input('digital_sphere.id');
+        $iv->save();
+        return response()->json(['message'=>'success'],200);
+    }
+
+    public function update_direction(IshVersion $iv, Request $request)
+    {
+        $iv->direction_id = $request->currentDirection;
+        $iv->save();
+        return new ProgramDirectionResource($iv->direction);
+    }
+
+ 
+
+    public function save_annotation(IshVersion $iv, Request $request)
+    {
+        $annotation = $request->annotation;
+        $iv->annotationDescription = $annotation["annotationDescription"];
+        $iv->annotationRequirements = $annotation["annotationRequirements"];
+        $iv->annotationTargets = $annotation["annotationTargets"];
+        $iv->annotationResults = $annotation["annotationResults"];
+        $iv->save();
+        return $iv;
+    }
+
+    /* OLD */ 
     public function select_dolgkvals(Dpp $dpp, IshVersion $iv, Request $request)
     {
         
@@ -273,5 +362,12 @@ class IshVersionController extends Controller
         return $request->nsi_id;
     }
     /* --- */
+
+    public function update_sphere_field(IshVersion $iv, Request $request) {
+        $iv->professional_field_id = $request->input('qualification_field.id');
+        $iv-> professional_sphere = $request->input('qualification_sphere');
+        $iv->save();
+        return response()->json(['message' => 'OK'], 200);
+    }
    
 }

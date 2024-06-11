@@ -31,6 +31,7 @@ class ProfStandartController extends Controller
         $ps->registrationNumber = $doc["registrationNumber"];
         $ps->linkQual = $doc["linkQual"];
         $ps->nameQual = $doc["nameQual"];
+        $ps->fullname = $doc["fullName"];
         $ps->save();
         return $ps;
     }
@@ -47,6 +48,7 @@ class ProfStandartController extends Controller
         $ps->registrationNumber = $doc["registrationNumber"];
         $ps->linkQual = $doc["linkQual"];
         $ps->nameQual = $doc["nameQual"];
+        $ps->fullname = $doc["fullName"];
         $ps->save();
         return $ps;
     }
