@@ -39,27 +39,36 @@ class StructureSectionController extends Controller
 
         foreach ($section->themes as $theme)
         {
-            $section->lection_hours += $theme->lection_hours;
+          //  $section->lection_hours += $theme->lection_hours;
             $section->lection_hours_o += $theme->lection_hours_o;
             $section->lection_hours_z += $theme->lection_hours_z;
 
-            $section->practice_hours += $theme->practice_hours;
+         //   $section->practice_hours += $theme->practice_hours;
             $section->practice_hours_o += $theme->practice_hours_o;
             $section->practice_hours_z += $theme->practice_hours_z;
 
-            $section->consult_hours += $theme->consult_hours;
-            $section->consult_hours_o += $theme->consult_hours_o;
-            $section->consult_hours_z += $theme->consult_hours_z;
+           // $section->consult_hours += $theme->consult_hours;
+//            $section->consult_hours_o += $theme->consult_hours_o;
+//            $section->consult_hours_z += $theme->consult_hours_z;
 
-            $section->lab_hours += $theme->lab_hours;
+       //     $section->lab_hours += $theme->lab_hours;
 
-            $section->self_hours += $theme->self_hours;
-            $section->total_hours += $theme->total_hours;
+       //     $section->self_hours += $theme->self_hours;
+            # $section->total_hours = $theme->total_hours;
 
             // $section->attestation_hours += $theme->attestation_hours;
         }
+        $section->total_hours += $section->lection_hours_o;
+        $section->total_hours += $section->lection_hours_z;
+        $section->total_hours += $section->practice_hours_o;
+        $section->total_hours += $section->practice_hours_z;
+        $section->total_hours += $section->consult_hours_o;
+        $section->total_hours += $section->consult_hours_z;
+
         $section->total_hours += $section->attestation_hours;
-        $section->total_hours += $section->consult_hours;
+//        $section->total_hours += $section->consult_hours;
+//        $section->total_hours += $section->practice_hours;
+//        $section->total_hours += $section->lection_hours;
         $section->save();
     }
 

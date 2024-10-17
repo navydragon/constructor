@@ -40,6 +40,17 @@ class AuthController extends Controller
             ], 400);
         }
 
+        $user = JWTAuth::user();
+
+        // Проверяем атрибут is_active
+        if (!$user->is_active) {
+            return response([
+                'status' => 'error',
+                'error' => 'inactive.user',
+                'msg' => 'User is not active.'
+            ], 403);
+        }
+
         return response([
             'status' => 'success',
             'token' => $token
@@ -50,6 +61,12 @@ class AuthController extends Controller
     public function user(Request $request)
     {
         $user = User::find(Auth::user()->id);
+        if ($user->is_active == false) {
+            return response([
+                'status' => 'not active',
+                'data' => false
+            ]);
+        }
         $user->middlename = $user->middlename ?? "";
         $user->rights = $user->get_rights->shortname;
         return response([

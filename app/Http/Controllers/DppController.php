@@ -34,7 +34,18 @@ class DppController extends Controller
 
     public function index()
     {
-        $dpps = Dpp::all();
+        $user = Auth::user();
+        $company_id = $user->company_id;
+
+        if ($user->is_admin())
+        {
+            $dpps = Dpp::with(['author', 'participants.user', 'participants.role'])->get();
+        }else{
+            $dpps = Dpp::with(['author', 'participants.user', 'participants.role'])
+                ->whereHas('author', function($query) use ($company_id) {
+                    $query->where('company_id', $company_id);
+                })->get();
+        }
         return new DppCollection($dpps);
     }
 

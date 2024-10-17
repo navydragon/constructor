@@ -65,7 +65,7 @@ class StructureVersion extends Model
                 //$fc = mb_strtoupper(mb_substr($kn["what"], 0, 1));
                 //$work = $fc.mb_substr($kn["what"], 1);
                 //$arr = explode(" ",$work);
-                
+
                 if (substr($arr[0], 0, 1) == ',')
                 {
                     array_shift($arr);
@@ -92,7 +92,7 @@ class StructureVersion extends Model
                 $theme->knowledges()->attach($kn->id);
                 $section->knowledges()->attach($kn->id);
             }
-            
+
         }
         $section = new StructureSection;
         $section->name = 'Итоговая аттестация';
@@ -134,7 +134,7 @@ class StructureVersion extends Model
                 }
             }
         }
-        
+
     }
 
     public function recount_section_hours()
@@ -156,4 +156,14 @@ class StructureVersion extends Model
             $section->save();
         }
     }
+
+    public function recount_all_sections_pp()
+    {
+        $parent_sections = StructureSection::where('st_version_id',$this->id)->where('parent_id',null)->where('name','<>','Итоговая аттестация')->get();
+        foreach ($parent_sections as $section)
+        {
+           $section->recount_section();
+        }
+    }
+
 }

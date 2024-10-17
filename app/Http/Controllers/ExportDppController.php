@@ -36,9 +36,13 @@ class ExportDppController extends Controller
             return $this->export_dpp_rdn($dpp);
         }
 
-//        if ($dpp->dpp_type_id == 2) {
-//            return $this->export_pp($dpp);
-//        }
+        if ($dpp->is_digital == 1) {
+            return $this->export_ck($dpp);
+        }
+
+       if ($dpp->dpp_type_id == 2) {
+           return $this->export_pp($dpp);
+       }
 
 
         $t = new \PhpOffice\PhpWord\TemplateProcessor(storage_path('/templates/rut_template_char.docx'));
@@ -1132,6 +1136,470 @@ class ExportDppController extends Controller
         $t->saveAs($pathToSave);
         $t = new \Phpdocx\Create\CreateDocxFromTemplate($pathToSave);
         $t->createDocx($pathToSave);
+        return response()->download($pathToSave);
+    }
+
+    public function export_ck (Dpp $dpp)
+    {
+        $t = new \PhpOffice\PhpWord\TemplateProcessor(storage_path('/templates/rut_pp_ck_template_char.docx'));
+        \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
+
+        $iv = $dpp->ish_version;
+        $zv = $dpp->zun_version;
+        $om = $dpp->om_version;
+
+        //УТВЕЖДЕНИЕ
+        $t->setValue('signatory_fio', $dpp->signatory_fio ?? "");
+        $t->setValue('signatory_job', $dpp->signatory_job ?? "");
+        //НАЗВАНИЕ ДПП
+        $t->setValue('dppName', $dpp->name);
+
+        //ГОД
+        $year = $dpp->year;
+        $t->setValue('dppYear', $year);
+        $t->setValue('signature_year', $year);
+
+        //АННОТАЦИЯ
+        $t->setValue('dppAnnotation', $iv->annotationDescription);
+
+        //ИСПОЛНИТЕЛИ
+        $designers = $dpp->designers;
+        $t->cloneRow('job', count($designers));
+        $index = 1;
+        foreach ($designers as $key=>$designer)
+        {
+            $t->setValue('job#'.$index, $this->printRegalies($designer));
+            $t->setValue('short_name#'.$index, $this->printFullname($designer));
+            $t->setValue('work#'.$index, $designer->task);
+            $index++;
+        }
+
+        /*ОСНОВАНИЯ*/
+        $pss = $iv->prof_standarts;
+        $fgoses = $iv->fgoses;
+
+        $ekses = $iv->ekses;
+        $ektses = $iv->ektses;
+
+        //ФГОС
+        if (count($fgoses) == 0) {
+            $t->cloneBlock('fgos_block', 0, true, true);
+            $fgos_main_row = "<нет ФГОС>";
+        }else{
+            $main_fgos = $fgoses[0];
+            $fgos_main_row = $main_fgos->code. " ".$main_fgos->name;
+
+            $t->cloneBlock('fgos_block', count($fgoses), true, true);
+            foreach ($fgoses as $index => $fgos) {
+                $n = $index+1;
+                $t->setValue('fgos_level#'.$n, $fgos->fgos_level_id==1 ? "среднего профессиональньго":"высшего");
+                $t->setValue('fgos_code#'.$n, $fgos->code);
+                $t->setValue('fgos_name#'.$n, $fgos->name);
+                $t->setValue('fgos_regalia#'.$n, $fgos->requisites);
+            }
+        }
+        $t->setValue('main_fgos', $fgos_main_row);
+
+        //ПРОФСТАНДАРТ
+        if (count($pss) == 0) {
+            $t->cloneBlock('ps_block', 0, true, true);
+        }else{
+
+            $t->cloneBlock('ps_block', count($pss), true, true);
+            foreach ($pss as $index => $ps) {
+                $n = $index+1;
+                $t->setValue('ps#'.$n, $ps->fullName);
+            }
+        }
+
+        //ЕКС
+        if (count($ekses) == 0) {
+            $t->cloneBlock('eks_block', 0, true, true);
+        }else{
+
+            $t->cloneBlock('eks_block', count($ekses), true, true);
+            foreach ($ekses as $index => $eks) {
+                $n = $index+1;
+                $t->setValue('eks_name#'.$n, $eks->nameProfession);
+            }
+        }
+
+        //ОБЛАСТЬ ПРОФЕССИОНАЛЬНОЙ ДЕЯТЕЛЬНОСТИ
+        $t->setValue('professional_field', $iv->professional_field->text ?? "не заполнено");
+
+        // ОБЪЕКТЫ ПРОФЕССИОНАЛЬНОЙ ДЕЯТЕЛЬНОСТИ
+        $professional_objects = $iv->professional_objects;
+        $t->cloneBlock('object_block', count($professional_objects), true, true);
+        foreach ($professional_objects as $index => $object) {
+            $n = $index+1;
+            $t->setValue('object#'.$n, $object->text);
+        }
+
+        //ТРЕБЛОВАНИЯ и КВАЛИФИКАЦИЯ
+        $qual = $iv->qualification;
+        if (strlen($qual) > 0) {
+            $t->cloneBlock('has_qual_block', 1, true, true);
+            $t->cloneBlock('no_qual_block', 0, true, true);
+        }else{
+            $t->cloneBlock('has_qual_block', 0, true, true);
+            $t->cloneBlock('no_qual_block', 1, true, true);
+        }
+        $t->setValue('sphere#1', $iv->professional_sphere);
+        $t->setValue('sphere', $iv->professional_sphere);
+
+        $t->setValue('new_qual', $iv->qualification);
+        //IT-неIT
+        if ($iv->direction_id == 1) {
+            $t->cloneBlock('no_it_block', 1, true, true);
+            $t->cloneBlock('it_block', 0, true, true);
+
+            $t->setValue('new_qual#1', $iv->qualification);
+            $t->setValue('is_it','не отнесенной');
+        }else{
+            $t->cloneBlock('no_it_block', 0, true, true);
+            $t->cloneBlock('it_block', 1, true, true);
+            $t->setValue('sphere_rp#1',$iv->digital_sphere->name_rp);
+            $t->setValue('new_qual#1', $iv->qualification);
+            $t->setValue('is_it','отнесенной');
+        }
+
+
+        //ФОРМА
+        $form = $iv->edu_form;
+        $form_rp = '<не выбрано>';
+        if ($form=='Очная') {$form_rp='очной';}
+        if ($form=='Очно-заочная') {$form_rp='очно-заочной';}
+        if ($form=='Заочная') {$form_rp='заочной';}
+        $t->setValue('form', $form_rp);
+
+        //С ДОТОМ/БЕЗ
+        if ($iv->edu_form_dot == true) {
+            $with_dot = 'с применением дистанционных образовательных технологий, электронного обучения';
+        }else{
+            $with_dot = '';
+        }
+        $t->setValue('with_dot', $with_dot);
+        //ЧАСЫ
+        $t->setValue('hours', $dpp->total_hours);
+
+        //ПЕРИОД
+        $period_name = $iv->edu_period_name;
+        if ($period_name=='Календарные дни') {$period_name='дней';}
+        if ($period_name=='Недели') {$period_name='недель';}
+        if ($period_name=='Месяцы') {$period_name='месяцев';}
+        $t->setValue('period_duration', $iv->edu_period_duration);
+        $t->setValue('period_name', $period_name);
+
+
+        //ЗАДАЧИ
+        if (count($zv->skills) == 0) {
+            $zuns = 'знаний и умений';
+        }else{
+            $zuns = 'знаний, умений и навыков';
+        }
+        $t->setValue('zuns', $zuns);
+
+        //ПЛАНИРУЕМЫЕ РЕЗУЛЬТАТЫ ОСВОЕНИЯ
+        $zv = $dpp->zun_version_id;
+        $boldFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 12, 'bold' => true);
+        $normalFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 12, 'bold' => false);
+        $competences = Competence::where('zun_version_id','=',$zv)->get();
+        if (count($competences) > 1) {$add=1;}else{$add=0;}
+        $t->cloneRow('competence', count($competences)+$add);
+        $number = 1;
+        foreach ($competences as $competence)
+        {
+            $t->setValue('competence#'.$number, $competence->name);
+            $skills = Skill::where('competence_id',$competence->id)->get()->pluck('name')->toArray();
+            $sk_ids = Skill::where('competence_id',$competence->id)->get()->pluck('id')->toArray();
+            $text = new TextRun();
+            if (count($skills) > 0)
+            {
+                $breakStyle = array('lineHeight' => 1.5,'spaceAfter' => 6);
+                $total = count($skills);
+                $text->addText('Навыки: ', $boldFont);
+                $text->addTextBreak();
+                foreach ($skills as $key=>$value)
+                {
+                    $text->addText($value,$normalFont);
+                    if ($key==$total-1) {$sep='.';}else{$sep=',';}
+                    $text->addText($sep,$normalFont,$breakStyle);
+                    if ($key!=$total-1)
+                    {
+                        $text->addTextBreak(1,$normalFont);
+                    }
+                }
+            }
+            $t->setComplexValue('skills#'.$number, $text);
+
+
+            $abilities = Ability::where('competence_id',$competence->id)->get();
+            if ($abilities->count() == 0)
+            {
+                $abilities = Ability::whereIn('skill_id',$sk_ids)->get();
+            }
+
+            $ab_ids = $abilities->pluck('id')->toArray();
+            $text = new TextRun();
+            if (count($abilities) > 0)
+            {
+                $breakStyle = array('lineHeight' => 1.5,'spaceAfter' => 6);
+
+                $ab_names = $abilities->pluck('name')->toArray();
+                $total = count($abilities);
+                $text->addText('Умения: ', $boldFont);
+                $text->addTextBreak();
+                foreach ($ab_names as $key=>$value)
+                {
+                    $text->addText($value,$normalFont);
+                    if ($key==$total-1) {$sep='.';}else{$sep=',';}
+                    $text->addText($sep,$normalFont,$breakStyle);
+                    if ($key!=$total-1)
+                    {
+                        $text->addTextBreak(1,$normalFont);
+                    }
+                }
+            }
+            $t->setComplexValue('abilities#'.$number, $text);
+
+            $knowledges = Knowledge::whereIn('ability_id',$ab_ids)->get();
+            $knowledge_names = $knowledges->pluck('name')->toArray();
+            if ($dpp->competences()->count() == 1)
+            {
+                $th_knowledges = Knowledge::where('zun_version_id',$zv)->where('is_through',true)->orderBy('position','asc')->get();
+                $th_names = $th_knowledges->pluck('name')->toArray();
+                foreach ($th_names as $th_name)
+                {
+                    array_push($knowledge_names,$th_name);
+                }
+            }
+
+            $text = new TextRun();
+            if (count($knowledges) > 0)
+            {
+                $breakStyle = array('lineHeight' => 1.5,'spaceAfter' => 6);
+                $total = count($knowledge_names);
+                $text->addText('Знания: ', $boldFont);
+                $text->addTextBreak();
+                foreach ($knowledge_names as $key=>$value)
+                {
+                    $text->addText($value,$normalFont);
+                    if ($key==$total-1) {$sep='.';}else{$sep=',';}
+                    $text->addText($sep,$normalFont,$breakStyle);
+                    if ($key!=$total-1)
+                    {
+                        $text->addTextBreak(1,$normalFont);
+                    }
+                }
+            }
+
+            $t->setComplexValue('knowledges#'.$number, $text);
+            $number++;
+        }
+        if ($dpp->competences()->count() > 1)
+        {
+            $th_knowledges = Knowledge::where('zun_version_id',$zv)->where('is_through',true)->orderBy('position','asc')->get();
+            $text = new TextRun();
+            if (count($th_knowledges) > 0)
+            {
+                $competences = $dpp->competences();
+                //$text->addText(implode(', ',$competences->pluck('name')->toArray()).".", $normalFont);
+                $text->addText('Все компетенции, перечисленные выше', $normalFont);
+                $t->setComplexValue('competence#'.$number, $text);
+
+                $th_names = $th_knowledges->pluck('name')->toArray();
+                $text = new TextRun();
+                $breakStyle = array('lineHeight' => 1.5,'spaceAfter' => 6);
+                $total = count($th_names);
+                $text->addText('Сквозные знания: ', $boldFont);
+                $text->addTextBreak();
+                foreach ($th_names as $key=>$value)
+                {
+                    $text->addText($value,$normalFont);
+                    if ($key==$total-1) {$sep='.';}else{$sep=',';}
+                    $text->addText($sep,$normalFont,$breakStyle);
+                    if ($key!=$total-1)
+                    {
+                        $text->addTextBreak(1,$normalFont);
+                    }
+                }
+                $t->setComplexValue('knowledges#'.$number, $text);
+                $text = new TextRun();
+                $t->setComplexValue('skills#'.$number, $text);
+                $t->setComplexValue('abilities#'.$number, $text);
+            }
+        }
+
+        //УЧЕБНЫЙ ПЛАН
+        $sv = StructureVersion::find($dpp->st_version_id);
+        $sect_count = StructureSection::where('st_version_id', '=', $sv->id)->get()->count();
+        $t->cloneRow('tname', $sect_count);
+
+        $sections = StructureSection::with(['themes' => function ($query) {
+            $query->orderBy('position');
+        }])
+            ->where('parent_id', '=', null)
+            ->where('st_version_id', '=', $sv->id)
+            ->orderBy('position')
+            ->get();
+
+        $t->setValue('dppName', $dpp->name);
+        $number = 0;
+        $sec_number = 0;
+        $total = [0, 0, 0, 0, 0, 0, 0, 0];
+        foreach ($sections as $sect) {
+            $number++;
+            $sec_number++;
+            $t->setValue('tn#' . $number, $sec_number);
+            $t->setValue('tname#' . $number, $this->remove_nbsp($sect->name));
+            $t->setValue('ttotal#' . $number, $sect->total_hours);
+            $total[0] += $sect->total_hours;
+            $t->setValue('tlo#' . $number, $sect->lection_hours_o == 0 ? "" : $sect->lection_hours_o);
+            $total[1] += $sect->lection_hours_o;
+            $t->setValue('tlz#' . $number, $sect->lection_hours_z == 0 ? "" : $sect->lection_hours_z);
+            $total[2] += $sect->lection_hours_z;
+            $t->setValue('tpo#' . $number, $sect->practice_hours_o == 0 ? "" : $sect->practice_hours_o);
+            $total[3] += $sect->practice_hours_o;
+            $t->setValue('tpz#' . $number, $sect->practice_hours_z == 0 ? "" : $sect->practice_hours_z);
+            $total[4] += $sect->practice_hours_z;
+            $t->setValue('tko#' . $number, $sect->consult_hours_o == 0 ? "" : $sect->consult_hours_o);
+            $total[5] += $sect->consult_hours_o;
+            $t->setValue('tkz#' . $number, $sect->consult_hours_z == 0 ? "" : $sect->consult_hours_z);
+            $total[6] += $sect->consult_hours_z;
+            $t->setValue('ta#' . $number, $sect->attestation_form . ", " . $sect->attestation_hours);
+            $total[7] += $sect->attestation_hours;
+
+
+            //темы
+            $theme_number = 0;
+            foreach ($sect->themes as $theme) {
+                $theme_number++;
+                $number++;
+                $t->setValue('tn#' . $number, $sec_number . "." . $theme_number);
+                $t->setValue('tname#' . $number, $this->remove_nbsp($theme->name));
+                $t->setValue('ttotal#' . $number, $theme->total_hours);
+                $t->setValue('tlo#' . $number, $theme->lection_hours_o == 0 ? "" : $theme->lection_hours_o);
+                $t->setValue('tlz#' . $number, $theme->lection_hours_z == 0 ? "" : $theme->lection_hours_z);
+                $t->setValue('tpo#' . $number, $theme->practice_hours_o == 0 ? "" : $theme->practice_hours_o);
+                $t->setValue('tpz#' . $number, $theme->practice_hours_z == 0 ? "" : $theme->practice_hours_z);
+                $t->setValue('tko#' . $number, $theme->consult_hours_o == 0 ? "" : $theme->consult_hours_o);
+                $t->setValue('tkz#' . $number, $theme->consult_hours_z == 0 ? "" : $theme->consult_hours_z);
+                $t->setValue('ta#' . $number, $theme->attestation_hours == 0 ? "" : $theme->attestation_hours);
+            }
+        }
+        $t->setValue('htotal', $total[0]);
+        $t->setValue('hlo', $total[1]);
+        $t->setValue('hlz', $total[2]);
+        $t->setValue('hpo', $total[3]);
+        $t->setValue('hpz', $total[4]);
+        $t->setValue('hko', $total[5]);
+        $t->setValue('hkz', $total[6]);
+        $t->setValue('ha', $total[7]);
+
+        //КАЛЕНДАРНЫЙ УЧЕБНЫЙ ГРАФИК
+        $sec_number = 0;
+        $sections = StructureSection::where('parent_id', '=', null)
+            ->where('st_version_id', '=', $sv->id)
+            ->where('parent_id', '=', null)
+            ->orderBy('position')
+            ->get();
+
+        $t->cloneRow('kp_module_name', $sections->count(), true, true);
+        $ttotal = 0;
+        foreach ($sections as $section)
+        {
+            $sec_number++;
+            $t->setValue('mh#'.$sec_number, $sec_number);
+            $t->setValue('kp_module_name#'.$sec_number, $section->name);
+            $t->setValue('kp_module_hours#'.$sec_number, $section->total_hours);
+            $ttotal += $section->total_hours;
+        }
+        $t->setValue('kp_total_hours',$ttotal);
+
+
+        //РАБОЧИЕ ПРОГРАММЫ
+        $sections = StructureSection::where('parent_id', '=', null)
+            ->where('st_version_id', '=', $sv->id)
+            ->where('name', '<>', 'Итоговая аттестация')
+            ->has('themes')
+            ->with(['themes' => function ($query) {
+                $query->orderBy('position');
+            }])
+            ->orderBy('position')
+            ->get();
+
+        $t->cloneBlock('block_rp', $sections->count(), true, true);
+        $idx = 1;
+        foreach ($sections as $section)
+        {
+            $t->setValue('rp_section#'.$idx,$section->name);
+
+
+            $themes = $section->themes->pluck('name')->toArray();
+            //dd($themes);
+            $text = implode(". ",$themes).".";
+            $text = $this->remove_nbsp($text);
+            $t->setValue('rp_themes#'.$idx,$text);
+            $idx++;
+        }
+
+        //ФОРМЫ АТТЕСТАЦИИ
+        $z_modules = $sv->get_sections
+            ->where('attestation_form','Зачет')
+            ->where('name','<>','Производственная практика');
+        $z_names = $z_modules->pluck('name')->implode(', ');
+        if (count($z_modules)>0) {
+            $t->cloneBlock('z_block', 1, true, true);
+            $t->setValue('z_modules#1',$z_names);
+        }else{
+            $t->cloneBlock('z_block', 0, true, true);
+        }
+
+
+        $zo_modules = $sv->get_sections
+            ->where('attestation_form','Зачет с оценкой')
+            ->where('name','<>','Производственная практика');
+        $zo_names = $zo_modules->pluck('name')->implode(', ');
+        if (count($zo_modules)>0) {
+            $t->cloneBlock('zo_block', 1, true, true);
+            $t->setValue('zo_modules#1',$zo_names);
+        }else{
+            $t->cloneBlock('zo_block', 0, true, true);
+        }
+        $t->setValue('zo_modules',$zo_names);
+
+        $pp_section = $sv->get_sections->where('name','Производственная практика')->first();
+        if ($pp_section) {
+            $pp_form = $pp_section->attestation_form;
+        }else{
+            $pp_form = "Зачет с оценкой";
+        }
+        $t->setValue('pp_form', $pp_form);
+
+        //МТО
+        $t->setComplexBlock('block_mto_table', $this->get_mto_table($dpp));
+
+        //НСИ
+        $t->setComplexBlock('block_npa_table', $this->get_nsi_table($dpp));
+
+        /*SAVE*/
+        $pathToSave = storage_path('ДПП_ПП_'.$dpp->abbreveation.'_ Общая характеристика.docx');
+        $t->saveAs($pathToSave);
+        $t = new \Phpdocx\Create\CreateDocxFromTemplate($pathToSave);
+        $t->createDocx($pathToSave);
+        $t->setTemplateSymbol('${', '}');
+        // TOC
+        $toc = new \Phpdocx\Elements\WordFragment($t);
+        $legend = array(
+            'text' => 'Щелкните здесь, чтобы обновить содержание',
+            'color' => '000000',
+            'bold' => false,
+            'fontSize' => 14,
+        );
+        $toc->addTableContents(array('autoUpdate'=>true),$legend);
+        $t->replaceVariableByWordFragment(array('TOC' => $toc), array('type' => 'block'));
+        $t->createDocx($pathToSave);
+
         return response()->download($pathToSave);
     }
 }

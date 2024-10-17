@@ -15,13 +15,16 @@ class StructureVersionController extends Controller
 {
     public function show(Dpp $dpp, $sv)
     {
-        
+
         if ($dpp->st_version_id == null) {
             $sv = $dpp->create_st();
         }else{
             $sv = StructureVersion::findOrFail($sv);
         }
-        
+        if ($dpp->dpp_type_id == 2) {
+            $sv->recount_all_sections_pp();
+        }
+
         $sections = StructureSection::with(['knowledges' => function ($query) {}])
          ->with(['themes' => function ($query) {$query->orderBy('position');}])
          ->where('parent_id','=', null)

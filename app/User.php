@@ -16,9 +16,9 @@ class User extends Authenticatable implements JWTSubject
 
     public static function boot() {
         parent::boot();
-        static::created(function($user) 
-        { 
-            $user->createTestDpp(); 
+        static::created(function($user)
+        {
+            $user->createTestDpp();
         });
     }
 
@@ -50,13 +50,17 @@ class User extends Authenticatable implements JWTSubject
 
     public function is_admin()
     {
-        if ($this->right_id == 1) return true;
-        return false;
+        return $this->get_rights->id == 1;
     }
 
     public function created_dpps()
     {
         return $this->hasMany('App\Dpp','author_id');
+    }
+
+    public function company()
+    {
+        return $this->belongsTo('App\Company','company_id');
     }
 
     public function createTestDpp()
@@ -69,7 +73,7 @@ class User extends Authenticatable implements JWTSubject
         $dpp->abbreveation = $dpp->setAbbreveation("Тестовая ДПП ".$this->fullname);
         $dpp->status_id = 1;
         $dpp->save();
-        
+
         $dur = new DppUserRole;
         $dur->user_id = $this->id;
         $dur->dpp_id = $dpp->id;

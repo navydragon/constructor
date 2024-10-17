@@ -79,7 +79,8 @@ class ApprovalController extends Controller
             $stage["errors"][] = "Трудоемкость освоения не может быть меньше 16 часов";
         }
         $structure_hours = $dpp->st_version->parent_sections()->sum('total_hours');
-        if ($dpp->total_hours != $structure_hours)
+        $tolerance = 0.001;
+        if (abs($dpp->total_hours - $structure_hours) > $tolerance)
         {
             $stage["errors"][] = "Введенная трудоемкость освоения (".$dpp->total_hours." ч.) не соответствует рассчитанной в структуре ДПП (".$structure_hours." ч.)";
         }

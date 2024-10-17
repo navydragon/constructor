@@ -673,15 +673,62 @@ class ExportOMController extends Controller
         }
         $t->setValue('skill_ability2', $phrase2);
 
-            //последний абзац
-            //КОЛ-ВО ПРАКТИЧЕСКИХ
-            $tasks_count = $ov->tasks()->count();
-            $req_tasks = $ov->tasks()->where('required',true)->count() + $ov->optional_tasks;
-            $t->setValue('reqPrCount', $req_tasks);
-            $t->setValue('prCount', $tasks_count);
-            if ($req_tasks == 1) {$prText='практического задания';}
-            else {$prText = 'практических заданий';}
-            $t->setValue('prText', $prText);
+        $proj_tasks = Task::where('om_version_id',$dpp->om_version_id)->where('task_type_id','=',2)->orderBy('position')->get();
+        $t->cloneBlock('task_proj_block', $proj_tasks->count(), true, true);
+        foreach ($proj_tasks as $key => $proj_task) {
+            $idx = $key+1;
+            $t->setValue('task_position#'.$idx, $proj_task->position);
+            $mandatory_text = $proj_task->required == 1 ? "обязательное" : "по выбору";
+            $t->setValue('task_mandatory#'.$idx, $mandatory_text);
+            $t->setValue('task_place#'.$idx, $proj_task->place);
+            $t->setValue('task_time#'.$idx, $proj_task->time);
+            $t->setValue('skill_ab#'.$idx, $phrase2);
+
+            $t->setComplexBlock('task_mto#'.$idx, $this->get_task_mto_table($dpp,$proj_task));
+            $t->setComplexBlock('task_nsi#'.$idx, $this->get_task_nsi_table($dpp,$proj_task));
+
+            $normalParagraph = array('alignment' => 'left','lineHeight' => 1.5,'spaceAfter' => 0);
+            $normalFont = array('name' => 'Times New Roman','color' => '000000', 'size' => 14, 'bold' => false);
+            $text = new \PhpOffice\PhpWord\Element\TextRun($normalParagraph);
+            $af = $proj_task->additional_files;
+
+            if ($af->count() > 0)
+            {
+                $text->addTextBreak();
+                $text->addText("Дополнительные материалы:");
+                $text->addTextBreak();
+                foreach ($af as $key=>$value)
+                {
+                    $num = $key+1;
+                    $text->addText($num.". ".$value->name.",");
+                    $text->addTextBreak();
+                    $text->addText("URL: https://constructor-api.emiit.ru/tasks/".$proj_task->id."/additional_files/".$value->id."/download" );
+                    $text->addTextBreak();
+                }
+            }
+            $t->setComplexBlock('dop_mats#'.$idx, $text);
+            $subjects = $proj_task->subjects;
+            $sub_arr = [];
+            foreach ($subjects as $subject)
+            {
+                if ($subject->type_id != 4)    {$sub = $subject->name;}
+                else{$sub = $subject->name.' ('.$subject->type.')';}
+                array_push($sub_arr,$sub);
+            }
+            $t->setValue('task_subject#'.$idx, implode("; ",$sub_arr));
+            $t->setValue('nsi_table_num#'.$idx, $table_num); $table_num++;
+            $t->setValue('mto_table_num#'.$idx, $table_num); $table_num++;
+        }
+
+        //последний абзац
+        //КОЛ-ВО ПРАКТИЧЕСКИХ
+        $tasks_count = $ov->tasks()->count();
+        $req_tasks = $ov->tasks()->where('required',true)->count() + $ov->optional_tasks;
+        $t->setValue('reqPrCount', $req_tasks);
+        $t->setValue('prCount', $tasks_count);
+        if ($req_tasks == 1) {$prText='практического задания';}
+        else {$prText = 'практических заданий';}
+        $t->setValue('prText', $prText);
 
 
 
@@ -701,13 +748,18 @@ class ExportOMController extends Controller
         </style>";
         foreach ($tasks as $key => $task)
         {
-            $test = $style . $task->description;
             $idx = $key+1;
             $elem = 'task_description#'.$idx;
             $t->replaceVariableByHTML($elem, 'block', $style.$task->description."<p></p>", array('isFile' => false, 'parseDivsAsPs' => true, 'downloadImages' => true,'strictWordStyles' => false));
         }
 
-
+        foreach ($proj_tasks as $key => $proj_task)
+        {
+            $idx = $key+1;
+            $t->replaceVariableByHTML('p_task_description#'.$idx, 'block', $style.$proj_task->description."<p></p>", array('isFile' => false, 'parseDivsAsPs' => true, 'downloadImages' => true,'strictWordStyles' => false));
+            $t->replaceVariableByHTML('p_task_instruction#'.$idx, 'block', $style.$proj_task->portfolioProcedure."<p></p>", array('isFile' => false, 'parseDivsAsPs' => true, 'downloadImages' => true,'strictWordStyles' => false));
+            $t->replaceVariableByHTML('p_task_assess#'.$idx, 'block', $style.$proj_task->portfolioCriteria."<p></p>", array('isFile' => false, 'parseDivsAsPs' => true, 'downloadImages' => true,'strictWordStyles' => false));
+        }
 
         // TOC
         $toc = new \Phpdocx\Elements\WordFragment($t);

@@ -41,6 +41,7 @@ class TaskController extends Controller
             $task->portfolioProcedure = $doc["instruction"];
             $task->portfolioCriteria = $doc["control"];
             $task->required = $doc["required"] ?? true;
+            $task->time = $doc["time"];
             $task->save();
         }
 
@@ -82,7 +83,7 @@ class TaskController extends Controller
             $task->portfolioProcedure = $doc["instruction"];
             $task->portfolioCriteria = $doc["control"];
             $task->required =  $doc["required"] ?? true;
-            $task->time = 0;
+            $task->time = $doc["time"];
             $task->save();
         }
 

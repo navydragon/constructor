@@ -12,18 +12,26 @@ use App\Http\Resources\User as UserResource;
 use App\Http\Resources\Role as RoleResource;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\RoleCollection;
+use Auth;
 class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $user = Auth::user();
+        if ($user->is_admin())
+        {
+            $users = User::all();
+        }else{
+            $users = User::where('company_id',$user->company_id)->get();
+        }
         return new UserCollection($users);
     }
+
     public function show(User $user)
     {
         return new UserResource($user);
     }
-   
+
     public function store (Request $request)
     {
         $data = $request->user;
@@ -45,6 +53,7 @@ class UserController extends Controller
         $user->phone = $data["phone"];
         $user->fullname = $data["lastname"]." ".$data["firstname"]." ".$data["middlename"];
         $user->password = bcrypt($password);
+        $user->company_id = Auth::user()->company_id;
         $user->save();
         $data = array('name'=>$user->fullname,'email'=>$user->email,'password'=>$password);
        Mail::send('emails.send_reg', $data, function($message) use ($user) {
@@ -83,7 +92,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if ($user->tryDelete()) 
+        if ($user->tryDelete())
         {
             return $user->id;
         }else{
@@ -103,7 +112,7 @@ class UserController extends Controller
         $user->save();
         return response([
             'status' => 'OK',
-        ], 200); 
+        ], 200);
         return new UserResource($user);
     }
 
@@ -158,7 +167,7 @@ class UserController extends Controller
         return $users;
     }
 
-    
+
     public function reset_password(User $user, Request $request)
     {
         if (auth()->user()->right_id == 1)
@@ -174,12 +183,12 @@ class UserController extends Controller
             });
             return response([
                 'status' => 'OK',
-            ], 200); 
+            ], 200);
         }else{
             return response([
                 'status' => 'error',
                 'message' => 'Недостаточно прав доступа'
-            ], 403); 
+            ], 403);
         }
     }
 
@@ -189,6 +198,6 @@ class UserController extends Controller
         $user->save();
         return response([
             'status' => 'OK',
-        ], 200); 
+        ], 200);
     }
 }
