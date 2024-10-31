@@ -27,6 +27,7 @@ class TaskController extends Controller
         {
             $task->om_version_id = $ov->id;
             $task->position = $tasks_count+1;
+            $task->name = "Задание №";
             $task->description = $doc["description"];
             $task->place = $doc["place"];
             $task->time = $doc["time"];
@@ -37,6 +38,7 @@ class TaskController extends Controller
         {
             $task->om_version_id = $ov->id;
             $task->position = $tasks_count+1;
+            $task->name = "Задание №";
             $task->description = $doc["description"];
             $task->portfolioProcedure = $doc["instruction"];
             $task->portfolioCriteria = $doc["control"];
@@ -122,6 +124,10 @@ class TaskController extends Controller
 
         Task::destroy($task->id);
 
+        if ($ov->dpp->type->id == 1)
+        {
+            $ov->recount_ia();
+        }
         return $task->id;
     }
 

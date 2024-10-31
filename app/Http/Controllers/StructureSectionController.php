@@ -27,6 +27,28 @@ function section ($id)
 
 class StructureSectionController extends Controller
 {
+    public function recount_section_pk($section_id)
+    {
+        $section = StructureSection::find($section_id);
+        $section->lection_hours = 0;
+        $section->practice_hours = 0;
+        $section->consult_hours = 0;
+        $section->self_hours = 0; $section->lab_hours = 0;
+        $section->total_hours = 0;
+        foreach ($section->themes as $theme)
+        {
+            $section->lection_hours += $theme->lection_hours;
+            $section->practice_hours += $theme->practice_hours;
+            $section->consult_hours += $theme->consult_hours;
+            $section->lab_hours += $theme->lab_hours;
+            $section->self_hours += $theme->self_hours;
+        }
+        $section->total_hours += $section->consult_hours;
+        $section->total_hours += $section->practice_hours;
+        $section->total_hours += $section->lection_hours;
+        $section->total_hours += $section->lab_hours;
+        $section->save();
+    }
     public function recount_section($section_id)
     {
         $section = StructureSection::find($section_id);
@@ -128,8 +150,12 @@ class StructureSectionController extends Controller
 
                 }
             }
+            if ($sv->dpp->dpp_type_id == 2) {
+                $this->recount_section($theme->parent_id);
+            }else{
+                $this->recount_section_pk($theme->parent_id);
+            }
 
-            $this->recount_section($theme->parent_id);
 
             $section = StructureSection::with(['themes' => function ($query) {$query->orderBy('position');}])
             ->where('id','=', $theme->parent_id)
