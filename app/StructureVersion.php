@@ -137,7 +137,7 @@ class StructureVersion extends Model
 
     }
 
-    public function recount_section_hours()
+    public function recount_section_hours_pk()
     {
         $parent_sections = StructureSection::where('st_version_id',$this->id)->where('parent_id',null)->where('name','<>','Итоговая аттестация')->get();
         foreach ($parent_sections as $section)

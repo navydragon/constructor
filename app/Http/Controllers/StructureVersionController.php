@@ -25,6 +25,10 @@ class StructureVersionController extends Controller
             $sv->recount_all_sections_pp();
         }
 
+        if ($dpp->dpp_type_id == 1) {
+            $sv->recount_section_hours_pk();
+        }
+
         $sections = StructureSection::with(['knowledges' => function ($query) {}])
          ->with(['themes' => function ($query) {$query->orderBy('position');}])
          ->where('parent_id','=', null)

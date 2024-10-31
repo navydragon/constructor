@@ -28,9 +28,16 @@ class Knowledge extends Model
             if ($sv != null)
             {
                 $theme = StructureSection::where('knowledge_id',$kn->id)->get()->first();
+                $sv = $theme->st_version;
                 if ($theme)
                 {
                     $theme->delete();
+                }
+                if ($sv->dpp->dpp_type_id == 2) {
+                    $sv->recount_all_sections_pp();
+                }
+                if ($sv->dpp->dpp_type_id == 1) {
+                    $sv->recount_section_hours_pk();
                 }
             }
         });
@@ -214,9 +221,12 @@ class Knowledge extends Model
         }
 
         $sv = StructureVersion::find($sv);
-        $sv->recount_section_hours();
-
-
+        if ($sv->dpp->dpp_type_id == 2) {
+            $sv->recount_all_sections_pp();
+        }
+        if ($sv->dpp->dpp_type_id == 1) {
+            $sv->recount_section_hours_pk();
+        }
     }
 
 
