@@ -28,17 +28,19 @@ class Knowledge extends Model
             if ($sv != null)
             {
                 $theme = StructureSection::where('knowledge_id',$kn->id)->get()->first();
-                $sv = $theme->st_version;
+
                 if ($theme)
                 {
+                    $sv = $theme->st_version;
+                    if ($sv->dpp->dpp_type_id == 2) {
+                        $sv->recount_all_sections_pp();
+                    }
+                    if ($sv->dpp->dpp_type_id == 1) {
+                        $sv->recount_section_hours_pk();
+                    }
                     $theme->delete();
                 }
-                if ($sv->dpp->dpp_type_id == 2) {
-                    $sv->recount_all_sections_pp();
-                }
-                if ($sv->dpp->dpp_type_id == 1) {
-                    $sv->recount_section_hours_pk();
-                }
+
             }
         });
         static::updated(function($kn)
