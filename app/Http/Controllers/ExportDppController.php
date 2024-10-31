@@ -92,7 +92,7 @@ class ExportDppController extends Controller
 
         if ($count > 0)
         {
-            $t->cloneBlock('block_basis', 0, true, true);
+            $t->cloneBlock('block_basis', $count, true, true);
             $basis_index = 1;
         }else{
             $t->deleteBlock('block_basis');
