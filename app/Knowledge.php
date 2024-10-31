@@ -297,6 +297,7 @@ class Knowledge extends Model
         if (substr($work, -4) == 'юю') { return substr($work, 0,strlen($work)-4)."яя";}
 
         $word = DB::table('nouns_morf')->where('word', $work )->where('wcase','вин')->first();
+        dd($word);
         if ($word)
         {
             $parent = DB::table('nouns_morf')->where('code', $word->code_parent )->first();
