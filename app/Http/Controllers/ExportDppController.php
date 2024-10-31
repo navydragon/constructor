@@ -561,6 +561,7 @@ class ExportDppController extends Controller
          ->get();
 
         $t->cloneBlock('block_rp', $sections->count(), true, true);
+        dd($sections->count());
         $idx = 1;
         foreach ($sections as $section)
         {
