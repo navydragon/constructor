@@ -560,7 +560,7 @@ class ExportDppController extends Controller
          ->orderBy('position')
          ->get();
 
-        $t->cloneBlock('block_rp', $sections->count(), true, false);
+        $t->cloneBlock('block_rp', $sections->count(), true, true);
         $idx = 1;
         foreach ($sections as $section)
         {
