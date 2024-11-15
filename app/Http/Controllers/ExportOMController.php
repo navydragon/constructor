@@ -413,7 +413,6 @@ class ExportOMController extends Controller
                     foreach ($answers as $key => $answer)
                     {
                         $text = $this->clean_text($answer->text);
-                        $text = "";
                         if ($key != $answers->count()-1) {$end=';';}else{$end='.';}
                         $table->addRow(null);
                         $table->addCell(9530)->addText($symbols[$key].") ".$text.$end,$normalFont,$normalParagraphLH1Left);
@@ -424,7 +423,7 @@ class ExportOMController extends Controller
                         }
                         if ($answer->is_right == 1) {array_push($rigntAnswersArr,$symbols[$key]);}
                     }
-                     $t->setComplexBlock('answers#'.$number, $table);
+                     // $t->setComplexBlock('answers#'.$number, $table);
 
                      $t->setValue('rignt_answers#'.$number, $number);
                      $t->setValue('rignt_answers_text#'.$number, implode(",",$rigntAnswersArr));
