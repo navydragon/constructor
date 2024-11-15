@@ -336,7 +336,7 @@ class ExportOMController extends Controller
             dd('Ошибка в НСИ');
         }
 
-        $knowledges = Knowledge::where('zun_version_id','=',$zv)->where('id','<>',6261)->get();
+        $knowledges = Knowledge::where('zun_version_id','=',$zv)->get();
         $questions = Question::where('om_version_id',$dpp->om_version_id)->join('knowledge', 'questions.knowledge_id', '=', 'knowledge.id')
         ->where('knowledge.deleted_at',null)
         ->get();
@@ -413,6 +413,7 @@ class ExportOMController extends Controller
                     foreach ($answers as $key => $answer)
                     {
                         $text = $this->clean_text($answer->text);
+                        $text = "";
                         if ($key != $answers->count()-1) {$end=';';}else{$end='.';}
                         $table->addRow(null);
                         $table->addCell(9530)->addText($symbols[$key].") ".$text.$end,$normalFont,$normalParagraphLH1Left);
