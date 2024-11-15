@@ -336,7 +336,7 @@ class ExportOMController extends Controller
             dd('Ошибка в НСИ');
         }
 
-        $knowledges = Knowledge::where('zun_version_id','=',$zv)->get();
+        $knowledges = Knowledge::where('zun_version_id','=',$zv)->where('id','<>',6261)->get();
         $questions = Question::where('om_version_id',$dpp->om_version_id)->join('knowledge', 'questions.knowledge_id', '=', 'knowledge.id')
         ->where('knowledge.deleted_at',null)
         ->get();
