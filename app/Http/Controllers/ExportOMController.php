@@ -746,12 +746,12 @@ class ExportOMController extends Controller
         td p{color: #000000;font-family: Times New Roman;font-size: 12pt;text-indent: 1px; margin:0px;line-height: 100%;}
         table tbody tr:first-child td p{font-weight: bold; text-align:center;}
         </style>";
-        foreach ($tasks as $key => $task)
-        {
-            $idx = $key+1;
-            $elem = 'task_description#'.$idx;
-            $t->replaceVariableByHTML($elem, 'block', $style.$task->description."<p></p>", array('isFile' => false, 'parseDivsAsPs' => true, 'downloadImages' => true,'strictWordStyles' => false));
-        }
+//        foreach ($tasks as $key => $task)
+//        {
+//            $idx = $key+1;
+//            $elem = 'task_description#'.$idx;
+//            $t->replaceVariableByHTML($elem, 'block', $style.$task->description."<p></p>", array('isFile' => false, 'parseDivsAsPs' => true, 'downloadImages' => true,'strictWordStyles' => false));
+//        }
 
         foreach ($proj_tasks as $key => $proj_task)
         {
