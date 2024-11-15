@@ -356,202 +356,202 @@ class ExportOMController extends Controller
         $cellHCenteredNoSpace = array('align' => 'center','lineHeight' => 1,'spaceAfter' => 0,'indentation'=> ['firstLine' => 0]);
         $cellNoSpace = array('spaceAfter' => 0,'lineHeight' => 1,'indentation'=> ['firstLine' => 0]);
         $firstRowStyle = array();
-        foreach ($knowledges as  $index => $knowledge)
-        {
-            $questions = $knowledge->questions;
-            $type2 = $questions->where('question_type_id',2);
-            $type = $questions->where('question_type_id',1)->union($type2);
-            foreach ($type as $question)
-            {
-                $number++;
-                $rigntAnswersArr = [];
-                $t->setValue('text#'.$number, $number." ".$this->clean_text($question->text));
-                if (!is_null($question->image))
-                {
-                    $result = $this->get_image_width_height($question->image);
-                    $t->setImageValue('question_image#'.$number, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
-                }else{
-                    $blank = new \PhpOffice\PhpWord\Element\TextRun();
-                    $blank->addText('_', array('size' => 0,'color' => 'FFFFFF'));
-                    $t->setComplexValue('question_image#'.$number, $blank);
-                }
-                $t->setValue('type#'.$number, $question->type->name);
-                if ($question->question_type_id == 1)
-                {
-                    $table  = new \PhpOffice\PhpWord\Element\Table();
-                    $answers = $question->single_choice_answers;
-                    foreach ($answers as $key => $answer)
-                    {
-                        $text = $this->clean_text($answer->text);
-
-                        if ($key != $answers->count()-1) {$end=';';}else{$end='.';}
-                        $table->addRow(null);
-                        $table->addCell(9530)->addText($symbols[$key].") ".$text.$end,$normalFont,$normalParagraphLH1Left);
-                        if (!is_null($answer->image))
-                        {
-                            $table->addRow(null);
-                            $table->addCell(9530)->addText('${image_identifier_'.$answer->id.':300:300}');
-                        }
-                        if ($answer->is_right == 1) {array_push($rigntAnswersArr,$symbols[$key]);}
-                    }
-                     $t->setComplexBlock('answers#'.$number, $table);
-                     foreach ($answers as $answer)
-                     {
-                        if (!is_null($answer->image))
-                        {
-                            $result = $this->get_image_width_height($answer->image);
-                            $t->setImageValue('image_identifier_'.$answer->id, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
-                        }
-                     }
-                     $t->setValue('rignt_answers#'.$number, $number);
-                     $t->setValue('rignt_answers_text#'.$number, implode(", ",$rigntAnswersArr));
-                }
-                if ($question->question_type_id == 2)
-                {
-                    $table  = new \PhpOffice\PhpWord\Element\Table();
-                    $answers = $question->multi_choice_answers;
-                    foreach ($answers as $key => $answer)
-                    {
-                        $text = $this->clean_text($answer->text);
-                        if ($key != $answers->count()-1) {$end=';';}else{$end='.';}
-                        $table->addRow(null);
-                        $table->addCell(9530)->addText($symbols[$key].") ".$text.$end,$normalFont,$normalParagraphLH1Left);
-                        if (!is_null($answer->image))
-                        {
-                            $table->addRow(null);
-                            $table->addCell(9530)->addText('${image_identifier_'.$answer->id.'}');
-                        }
-                        if ($answer->is_right == 1) {array_push($rigntAnswersArr,$symbols[$key]);}
-                    }
-                     $t->setComplexBlock('answers#'.$number, $table);
-
-                     $t->setValue('rignt_answers#'.$number, $number);
-                     $t->setValue('rignt_answers_text#'.$number, implode(",",$rigntAnswersArr));
-
-                     foreach ($answers as $answer)
-                     {
-                        if (!is_null($answer->image))
-                        {
-                            $result = $this->get_image_width_height($answer->image);
-                            $t->setImageValue('image_identifier_'.$answer->id, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
-                        }
-                     }
-                }
-            }
-
-            $type = $questions->where('question_type_id',3);
-            foreach ($type as $question)
-            {
-                $number++;
-                $rigntAnswersArr = [];
-                $answers = $question->free_choice_answers;
-                $t->setValue('text#'.$number, $number." ".$this->clean_text($question->text));
-                if (!is_null($question->image))
-                {
-                    $result = $this->get_image_width_height($question->image);
-                    $t->setImageValue('question_image#'.$number, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
-                }else{
-                    $blank = new \PhpOffice\PhpWord\Element\TextRun();
-                    $blank->addText('_', array('size' => 0,'color' => 'FFFFFF'));
-                    $t->setComplexValue('question_image#'.$number, $blank);
-                }
-
-                $t->setValue('type#'.$number, $question->type->name);
-                $t->setValue('answers#'.$number, " ");
-                foreach ($answers as $key => $answer)
-                {
-                    array_push($rigntAnswersArr,$answer->text);
-                }
-                $t->setValue('rignt_answers#'.$number, $number);
-                $t->setValue('rignt_answers_text#'.$number, implode("; ",$rigntAnswersArr));
-            }
-
-            $type = $questions->where('question_type_id',4);
-            foreach ($type as $question)
-            {
-                $number++;
-                $rigntAnswersArr = [];
-                $t->setValue('text#'.$number, $number." ".$this->clean_text($question->text));
-                if (!is_null($question->image))
-                {
-                    $result = $this->get_image_width_height($question->image);
-                    $t->setImageValue('question_image#'.$number, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
-                }else{
-                    $blank = new \PhpOffice\PhpWord\Element\TextRun();
-                    $blank->addText('_', array('size' => 0,'color' => 'FFFFFF'));
-                    $t->setComplexValue('question_image#'.$number, $blank);
-                }
-                $t->setValue('type#'.$number, $question->type->name);
-                $table  = new \PhpOffice\PhpWord\Element\Table();
-                $answers = $question->sequence_choice_answers;
-                foreach ($answers as $key => $answer)
-                {
-                    $n = $key+1;
-                    $text = $this->clean_text($answer->text);
-                    if ($key != $answers->count()-1) {$end=';';}else{$end='.';}
-                    $table->addRow(null);
-                    $table->addCell(9530)->addText($n." ".$text.$end,$normalFont,$normalParagraphLH1Left);
-                    if (!is_null($answer->image))
-                    {
-                        $table->addRow(null);
-                        $table->addCell(9530)->addText('${image_identifier_'.$answer->id.'}');
-                    }
-                    array_push($rigntAnswersArr,$n);
-                }
-
-                $t->setComplexBlock('answers#'.$number, $table);
-                $t->setValue('rignt_answers#'.$number, $number);
-                $t->setValue('rignt_answers_text#'.$number, implode(",",$rigntAnswersArr));
-
-                foreach ($answers as $answer)
-                {
-                    if (!is_null($answer->image))
-                    {
-                        $result = $this->get_image_width_height($answer->image);
-                        $t->setImageValue('image_identifier_'.$answer->id, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
-                    }
-                }
-            }
-
-            $type = $questions->where('question_type_id',5);
-            foreach ($type as $question)
-            {
-                $number++;
-                $rigntAnswersArr = [];
-                $t->setValue('text#'.$number, $number." ".$this->clean_text($question->text));
-                if (!is_null($question->image))
-                {
-                    $result = $this->get_image_width_height($question->image);
-                    $t->setImageValue('question_image#'.$number, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
-                }else{
-                    $blank = new \PhpOffice\PhpWord\Element\TextRun();
-                    $blank->addText('_', array('size' => 0,'color' => 'FFFFFF'));
-                    $t->setComplexValue('question_image#'.$number, $blank);
-                }
-                $t->setValue('type#'.$number, $question->type->name);
-                $table  = new \PhpOffice\PhpWord\Element\Table($tableStyle);
-                $table->addRow(null,array('tblHeader' => true));
-                $table->addCell(4765)->addText("Колонка 1",$tableBoldFont,$cellHCenteredNoSpace);
-                $table->addCell(4765)->addText("Колонка 2",$tableBoldFont,$cellHCenteredNoSpace);
-
-                $answers = $question->accordance_choice_answers;
-                foreach ($answers as $key => $answer)
-                {
-                    $text = $this->clean_text($answer->text);
-                    $text2 = $this->clean_text($answer->text2);
-                    $n = $key+1;
-                    $table->addRow(null,array('tblHeader' => false));
-                    $table->addCell(4765)->addText($n.") ".$text,$tableNormalFont,$cellNoSpace);
-                    $table->addCell(4765)->addText($symbols[$key].") ".$text2,$tableNormalFont,$cellNoSpace);
-                    array_push($rigntAnswersArr,$n."-".$symbols[$key]);
-                }
-                $t->setComplexBlock('answers#'.$number, $table);
-                $t->setValue('rignt_answers#'.$number, $number);
-                $t->setValue('rignt_answers_text#'.$number, implode(",",$rigntAnswersArr));
-
-            }
-
-        }
+//        foreach ($knowledges as  $index => $knowledge)
+//        {
+//            $questions = $knowledge->questions;
+//            $type2 = $questions->where('question_type_id',2);
+//            $type = $questions->where('question_type_id',1)->union($type2);
+//            foreach ($type as $question)
+//            {
+//                $number++;
+//                $rigntAnswersArr = [];
+//                $t->setValue('text#'.$number, $number." ".$this->clean_text($question->text));
+//                if (!is_null($question->image))
+//                {
+//                    $result = $this->get_image_width_height($question->image);
+//                    $t->setImageValue('question_image#'.$number, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
+//                }else{
+//                    $blank = new \PhpOffice\PhpWord\Element\TextRun();
+//                    $blank->addText('_', array('size' => 0,'color' => 'FFFFFF'));
+//                    $t->setComplexValue('question_image#'.$number, $blank);
+//                }
+//                $t->setValue('type#'.$number, $question->type->name);
+//                if ($question->question_type_id == 1)
+//                {
+//                    $table  = new \PhpOffice\PhpWord\Element\Table();
+//                    $answers = $question->single_choice_answers;
+//                    foreach ($answers as $key => $answer)
+//                    {
+//                        $text = $this->clean_text($answer->text);
+//
+//                        if ($key != $answers->count()-1) {$end=';';}else{$end='.';}
+//                        $table->addRow(null);
+//                        $table->addCell(9530)->addText($symbols[$key].") ".$text.$end,$normalFont,$normalParagraphLH1Left);
+//                        if (!is_null($answer->image))
+//                        {
+//                            $table->addRow(null);
+//                            $table->addCell(9530)->addText('${image_identifier_'.$answer->id.':300:300}');
+//                        }
+//                        if ($answer->is_right == 1) {array_push($rigntAnswersArr,$symbols[$key]);}
+//                    }
+//                     $t->setComplexBlock('answers#'.$number, $table);
+//                     foreach ($answers as $answer)
+//                     {
+//                        if (!is_null($answer->image))
+//                        {
+//                            $result = $this->get_image_width_height($answer->image);
+//                            $t->setImageValue('image_identifier_'.$answer->id, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
+//                        }
+//                     }
+//                     $t->setValue('rignt_answers#'.$number, $number);
+//                     $t->setValue('rignt_answers_text#'.$number, implode(", ",$rigntAnswersArr));
+//                }
+//                if ($question->question_type_id == 2)
+//                {
+//                    $table  = new \PhpOffice\PhpWord\Element\Table();
+//                    $answers = $question->multi_choice_answers;
+//                    foreach ($answers as $key => $answer)
+//                    {
+//                        $text = $this->clean_text($answer->text);
+//                        if ($key != $answers->count()-1) {$end=';';}else{$end='.';}
+//                        $table->addRow(null);
+//                        $table->addCell(9530)->addText($symbols[$key].") ".$text.$end,$normalFont,$normalParagraphLH1Left);
+//                        if (!is_null($answer->image))
+//                        {
+//                            $table->addRow(null);
+//                            $table->addCell(9530)->addText('${image_identifier_'.$answer->id.'}');
+//                        }
+//                        if ($answer->is_right == 1) {array_push($rigntAnswersArr,$symbols[$key]);}
+//                    }
+//                     $t->setComplexBlock('answers#'.$number, $table);
+//
+//                     $t->setValue('rignt_answers#'.$number, $number);
+//                     $t->setValue('rignt_answers_text#'.$number, implode(",",$rigntAnswersArr));
+//
+//                     foreach ($answers as $answer)
+//                     {
+//                        if (!is_null($answer->image))
+//                        {
+//                            $result = $this->get_image_width_height($answer->image);
+//                            $t->setImageValue('image_identifier_'.$answer->id, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
+//                        }
+//                     }
+//                }
+//            }
+//
+//            $type = $questions->where('question_type_id',3);
+//            foreach ($type as $question)
+//            {
+//                $number++;
+//                $rigntAnswersArr = [];
+//                $answers = $question->free_choice_answers;
+//                $t->setValue('text#'.$number, $number." ".$this->clean_text($question->text));
+//                if (!is_null($question->image))
+//                {
+//                    $result = $this->get_image_width_height($question->image);
+//                    $t->setImageValue('question_image#'.$number, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
+//                }else{
+//                    $blank = new \PhpOffice\PhpWord\Element\TextRun();
+//                    $blank->addText('_', array('size' => 0,'color' => 'FFFFFF'));
+//                    $t->setComplexValue('question_image#'.$number, $blank);
+//                }
+//
+//                $t->setValue('type#'.$number, $question->type->name);
+//                $t->setValue('answers#'.$number, " ");
+//                foreach ($answers as $key => $answer)
+//                {
+//                    array_push($rigntAnswersArr,$answer->text);
+//                }
+//                $t->setValue('rignt_answers#'.$number, $number);
+//                $t->setValue('rignt_answers_text#'.$number, implode("; ",$rigntAnswersArr));
+//            }
+//
+//            $type = $questions->where('question_type_id',4);
+//            foreach ($type as $question)
+//            {
+//                $number++;
+//                $rigntAnswersArr = [];
+//                $t->setValue('text#'.$number, $number." ".$this->clean_text($question->text));
+//                if (!is_null($question->image))
+//                {
+//                    $result = $this->get_image_width_height($question->image);
+//                    $t->setImageValue('question_image#'.$number, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
+//                }else{
+//                    $blank = new \PhpOffice\PhpWord\Element\TextRun();
+//                    $blank->addText('_', array('size' => 0,'color' => 'FFFFFF'));
+//                    $t->setComplexValue('question_image#'.$number, $blank);
+//                }
+//                $t->setValue('type#'.$number, $question->type->name);
+//                $table  = new \PhpOffice\PhpWord\Element\Table();
+//                $answers = $question->sequence_choice_answers;
+//                foreach ($answers as $key => $answer)
+//                {
+//                    $n = $key+1;
+//                    $text = $this->clean_text($answer->text);
+//                    if ($key != $answers->count()-1) {$end=';';}else{$end='.';}
+//                    $table->addRow(null);
+//                    $table->addCell(9530)->addText($n." ".$text.$end,$normalFont,$normalParagraphLH1Left);
+//                    if (!is_null($answer->image))
+//                    {
+//                        $table->addRow(null);
+//                        $table->addCell(9530)->addText('${image_identifier_'.$answer->id.'}');
+//                    }
+//                    array_push($rigntAnswersArr,$n);
+//                }
+//
+//                $t->setComplexBlock('answers#'.$number, $table);
+//                $t->setValue('rignt_answers#'.$number, $number);
+//                $t->setValue('rignt_answers_text#'.$number, implode(",",$rigntAnswersArr));
+//
+//                foreach ($answers as $answer)
+//                {
+//                    if (!is_null($answer->image))
+//                    {
+//                        $result = $this->get_image_width_height($answer->image);
+//                        $t->setImageValue('image_identifier_'.$answer->id, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
+//                    }
+//                }
+//            }
+//
+//            $type = $questions->where('question_type_id',5);
+//            foreach ($type as $question)
+//            {
+//                $number++;
+//                $rigntAnswersArr = [];
+//                $t->setValue('text#'.$number, $number." ".$this->clean_text($question->text));
+//                if (!is_null($question->image))
+//                {
+//                    $result = $this->get_image_width_height($question->image);
+//                    $t->setImageValue('question_image#'.$number, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
+//                }else{
+//                    $blank = new \PhpOffice\PhpWord\Element\TextRun();
+//                    $blank->addText('_', array('size' => 0,'color' => 'FFFFFF'));
+//                    $t->setComplexValue('question_image#'.$number, $blank);
+//                }
+//                $t->setValue('type#'.$number, $question->type->name);
+//                $table  = new \PhpOffice\PhpWord\Element\Table($tableStyle);
+//                $table->addRow(null,array('tblHeader' => true));
+//                $table->addCell(4765)->addText("Колонка 1",$tableBoldFont,$cellHCenteredNoSpace);
+//                $table->addCell(4765)->addText("Колонка 2",$tableBoldFont,$cellHCenteredNoSpace);
+//
+//                $answers = $question->accordance_choice_answers;
+//                foreach ($answers as $key => $answer)
+//                {
+//                    $text = $this->clean_text($answer->text);
+//                    $text2 = $this->clean_text($answer->text2);
+//                    $n = $key+1;
+//                    $table->addRow(null,array('tblHeader' => false));
+//                    $table->addCell(4765)->addText($n.") ".$text,$tableNormalFont,$cellNoSpace);
+//                    $table->addCell(4765)->addText($symbols[$key].") ".$text2,$tableNormalFont,$cellNoSpace);
+//                    array_push($rigntAnswersArr,$n."-".$symbols[$key]);
+//                }
+//                $t->setComplexBlock('answers#'.$number, $table);
+//                $t->setValue('rignt_answers#'.$number, $number);
+//                $t->setValue('rignt_answers_text#'.$number, implode(",",$rigntAnswersArr));
+//
+//            }
+//
+//        }
 
         $t->setValue('testPercent', $dpp->om_version->test_percent);
 
