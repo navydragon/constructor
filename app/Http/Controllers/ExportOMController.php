@@ -772,7 +772,7 @@ class ExportOMController extends Controller
         $toc->addTableContents(array('autoUpdate'=>true),$legend,storage_path('/templates/TOC_sample.docx'));
         //$toc->addTableContents();
 
-        // $t->replaceVariableByWordFragment(array('TOC' => $toc), array('type' => 'block'));
+        $t->replaceVariableByWordFragment(array('TOC' => $toc), array('type' => 'block'));
 
         $pathToSave = storage_path('ПрДПП_'.$dpp->abbreveation.'_ Приложение А. Оценочные материалы.docx');
         $t->createDocx($pathToSave);
