@@ -423,8 +423,9 @@ class ExportOMController extends Controller
                         }
                         if ($answer->is_right == 1) {array_push($rigntAnswersArr,$symbols[$key]);}
                     }
-
-                    // $t->setComplexBlock('answers#'.$number, $table);
+                    if ($number <200) {
+                        $t->setComplexBlock('answers#'.$number, $table);
+                    }
 
 
                      $t->setValue('rignt_answers#'.$number, $number);
