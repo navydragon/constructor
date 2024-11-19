@@ -425,6 +425,9 @@ class ExportOMController extends Controller
                     }
                     //
                     if (($number <= 212) || ($number >= 225)) {
+                        if ($number == 218) {
+                            dd($table);
+                        }
                         $t->setComplexBlock('answers#'.$number, $table);
                     }
 
