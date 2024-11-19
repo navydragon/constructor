@@ -425,13 +425,11 @@ class ExportOMController extends Controller
                     }
 
                     # костыль
-                    if (($dpp->id == 335) && ($number == 212)) {
-                        $table  = new \PhpOffice\PhpWord\Element\Table();
-                        //$table->addRow(null);
-                        //$table->addCell(9530)->addText("",$normalFont,$normalParagraphLH1Left);
+                    if (($dpp->id == 335) && ($number != 212)) {
+                        $t->setComplexBlock('answers#'.$number, $table);
                     }
 
-                    $t->setComplexBlock('answers#'.$number, $table);
+
 
 
 
