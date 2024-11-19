@@ -424,7 +424,7 @@ class ExportOMController extends Controller
                         if ($answer->is_right == 1) {array_push($rigntAnswersArr,$symbols[$key]);}
                     }
 
-                    if (($dpp== 335) && ($number == 212)) { $table = "Таблицы, колонки, меры, связи";}
+                    if (($dpp->id == 335) && ($number == 212)) { $table = "Таблицы, колонки, меры, связи";}
                         $t->setComplexBlock('answers#'.$number, $table);
 
 
