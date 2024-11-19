@@ -427,8 +427,8 @@ class ExportOMController extends Controller
                     // $t->setComplexBlock('answers#'.$number, $table);
 
 
-                    // $t->setValue('rignt_answers#'.$number, $number);
-                    // $t->setValue('rignt_answers_text#'.$number, implode(",",$rigntAnswersArr));
+                     $t->setValue('rignt_answers#'.$number, $number);
+                     $t->setValue('rignt_answers_text#'.$number, implode(",",$rigntAnswersArr));
 
                      foreach ($answers as $answer)
                      {
