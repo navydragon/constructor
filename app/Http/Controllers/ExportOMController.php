@@ -424,8 +424,14 @@ class ExportOMController extends Controller
                         if ($answer->is_right == 1) {array_push($rigntAnswersArr,$symbols[$key]);}
                     }
 
-                    if (($dpp->id == 335) && ($number == 212)) { $table = "Таблицы, колонки, меры, связи";}
-                        $t->setComplexBlock('answers#'.$number, $table);
+                    # костыль
+                    if (($dpp->id == 335) && ($number == 212)) {
+                        $table  = new \PhpOffice\PhpWord\Element\Table();
+                        $table->addRow(null);
+                        $table->addCell(9530)->addText("",$normalFont,$normalParagraphLH1Left);
+                    }
+
+                    $t->setComplexBlock('answers#'.$number, $table);
 
 
 
