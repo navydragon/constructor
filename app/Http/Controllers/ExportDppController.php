@@ -858,6 +858,7 @@ class ExportDppController extends Controller
              $table->addRow(null);
              if ($sect->name == 'Итоговая аттестация')
              {
+                 $att_text = ' в форме зачета';
                  if ($dpp->att_type == 'Зачет') {$att_text = ' в форме зачета';}
                  if ($dpp->att_type == 'Экзамен') {$att_text = ' в форме экзамена';}
              }else{
@@ -976,6 +977,7 @@ class ExportDppController extends Controller
             $table->addRow(null);
              if ($sect->name == 'Итоговая аттестация')
              {
+                 $att_text = ' в форме зачета';
                  if ($dpp->att_type == 'Зачет') {$att_text = ' в форме зачета';}
                  if ($dpp->att_type == 'Экзамен') {$att_text = ' в форме экзамена';}
              }else{
