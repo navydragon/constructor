@@ -425,7 +425,7 @@ class ExportOMController extends Controller
                     }
 
                     # костыль
-                    if (($dpp->id == 335) && ($number != 212)) {
+                    if ((($dpp->id == 335) && ($number != 212)) || ($dpp->id <> 335)  ) {
                         $t->setComplexBlock('answers#'.$number, $table);
                     }
 
