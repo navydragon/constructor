@@ -431,8 +431,6 @@ class ExportOMController extends Controller
 
 
 
-
-
                      $t->setValue('rignt_answers#'.$number, $number);
                      $t->setValue('rignt_answers_text#'.$number, implode(",",$rigntAnswersArr));
 
