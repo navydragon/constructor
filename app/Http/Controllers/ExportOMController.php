@@ -511,11 +511,15 @@ class ExportOMController extends Controller
 
                 foreach ($answers as $answer)
                 {
-                    if (!is_null($answer->image))
-                    {
-                        $result = $this->get_image_width_height($answer->image);
-                        $t->setImageValue('image_identifier_'.$answer->id, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
+                    try {
+                        if (!is_null($answer->image)) {
+                            $result = $this->get_image_width_height($answer->image);
+                            $t->setImageValue('image_identifier_' . $answer->id, array('path' => $result['path'], 'width' => $result['width'] . 'px', 'height' => $result['height'] . 'px'));
+                        }
+                    } catch (\Exception $e) {
+                        dd($answer);
                     }
+
                 }
             }
 
