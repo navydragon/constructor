@@ -513,6 +513,7 @@ class ExportOMController extends Controller
                 {
                     \Log::info('Вопрос', [ 'text' => $question->text]);
                     \Log::info('Обработка изображения началась', ['image' => $answer->image, 'text' => $answer->text]);
+                    \Log::info(!is_null($answer->image));
                     if (!is_null($answer->image)) {
                         $result = $this->get_image_width_height($answer->image);
                         $t->setImageValue('image_identifier_' . $answer->id, array('path' => $result['path'], 'width' => $result['width'] . 'px', 'height' => $result['height'] . 'px'));
