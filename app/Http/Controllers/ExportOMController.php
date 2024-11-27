@@ -516,7 +516,11 @@ class ExportOMController extends Controller
                             $result = $this->get_image_width_height($answer->image);
                             $t->setImageValue('image_identifier_' . $answer->id, array('path' => $result['path'], 'width' => $result['width'] . 'px', 'height' => $result['height'] . 'px'));
                         }
+                    } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
+                        // Обработка ошибки PhpWord
+                        dd($answer);
                     } catch (\Exception $e) {
+                        // Обработка других ошибок
                         dd($answer);
                     }
 
