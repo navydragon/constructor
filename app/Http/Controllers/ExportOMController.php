@@ -511,19 +511,11 @@ class ExportOMController extends Controller
 
                 foreach ($answers as $answer)
                 {
-                    try {
-                        if (!is_null($answer->image)) {
-                            $result = $this->get_image_width_height($answer->image);
-                            $t->setImageValue('image_identifier_' . $answer->id, array('path' => $result['path'], 'width' => $result['width'] . 'px', 'height' => $result['height'] . 'px'));
-                        }
-                    } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
-                        // Обработка ошибки PhpWord
-                        dd($answer);
-                    } catch (\Exception $e) {
-                        // Обработка других ошибок
-                        dd($answer);
+                    \Log::info('Обработка изображения началась', ['image' => $answer->image, 'text' => $answer->text]);
+                    if (!is_null($answer->image)) {
+                        $result = $this->get_image_width_height($answer->image);
+                        $t->setImageValue('image_identifier_' . $answer->id, array('path' => $result['path'], 'width' => $result['width'] . 'px', 'height' => $result['height'] . 'px'));
                     }
-
                 }
             }
 
