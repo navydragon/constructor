@@ -368,6 +368,8 @@ class ExportOMController extends Controller
                 $t->setValue('text#'.$number, $number." ".$this->clean_text($question->text));
                 if (!is_null($question->image))
                 {
+                    \Log::info('Вопрос', [ 'text' => $question->text]);
+
                     $result = $this->get_image_width_height($question->image);
                     $t->setImageValue('question_image#'.$number, array('path' => $result['path'], 'width' =>$result['width'].'px', 'height' => $result['height'].'px'));
                 }else{
@@ -511,9 +513,6 @@ class ExportOMController extends Controller
 
                 foreach ($answers as $answer)
                 {
-                    \Log::info('Вопрос', [ 'text' => $question->text]);
-                    \Log::info('Обработка изображения началась', ['image' => $answer->image, 'text' => $answer->text]);
-                    \Log::info(!is_null($answer->image));
                     if (!is_null($answer->image)) {
                         $result = $this->get_image_width_height($answer->image);
                         $t->setImageValue('image_identifier_' . $answer->id, array('path' => $result['path'], 'width' => $result['width'] . 'px', 'height' => $result['height'] . 'px'));
