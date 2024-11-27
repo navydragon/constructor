@@ -511,6 +511,7 @@ class ExportOMController extends Controller
 
                 foreach ($answers as $answer)
                 {
+                    \Log::info('Вопрос', [ 'text' => $question->text]);
                     \Log::info('Обработка изображения началась', ['image' => $answer->image, 'text' => $answer->text]);
                     if (!is_null($answer->image)) {
                         $result = $this->get_image_width_height($answer->image);
