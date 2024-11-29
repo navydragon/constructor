@@ -37,6 +37,7 @@ class ExportPracticeController extends Controller
     public function export_practice(Dpp $dpp)
     {
 
+        $dpp->st_version->remake_positions();
 
         if ((!is_null($dpp->category)) && ($dpp->category->name == 'РОСДОРНИИ' ))
         {

@@ -31,6 +31,8 @@ class ExportDppController extends Controller
 {
     public function export_dpp(Dpp $dpp)
     {
+        $dpp->st_version->remake_positions();
+
         if ((!is_null($dpp->category)) && ($dpp->category->name == 'РОСДОРНИИ' ))
         {
             return $this->export_dpp_rdn($dpp);
