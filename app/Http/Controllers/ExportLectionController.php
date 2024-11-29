@@ -52,6 +52,7 @@ class ExportLectionController extends Controller
         $t = new \PhpOffice\PhpWord\TemplateProcessor(storage_path('/templates/make_lection_miit.docx'));
         \PhpOffice\PhpWord\Settings::setOutputEscapingEnabled(true);
 
+        $dpp->st_version->remake_positions();
 
         $t->setValue('dppName', $dpp->name);
         if ($dpp->dpp_type_id == 1) {$dppType = 'ПРОГРАММЫ ПОВЫШЕНИЯ КВАЛИФИКАЦИИ';}else{$dppType = 'ПРОГРАММЫ ПРОФЕССИОНАЛЬНОЙ ПЕРЕПОДГОТОВКИ';}

@@ -23,6 +23,22 @@ class StructureVersion extends Model
         return $this->belongsTo('App\Dpp','dpp_id');
     }
 
+    public function remake_positions() {
+        $sections = StructureSection::where('parent_id', '=', null)
+            ->where('st_version_id', '=', $this->id)
+            ->orderBy('position')
+            ->get();
+
+        foreach ($sections as $section) {
+            $position = 1;
+            foreach ($section->themes as $theme) {
+                $theme->position = $position;
+                $position++;
+                $theme->save();
+            }
+        }
+    }
+
     public function rebuild()
     {
         $sections = $this->get_sections;
