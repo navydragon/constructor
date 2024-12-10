@@ -45,6 +45,8 @@ class ExportOMController extends Controller
         //ТИТУЛ
 
         $t->setValue('dppName', $dpp->name);
+        if ($dpp->dpp_type_id == 1) {$dppType = 'ПРОГРАММЫ ПОВЫШЕНИЯ КВАЛИФИКАЦИИ';}else{$dppType = 'ПРОГРАММЫ ПРОФЕССИОНАЛЬНОЙ ПЕРЕПОДГОТОВКИ';}
+        $t->setValue('dppType',$dppType);
         $t->setValue('year', $dpp->year);
 
         //умений и навыков
