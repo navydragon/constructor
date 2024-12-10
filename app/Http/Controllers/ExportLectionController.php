@@ -57,7 +57,7 @@ class ExportLectionController extends Controller
         $t->setValue('dppName', $dpp->name);
 
         if ($dpp->dpp_type_id == 1) {$dppType = 'ПРОГРАММЫ ПОВЫШЕНИЯ КВАЛИФИКАЦИИ';}else{$dppType = 'ПРОГРАММЫ ПРОФЕССИОНАЛЬНОЙ ПЕРЕПОДГОТОВКИ';}
-        print($dppType);
+        dd($dppType);
         $t->setValue('dppType',$dppType);
         $t->setValue('year', $dpp->year);
         $pathToSave = storage_path('/temp/start.docx');  $t->saveAs($pathToSave);
