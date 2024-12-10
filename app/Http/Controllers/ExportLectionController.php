@@ -55,6 +55,7 @@ class ExportLectionController extends Controller
         $dpp->st_version->remake_positions();
 
         $t->setValue('dppName', $dpp->name);
+        dd($dpp->dpp_type_id);
         if ($dpp->dpp_type_id == 1) {$dppType = 'ПРОГРАММЫ ПОВЫШЕНИЯ КВАЛИФИКАЦИИ';}else{$dppType = 'ПРОГРАММЫ ПРОФЕССИОНАЛЬНОЙ ПЕРЕПОДГОТОВКИ';}
         $t->setValue('dppType',$dppType);
         $t->setValue('year', $dpp->year);
