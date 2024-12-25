@@ -66,8 +66,19 @@ class ExportDppController extends Controller
         $year = $dpp->year;
         $t->setValue('dppYear', $year);
         $t->setValue('signature_year', $year);
-        dd($iv->annotationDescription);
+
         //АННОТАЦИЯ
+        $descriptionText = $iv->annotationDescription;
+        $descriptionArray = explode("\n", $descriptionText);
+        $count = count($descriptionArray);
+        if ($count > 0) {
+            $t->cloneBlock('block_annotation', $count, true, true);
+
+            foreach ($descriptionArray as $idx => $descriptionRow) {
+                $t->setValue('block_annotation#' . ($idx + 1), $descriptionRow);
+            }
+        }
+
         $t->setValue('dppAnnotation', $iv->annotationDescription);
 
         //ИСПОЛНИТЕЛИ
