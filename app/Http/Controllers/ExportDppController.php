@@ -75,11 +75,9 @@ class ExportDppController extends Controller
             $t->cloneBlock('block_annotation', $count, true, true);
 
             foreach ($descriptionArray as $idx => $descriptionRow) {
-                $t->setValue('block_annotation#' . ($idx + 1), $descriptionRow);
+                $t->setValue('dppAnnotation#' . ($idx + 1), $descriptionRow);
             }
         }
-
-        $t->setValue('dppAnnotation', $iv->annotationDescription);
 
         //ИСПОЛНИТЕЛИ
         $designers = $dpp->designers;
