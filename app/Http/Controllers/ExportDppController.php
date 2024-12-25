@@ -66,7 +66,7 @@ class ExportDppController extends Controller
         $year = $dpp->year;
         $t->setValue('dppYear', $year);
         $t->setValue('signature_year', $year);
-
+        dd($iv->annotationDescription);
         //АННОТАЦИЯ
         $t->setValue('dppAnnotation', $iv->annotationDescription);
 
