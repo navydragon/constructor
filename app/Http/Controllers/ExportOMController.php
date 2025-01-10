@@ -639,7 +639,7 @@ class ExportOMController extends Controller
 
                         $table2->addRow(null,array('tblHeader' => false));
                         $table2->addCell(3175)->addText($this->clean_text($object->name),$tableNormalFont,$cellNoSpace);
-                        $text = preg_replace('/[^\pL0-9«»"()=–+^,.;:\-±\s]/u', '', $object->model_answer);
+                        $text = preg_replace('/[^\pL0-9«»"()%=–+^,.;:\-±\s]/u', '', $object->model_answer);
                         $text = mb_convert_encoding($text,'HTML-ENTITIES','UTF-8');
                         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5);
                         $table2->addCell(6350)->addText($text,$tableNormalFont,$cellNoSpace);
@@ -661,7 +661,7 @@ class ExportOMController extends Controller
                         $right_answer = strip_tags($htmlToText->convert($step->rightAnswer));
                         //$right_answer = str_replace(["\n"], '\r\n', $right_answer);
                         //dd($right_answer);
-                        $text = preg_replace('/[^\pL0-9«»"()=–+^,.;:\-±\/\s]/u', '', $right_answer);
+                        $text = preg_replace('/[^\pL0-9«»"()%=–+^,.;:\-±\/\s]/u', '', $right_answer);
                         $text = mb_convert_encoding($text,'HTML-ENTITIES','UTF-8');
                         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5);
                         $text = ltrim($text);
