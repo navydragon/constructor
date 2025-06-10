@@ -625,51 +625,45 @@ class ExportOMController extends Controller
             $table2->addRow(null,array('tblHeader' => true));
             $table2->addCell(3175)->addText("Объект оценки",$tableBoldFont,$cellHCenteredNoSpace);
             $table2->addCell(6350)->addText("Модельный ответ (индикатор)",$tableBoldFont,$cellHCenteredNoSpace);
-            foreach ($subjects as $subject)
-            {
-                dd(count($subjects));
-                if ($task->task_type_id == 1) {
+            if ($task->task_type_id == 1) {
+                foreach ($subjects as $subject) {
                     $objects = $subject->objects;
-                    foreach ($objects as $object)
-                    {
+                    foreach ($objects as $object) {
+                        $table->addRow(null, array('tblHeader' => false));
+                        $table->addCell(3175)->addText($subject->name, $tableNormalFont, $cellNoSpace);
+                        $table->addCell(3175)->addText($object->name, $tableNormalFont, $cellNoSpace);
+                        $table->addCell(3175)->addText("Соответствие модельному ответу", $tableNormalFont, $cellNoSpace);
 
-                        $table->addRow(null,array('tblHeader' => false));
-                        $table->addCell(3175)->addText($subject->name,$tableNormalFont,$cellNoSpace);
-                        $table->addCell(3175)->addText($object->name,$tableNormalFont,$cellNoSpace);
-                        $table->addCell(3175)->addText("Соответствие модельному ответу",$tableNormalFont,$cellNoSpace);
-
-                        $table2->addRow(null,array('tblHeader' => false));
-                        $table2->addCell(3175)->addText($this->clean_text($object->name),$tableNormalFont,$cellNoSpace);
+                        $table2->addRow(null, array('tblHeader' => false));
+                        $table2->addCell(3175)->addText($this->clean_text($object->name), $tableNormalFont, $cellNoSpace);
                         $text = preg_replace('/[^\pL0-9«»"()%=–+^,.;:\-±\s]/u', '', $object->model_answer);
-                        $text = mb_convert_encoding($text,'HTML-ENTITIES','UTF-8');
+                        $text = mb_convert_encoding($text, 'HTML-ENTITIES', 'UTF-8');
                         $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5);
-                        $table2->addCell(6350)->addText($text,$tableNormalFont,$cellNoSpace);
-                    }
-                }elseif ($task->task_type_id == 3) {
-                    $steps = $task->steps;
-                    foreach ($steps as $key => $step) {
-                        $table->addRow(null,array('tblHeader' => false));
-                        $htmlToText = new CssToInlineStyles();
-                        $step_text = strip_tags($htmlToText->convert($step->text));
-                        $table->addCell(3175)->addText("Шаг " . ($key + 1) . "." . $step_text, $tableNormalFont, $cellNoSpace);
-                        $table->addCell(3175)->addText($step->object,$tableNormalFont,$cellNoSpace);
-                        $table->addCell(3175)->addText("Соответствие модельному ответу",$tableNormalFont,$cellNoSpace);
-
-                        $table2->addRow(null,array('tblHeader' => false));
-
-                        $table2->addCell(3175)->addText($step->object,$tableNormalFont,$cellNoSpace);
-                        $htmlToText = new CssToInlineStyles();
-                        $right_answer = strip_tags($htmlToText->convert($step->rightAnswer));
-                        //$right_answer = str_replace(["\n"], '\r\n', $right_answer);
-                        //dd($right_answer);
-                        $text = preg_replace('/[^\pL0-9«»"()%=–+^,.;:\-±\/\s]/u', '', $right_answer);
-                        $text = mb_convert_encoding($text,'HTML-ENTITIES','UTF-8');
-                        $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5);
-                        $text = ltrim($text);
-                        $table2->addCell(6350)->addText($text,$tableNormalFont,$cellNoSpace);
+                        $table2->addCell(6350)->addText($text, $tableNormalFont, $cellNoSpace);
                     }
                 }
+            } elseif ($task->task_type_id == 3) {
+                // Обрабатываем шаги один раз, вне цикла по $subjects
+                $steps = $task->steps;
+                foreach ($steps as $key => $step) {
+                    $table->addRow(null, array('tblHeader' => false));
+                    $htmlToText = new CssToInlineStyles();
+                    $step_text = strip_tags($htmlToText->convert($step->text));
+                    $table->addCell(3175)->addText("Шаг " . ($key + 1) . "." . $step_text, $tableNormalFont, $cellNoSpace);
+                    $table->addCell(3175)->addText($step->object, $tableNormalFont, $cellNoSpace);
+                    $table->addCell(3175)->addText("Соответствие модельному ответу", $tableNormalFont, $cellNoSpace);
+
+                    $table2->addRow(null, array('tblHeader' => false));
+                    $table2->addCell(3175)->addText($step->object, $tableNormalFont, $cellNoSpace);
+                    $right_answer = strip_tags($htmlToText->convert($step->rightAnswer));
+                    $text = preg_replace('/[^\pL0-9«»"()%=–+^,.;:\-±\/\s]/u', '', $right_answer);
+                    $text = mb_convert_encoding($text, 'HTML-ENTITIES', 'UTF-8');
+                    $text = html_entity_decode($text, ENT_QUOTES | ENT_HTML5);
+                    $text = ltrim($text);
+                    $table2->addCell(6350)->addText($text, $tableNormalFont, $cellNoSpace);
+                }
             }
+
             $t->setComplexBlock('task_criteria#'.$idx, $table);
             $t->setComplexBlock('task_object#'.$idx, $table2);
 
