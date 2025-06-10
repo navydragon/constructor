@@ -627,6 +627,7 @@ class ExportOMController extends Controller
             $table2->addCell(6350)->addText("Модельный ответ (индикатор)",$tableBoldFont,$cellHCenteredNoSpace);
             foreach ($subjects as $subject)
             {
+                dd(count($subjects));
                 if ($task->task_type_id == 1) {
                     $objects = $subject->objects;
                     foreach ($objects as $object)
