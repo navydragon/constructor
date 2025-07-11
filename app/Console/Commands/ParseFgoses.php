@@ -91,7 +91,7 @@ class ParseFgoses extends Command
                     }
                     $requsites = str_replace('N','№',$last_href->text);
                     $requsites = str_replace('Приказ',', утв. приказом',$requsites);
-                    $link = $hrefs->getAttribute('href');
+                    $link = $last_href->getAttribute('href');
 
                     $fgos = Fgos::firstOrNew([
                         'code' => $code
