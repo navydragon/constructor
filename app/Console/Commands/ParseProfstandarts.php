@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Profstandart;
-use App\ProfstandartKind;
+use App\ProfStandart;
+use App\ProfStandartKind;
 use DateTime;
 
 
@@ -59,7 +59,7 @@ class ParseProfstandarts extends Command
                 $prikaz_parts = explode(' ', $row[6]);
                 $code_parts = explode('.', $row[2]);
 
-                $ps = Profstandart::firstOrNew(['nameCode' =>  $row[2] ]);
+                $ps = ProfStandart::firstOrNew(['nameCode' =>  $row[2] ]);
                 $ps->nameText = $row[5];
                 $ps->nameCode = $row[2];
                 if (count($prikaz_parts) == 3)
@@ -70,7 +70,7 @@ class ParseProfstandarts extends Command
 
                 $name = $row[2].' '.$row[5].', утв. приказом Минтруда России от '.$prikaz_parts[2].' № '.$prikaz_parts[0];
                 $ps->fullName = str_replace("№  ", "№ ", $name);
-                $kind = ProfstandartKind::where('code', $code_parts[0])->first();
+                $kind = ProfStandartKind::where('code', $code_parts[0])->first();
                 if ($kind)
                 {
                     $ps->kind_id = $kind->id;
