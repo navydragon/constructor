@@ -1238,7 +1238,6 @@ class ExportDppController extends Controller
             $t->cloneBlock('has_qual_block', 1, true, true);
             $t->cloneBlock('no_qual_block', 0, true, true);
         }else{
-            dd("KEK");
             $t->cloneBlock('has_qual_block', 0, true, true);
             $t->cloneBlock('no_qual_block', 1, true, true);
         }
