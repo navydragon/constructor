@@ -1248,6 +1248,29 @@ class ExportDppController extends Controller
             $t->cloneBlock('level_pod2_block', 0, true, true);
         }
 
+        //Требования к уровню профессионального образования
+        // Формируем требования по связям IshVersion <-> ProfLevel (многие-ко-многим), если заданы
+        $profLevels = $iv->prof_levels ?? collect();
+        if ($profLevels && $profLevels->count() > 0) {
+            $levelsList = $profLevels->map(function($pl){
+                return trim($pl->name ?? '');
+            })->filter()->implode('или')
+            $edu_level_text = 'лица, имеющие ' . $levelsList . '; лица, получающие ' . $levelsList;
+        } else {
+            $vpos = $iv->fgoses()->where((function ($q) {$q->where("fgos_level_id","<>",1)->where("fgos_level_id","<>",5);}))->get();
+            $spos = $iv->fgoses()->where((function ($q) {$q->where("fgos_level_id",1)->orWhere("fgos_level_id",5);}))->get();
+            // Фолбэк: если есть и ВПО, и СПО -> СПО/ВО; иначе всегда ВО
+            if (count($vpos) > 0 && count($spos) > 0) {
+                $edu_level_text = 'лица, имеющие среднее профессиональное и (или) высшее образование; лица, получающие среднее профессиональное и (или) высшее образование';
+            } else {
+                $edu_level_text = 'лица, имеющие высшее образование; лица, получающие высшее образование';
+            }
+        }
+
+        $t->setValue('edu_req', $edu_level_text);
+
+        $t->setValue('qual_req', $iv->req_user_kval);
+
         //ТРЕБЛОВАНИЯ и КВАЛИФИКАЦИЯ
         $qual = $iv->qualification;
         if (strlen($qual) > 0) {
