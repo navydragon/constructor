@@ -1241,25 +1241,20 @@ class ExportDppController extends Controller
             $t->cloneBlock('has_qual_block', 0, true, true);
             $t->cloneBlock('no_qual_block', 1, true, true);
         }
+        
+
+        if (strlen($qual) > 0) {
+            $t->cloneBlock('has_qual2_block', 1, true, true);
+            $t->cloneBlock('no_qual2_block', 0, true, true);
+        }else{
+            $t->cloneBlock('has_qual2_block', 0, true, true);
+            $t->cloneBlock('no_qual2_block', 1, true, true);
+        }
+        
+        $t->setValue('new_qual', $iv->qualification);
         $sphereValue = strlen(trim($iv->professional_sphere)) > 0 ? $iv->professional_sphere : '!!!_НЕ_ЗАПОЛНЕНО_!!!';
         $t->setValue('sphere#1', $sphereValue);
         $t->setValue('sphere', $sphereValue);
-
-        $t->setValue('new_qual', $iv->qualification);
-        //IT-неIT
-        if ($iv->direction_id == 1) {
-            $t->cloneBlock('no_it_block', 1, true, true);
-            $t->cloneBlock('it_block', 0, true, true);
-
-            $t->setValue('new_qual#1', $iv->qualification);
-            $t->setValue('is_it','не отнесенной');
-        }else{
-            $t->cloneBlock('no_it_block', 0, true, true);
-            $t->cloneBlock('it_block', 1, true, true);
-            $t->setValue('sphere_rp#1',$sphereValue);
-            $t->setValue('new_qual#1', $iv->qualification);
-            $t->setValue('is_it','отнесенной');
-        }
 
 
         //ФОРМА
