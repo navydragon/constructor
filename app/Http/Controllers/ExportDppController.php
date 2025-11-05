@@ -1232,6 +1232,15 @@ class ExportDppController extends Controller
             $t->setValue('object#'.$n, $object->text);
         }
 
+        //ТРЕБОВАНИЯ К УРОВНЮ ПОДГОТОВЛЕННОСТИ
+        $reqs = $iv->qualification_requirements;
+        $levels = collect($reqs ?? [])->map(function($req){
+            return $req->text ?? ($req->name ?? '');
+        })->filter()->implode(', ');
+        $hasLevels = strlen(trim($levels)) > 0;
+        $t->cloneBlock('level_pod_block', $hasLevels ? 1 : 0, true, true);
+        if ($hasLevels) { $t->setValue('levels', $levels); }
+
         //ТРЕБЛОВАНИЯ и КВАЛИФИКАЦИЯ
         $qual = $iv->qualification;
         if (strlen($qual) > 0) {
