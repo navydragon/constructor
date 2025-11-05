@@ -1255,7 +1255,7 @@ class ExportDppController extends Controller
         }else{
             $t->cloneBlock('no_it_block', 0, true, true);
             $t->cloneBlock('it_block', 1, true, true);
-            $t->setValue('sphere_rp#1',$iv->digital_sphere->name_rp);
+            $t->setValue('sphere_rp#1',$iv->professional_sphere);
             $t->setValue('new_qual#1', $iv->qualification);
             $t->setValue('is_it','отнесенной');
         }
