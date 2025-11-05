@@ -1244,12 +1244,16 @@ class ExportDppController extends Controller
         //ТРЕБЛОВАНИЯ и КВАЛИФИКАЦИЯ
         $qual = $iv->qualification;
         if (strlen($qual) > 0) {
+            $t->cloneBlock('has_qual_block', 1, true, true);
             $t->cloneBlock('has_qual1_block', 1, true, true);
             $t->cloneBlock('has_qual2_block', 1, true, true);
+            $t->cloneBlock('no_qual_block', 0, true, true);
             $t->cloneBlock('no_qual2_block', 0, true, true);
         }else{
+            $t->cloneBlock('has_qual_block', 0, true, true);
             $t->cloneBlock('has_qual1_block', 0, true, true);
             $t->cloneBlock('has_qual2_block', 0, true, true);
+            $t->cloneBlock('no_qual_block', 1, true, true);
             $t->cloneBlock('no_qual2_block', 1, true, true);
         }
         
