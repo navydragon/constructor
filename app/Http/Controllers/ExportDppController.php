@@ -1612,10 +1612,24 @@ class ExportDppController extends Controller
         //НСИ
         $t->setComplexBlock('block_npa_table', $this->get_nsi_table($dpp));
 
+        /*SAVE*/
         $pathToSave = storage_path('ДПП_ПП_'.$dpp->abbreveation.'_ Общая характеристика.docx');
         $t->saveAs($pathToSave);
         $t = new \Phpdocx\Create\CreateDocxFromTemplate($pathToSave);
         $t->createDocx($pathToSave);
+        $t->setTemplateSymbol('${', '}');
+        // TOC
+        $toc = new \Phpdocx\Elements\WordFragment($t);
+        $legend = array(
+            'text' => 'Щелкните здесь, чтобы обновить содержание',
+            'color' => '000000',
+            'bold' => false,
+            'fontSize' => 14,
+        );
+        $toc->addTableContents(array('autoUpdate'=>true),$legend);
+        $t->replaceVariableByWordFragment(array('TOC' => $toc), array('type' => 'block'));
+        $t->createDocx($pathToSave);
+
         return response()->download($pathToSave);
     }
 
