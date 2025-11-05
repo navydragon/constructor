@@ -64,6 +64,10 @@ class ApprovalController extends Controller
         {
             $stage["errors"][] = "Не введена аннотация программы";
         }
+        if ((is_null($iv->professional_sphere) || strlen(trim($iv->professional_sphere)) == 0) && $dpp->dpp_type_id == 2)
+        {
+            $stage["errors"][] = "Не заполнена Сфера профессиональной деятельности";
+        }
         //нси
         $nsis = $dpp->ish_version->nsis()->withCount('knowledges')->withCount('abilities')->withCount('skills')->get();
         foreach ($nsis as $nsi)

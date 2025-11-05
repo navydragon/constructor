@@ -1254,7 +1254,7 @@ class ExportDppController extends Controller
         if ($profLevels && $profLevels->count() > 0) {
             $levelsList = $profLevels->map(function($pl){
                 return trim($pl->name ?? '');
-            })->filter()->implode('или')
+            })->filter()->implode(' или ');
             $edu_level_text = 'лица, имеющие ' . $levelsList . '; лица, получающие ' . $levelsList;
         } else {
             $vpos = $iv->fgoses()->where((function ($q) {$q->where("fgos_level_id","<>",1)->where("fgos_level_id","<>",5);}))->get();
