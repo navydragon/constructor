@@ -1234,12 +1234,19 @@ class ExportDppController extends Controller
 
         //ТРЕБОВАНИЯ К УРОВНЮ ПОДГОТОВЛЕННОСТИ
         $reqs = $iv->qualification_requirements;
-        $levels = collect($reqs ?? [])->map(function($req){
-            return $req->text ?? ($req->name ?? '');
-        })->filter()->implode(', ');
-        $hasLevels = strlen(trim($levels)) > 0;
-        $t->cloneBlock('level_pod_block', $hasLevels ? 1 : 0, true, true);
-        if ($hasLevels) { $t->setValue('levels', $levels); }
+        $reqsCount = is_iterable($reqs) ? count($reqs) : 0;
+        if ($reqsCount > 0) {
+            $t->cloneBlock('level_pod_block', 1, true, true);
+            $t->cloneBlock('level_pod2_block', $reqsCount, true, true);
+            foreach ($reqs as $idx => $req) {
+                $text = trim($req->text ?? ($req->name ?? ''));
+                $ending = ($idx === $reqsCount - 1) ? '.' : ';';
+                $t->setValue('level_name#' . ($idx + 1), $text . $ending);
+            }
+        } else {
+            $t->cloneBlock('level_pod_block', 0, true, true);
+            $t->cloneBlock('level_pod2_block', 0, true, true);
+        }
 
         //ТРЕБЛОВАНИЯ и КВАЛИФИКАЦИЯ
         $qual = $iv->qualification;
