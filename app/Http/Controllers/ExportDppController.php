@@ -424,7 +424,7 @@ class ExportDppController extends Controller
         {
             if ($sect->name == 'Итоговая аттестация')
             {
-                if ($att_type == 'Зачет') {$att_text = ' в форме зачета';}
+                $att_text = ' в форме зачета';
                 if ($att_type == 'Экзамен') {$att_text = ' в форме экзамена';}
                 $t->setValue('themeName#'.$number, $sect->position.". ".$sect->name.$att_text);
             }else{
