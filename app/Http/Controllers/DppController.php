@@ -523,6 +523,47 @@ class DppController extends Controller
                 $newNSI->push();
             }
 
+            // Копировать требования к уровню подготовленности
+            foreach ($oldIV->qualification_requirements as $qr)
+            {
+                $newQR = $qr->replicate();
+                $newQR->ish_version_id = $newIV->id;
+                $newQR->push();
+            }
+
+            // Копировать объекты профессиональной деятельности
+            foreach ($oldIV->professional_objects as $po)
+            {
+                $newPO = $po->replicate();
+                $newPO->ish_version_id = $newIV->id;
+                $newPO->push();
+            }
+
+            // Копировать поля области и сферы профессиональной деятельности
+            $newIV->professional_field_id = $oldIV->professional_field_id;
+            $newIV->digital_sphere_id = $oldIV->digital_sphere_id;
+            $newIV->direction_id = $oldIV->direction_id;
+            $newIV->qualification = $oldIV->qualification;
+            $newIV->req_user_edulevel = $oldIV->req_user_edulevel;
+            $newIV->req_user_kval = $oldIV->req_user_kval;
+            
+            // Копировать поля формы обучения
+            $newIV->edu_form = $oldIV->edu_form;
+            $newIV->edu_form_dot = $oldIV->edu_form_dot;
+            $newIV->edu_practic = $oldIV->edu_practic;
+            
+            // Копировать поля трудоемкости и срока освоения
+            $newIV->edu_period_name = $oldIV->edu_period_name;
+            $newIV->edu_period_duration = $oldIV->edu_period_duration;
+            
+            // Копировать поля аннотации программы
+            $newIV->annotationDescription = $oldIV->annotationDescription;
+            $newIV->annotationRequirements = $oldIV->annotationRequirements;
+            $newIV->annotationTargets = $oldIV->annotationTargets;
+            $newIV->annotationResults = $oldIV->annotationResults;
+            
+            $newIV->save();
+
             // Импортировать компетенции, навыки, умения, знания и вопросы через метод import_competences
             $zunController = new ZunVersionController();
             $zunController->import_competences($newDpp, $dpp);
