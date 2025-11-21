@@ -612,8 +612,48 @@ class DppController extends Controller
                     $po->delete();
                 }
 
-                // Удаляем DppTypologyPart (каскадно удалит StructureSection через boot метод)
+                // Удаляем DppTypologyPart
+                // Сначала удаляем все связанные StructureSection (включая вложенные темы)
                 foreach ($iv->typology_parts as $tp) {
+                    // Удаляем все StructureSection с данным dtp_id (включая вложенные темы)
+                    $sections = StructureSection::where('dtp_id', $tp->id)->get();
+                    foreach ($sections as $section) {
+                        // Отвязываем many-to-many связи
+                        $section->knowledges()->detach();
+                        $section->abilities()->detach();
+                        $section->skills()->detach();
+
+                        // Удаляем Lection (если есть)
+                        foreach ($section->contents as $lection) {
+                            // Отвязываем many-to-many связи
+                            $lection->nsis()->detach();
+
+                            // Удаляем LectionPart (Content)
+                            foreach ($lection->parts as $part) {
+                                $part->delete();
+                            }
+
+                            // Удаляем AdditionalFile
+                            foreach ($lection->additional_files as $additionalFile) {
+                                $additionalFile->delete();
+                            }
+
+                            // Удаляем файлы лекций из storage
+                            $lectionPath = storage_path('app/lections/' . $lection->id);
+                            if (File::exists($lectionPath)) {
+                                File::deleteDirectory($lectionPath);
+                            }
+
+                            $lection->delete();
+                        }
+
+                        $section->delete();
+                    }
+
+                    // Отвязываем знания от DppTypologyPart
+                    $tp->get_knowledges()->detach();
+
+                    // Удаляем DppTypologyPart
                     $tp->delete();
                 }
 
