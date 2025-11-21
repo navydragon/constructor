@@ -541,6 +541,7 @@ class DppController extends Controller
 
             // Копировать поля области и сферы профессиональной деятельности
             $newIV->professional_field_id = $oldIV->professional_field_id;
+            $newIV->professional_sphere = $oldIV->professional_sphere;
             $newIV->digital_sphere_id = $oldIV->digital_sphere_id;
             $newIV->direction_id = $oldIV->direction_id;
             $newIV->qualification = $oldIV->qualification;
