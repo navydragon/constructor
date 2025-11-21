@@ -17,6 +17,8 @@ use App\Nsi;
 use App\Ministry;
 use App\StructureSection;
 use App\StructureVersion;
+use App\Lection;
+use Illuminate\Support\Facades\File;
 use App\Http\Resources\KnowledgeImportResource;
 class ZunVersionController extends Controller
 {
@@ -2163,6 +2165,30 @@ class ZunVersionController extends Controller
                         }
                         $old_theme = StructureSection::where('knowledge_id',$old_knowledge->id)->get()->first();
                         $new_theme = StructureSection::where('knowledge_id',$new_knowledge->id)->get()->first();
+                        
+                        // Копировать лекции, если они есть у старой темы, но отсутствуют у новой
+                        if ($old_theme && $new_theme) {
+                            $old_lections = Lection::where('section_id', $old_theme->id)->get();
+                            foreach ($old_lections as $old_lection) {
+                                $existing_lection = Lection::where('section_id', $new_theme->id)
+                                    ->where('type', $old_lection->type)
+                                    ->first();
+                                
+                                if (!$existing_lection) {
+                                    $new_lection = $old_lection->replicate();
+                                    $new_lection->section_id = $new_theme->id;
+                                    $new_lection->ct_version_id = $new_theme->st_version->dpp->ct_version->id;
+                                    $new_lection->push();
+                                    
+                                    // Копировать директорию с файлами лекции
+                                    $old_lection_path = storage_path('app/lections/'.$old_lection->id);
+                                    $new_lection_path = storage_path('app/lections/'.$new_lection->id);
+                                    if (File::exists($old_lection_path)) {
+                                        File::copyDirectory($old_lection_path, $new_lection_path);
+                                    }
+                                }
+                            }
+                        }
 
                         if ($old_theme && $new_theme) {
                             // Копировать все часы для тем
@@ -2189,6 +2215,9 @@ class ZunVersionController extends Controller
                             if ($old_theme->attestation_form !== null) {
                                 $new_theme->attestation_form = $old_theme->attestation_form;
                             }
+                            
+                            // Копировать позицию
+                            $new_theme->position = $old_theme->position;
                             
                             $new_theme->total_hours = $old_theme->total_hours;
                             $new_theme->save();
@@ -2223,6 +2252,9 @@ class ZunVersionController extends Controller
                                     if ($old_section->attestation_form !== null) {
                                         $new_section->attestation_form = $old_section->attestation_form;
                                     }
+                                    
+                                    // Копировать позицию
+                                    $new_section->position = $old_section->position;
                                     
                                     $new_section->total_hours = $old_section->total_hours;
                                     $new_section->save();
@@ -2279,8 +2311,74 @@ class ZunVersionController extends Controller
                         $new_section->attestation_form = $old_section->attestation_form;
                     }
                     
+                    // Копировать позицию
+                    $new_section->position = $old_section->position;
+                    
                     $new_section->total_hours = $old_section->total_hours;
                     $new_section->save();
+                    
+                    // Копировать лекции (type='pr' и другие), не связанные со знаниями
+                    $old_section_lections = Lection::where('section_id', $old_section->id)->get();
+                    foreach ($old_section_lections as $old_section_lection) {
+                        $existing_lection = Lection::where('section_id', $new_section->id)
+                            ->where('type', $old_section_lection->type)
+                            ->first();
+                        
+                        if (!$existing_lection) {
+                            $new_section_lection = $old_section_lection->replicate();
+                            $new_section_lection->section_id = $new_section->id;
+                            $new_section_lection->ct_version_id = $new_section->st_version->dpp->ct_version->id;
+                            $new_section_lection->push();
+                            
+                            // Копировать директорию с файлами лекции
+                            $old_lection_path = storage_path('app/lections/'.$old_section_lection->id);
+                            $new_lection_path = storage_path('app/lections/'.$new_section_lection->id);
+                            if (File::exists($old_lection_path)) {
+                                File::copyDirectory($old_lection_path, $new_lection_path);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Копировать лекции для всех разделов (включая разделы с темами, если есть лекции напрямую связанные с разделами)
+            $old_all_sections = StructureSection::where('st_version_id', $old_sv)
+                ->where('parent_id', null)
+                ->get();
+            
+            foreach ($old_all_sections as $old_section_all) {
+                // Пропускаем, если уже обработали в предыдущем блоке (разделы без тем)
+                if ($old_section_all->knowledge_id === null) {
+                    continue;
+                }
+                
+                $new_section_all = StructureSection::where('st_version_id', $new_sv)
+                    ->where('parent_id', null)
+                    ->where('name', $old_section_all->name)
+                    ->first();
+                
+                if ($new_section_all) {
+                    // Копировать лекции, связанные напрямую с разделом (type='pr' и другие)
+                    $old_section_lections = Lection::where('section_id', $old_section_all->id)->get();
+                    foreach ($old_section_lections as $old_section_lection) {
+                        $existing_lection = Lection::where('section_id', $new_section_all->id)
+                            ->where('type', $old_section_lection->type)
+                            ->first();
+                        
+                        if (!$existing_lection) {
+                            $new_section_lection = $old_section_lection->replicate();
+                            $new_section_lection->section_id = $new_section_all->id;
+                            $new_section_lection->ct_version_id = $new_section_all->st_version->dpp->ct_version->id;
+                            $new_section_lection->push();
+                            
+                            // Копировать директорию с файлами лекции
+                            $old_lection_path = storage_path('app/lections/'.$old_section_lection->id);
+                            $new_lection_path = storage_path('app/lections/'.$new_section_lection->id);
+                            if (File::exists($old_lection_path)) {
+                                File::copyDirectory($old_lection_path, $new_lection_path);
+                            }
+                        }
+                    }
                 }
             }
         }
