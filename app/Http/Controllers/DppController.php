@@ -471,6 +471,8 @@ class DppController extends Controller
                 $newParticipant->push();
             }
 
+            $oldIV = IshVersion::find($dpp->ish_version_id);
+
 
             // Копировать связи many-to-many (справочные данные)
             foreach ($oldIV->ektses as $ekts) {
