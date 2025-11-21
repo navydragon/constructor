@@ -2137,30 +2137,43 @@ class ZunVersionController extends Controller
         foreach($old_parts as $old_part)
         {
             $new_part = DppTypologyPart::where('name',$old_part->name)->where('dpp_id',$dpp->id)->get()->first();
+            
+            // Если типологическая часть не найдена, создаем ее
+            if (!$new_part) {
+                $new_part = $old_part->replicate();
+                $new_part->dpp_id = $dpp->id;
+                $new_part->ish_version_id = $dpp->ish_version_id;
+                $new_part->push();
+            }
+            
             foreach ($old_part->knowledges as $old_knowledge)
             {
                 $new_knowledge = Knowledge::where('name',$old_knowledge->name)->where('zun_version_id',$dpp->zun_version->id)->get()->first();
-                $new_part->knowledges()->syncWithoutDetaching($new_knowledge->id,['position' => $old_knowledge->pivot->position]);
-                $sv = $new_knowledge->dpp->st_version_id;
-                if ($sv != null  && $new_knowledge->dtps->count() != 0)
-                {
-                    $new_theme = StructureSection::where('knowledge_id',$new_knowledge->id)->get()->first();
-                    if ($new_theme)
+                if ($new_knowledge) {
+                    $new_part->knowledges()->syncWithoutDetaching($new_knowledge->id,['position' => $old_knowledge->pivot->position]);
+                    $sv = $new_knowledge->dpp->st_version_id;
+                    if ($sv != null  && $new_knowledge->dtps->count() != 0)
                     {
-                        $new_knowledge->update_theme($sv);
-                    }else{
-                        $new_knowledge->add_theme($sv);
-                    }
-                    $old_theme = StructureSection::where('knowledge_id',$old_knowledge->id)->get()->first();
-                    $new_theme = StructureSection::where('knowledge_id',$new_knowledge->id)->get()->first();
+                        $new_theme = StructureSection::where('knowledge_id',$new_knowledge->id)->get()->first();
+                        if ($new_theme)
+                        {
+                            $new_knowledge->update_theme($sv);
+                        }else{
+                            $new_knowledge->add_theme($sv);
+                        }
+                        $old_theme = StructureSection::where('knowledge_id',$old_knowledge->id)->get()->first();
+                        $new_theme = StructureSection::where('knowledge_id',$new_knowledge->id)->get()->first();
 
-                    $new_theme->lection_hours = $old_theme->lection_hours;
-                    $new_theme->practice_hours = $old_theme->practice_hours;
-                    $new_theme->self_hours = $old_theme->self_hours;
-                    $new_theme->total_hours = $old_theme->total_hours;
-                    $new_theme->lab_hours = $old_theme->lab_hours;
-                    $new_theme->attestation_hours = $old_theme->attestation_hours;
-                    $new_theme->save();
+                        if ($old_theme && $new_theme) {
+                            $new_theme->lection_hours = $old_theme->lection_hours;
+                            $new_theme->practice_hours = $old_theme->practice_hours;
+                            $new_theme->self_hours = $old_theme->self_hours;
+                            $new_theme->total_hours = $old_theme->total_hours;
+                            $new_theme->lab_hours = $old_theme->lab_hours;
+                            $new_theme->attestation_hours = $old_theme->attestation_hours;
+                            $new_theme->save();
+                        }
+                    }
                 }
             }
         }

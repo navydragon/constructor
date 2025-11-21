@@ -23,6 +23,8 @@ use App\StructureVersion;
 use App\StructureSection;
 use App\ContentVersion;
 use App\Http\Requests\DppRequest;
+use App\Http\Controllers\ZunVersionController;
+use App\Http\Controllers\OmVersionController;
 use Auth;
 
 use App\Http\Resources\Dpp as DppResource;
@@ -447,38 +449,49 @@ class DppController extends Controller
         $dpp = Dpp::find($dpp);
         $newDpp = $dpp->replicate();
         $newDpp->name = '[копия] '.$newDpp->name;
-        $newDpp->push();
+        
+        // Сохранить без событий, чтобы не создавались автоматические версии
+        Dpp::withoutEvents(function() use ($newDpp) {
+            $newDpp->push();
+        });
+        
+        // Создать стадии и версии вручную
+        $newDpp->createStages();
+        $newDpp->create_iv();
+        $newDpp->create_zun();
+        $newDpp->create_om();
+        $newDpp->create_st();
+        $newDpp->create_ct();
+        $newDpp->add_base_mtos();
 
-        //dpp_participants
-        $dpp->relations = [];
-        $dpp->load('participants','stages');
-        $relations = $dpp->getRelations();
-        foreach ($relations as $relation) {
-            foreach ($relation as $relationRecord) {
-                $newRelationship = $relationRecord->replicate();
-                $newRelationship->dpp_id = $newDpp->id;
-                $newRelationship->push();
-            }
+        // Копировать только участников (стадии уже созданы выше)
+        foreach ($dpp->participants as $participant) {
+            $newParticipant = $participant->replicate();
+            $newParticipant->dpp_id = $newDpp->id;
+            $newParticipant->push();
         }
 
+        // Заполнить IshVersion данными из старой версии
         $oldIV = IshVersion::find($dpp->ish_version_id);
-        $newIV = $oldIV->replicate();
-        $newIV->dpp_id = $newDpp->id; $newIV->push();
-        $newDpp->ish_version_id = $newIV->id;
-        $newDpp->save();
+        $newIV = $newDpp->ish_version;
+        $oldAttributes = $oldIV->getAttributes();
+        unset($oldAttributes['id'], $oldAttributes['dpp_id'], $oldAttributes['created_at'], $oldAttributes['updated_at']);
+        $newIV->fill($oldAttributes);
+        $newIV->save();
 
-        $oldIV->relations = [];
-        $oldIV->load('ektses','ekses','world_skills','corporate_requirements');
-        $relations = $oldIV->getRelations();
-
-        foreach ($relations as $relation) {
-            foreach ($relation as $relationRecord) {
-                $newRelationship = $relationRecord->replicate();
-                $newRelationship->pivot_ish_version_id = $newIV->id;
-                $newRelationship->push();
-            }
+        // Копировать связи many-to-many (справочные данные)
+        foreach ($oldIV->ektses as $ekts) {
+            $newIV->ektses()->attach($ekts->id);
         }
-
+        foreach ($oldIV->ekses as $eks) {
+            $newIV->ekses()->attach($eks->id);
+        }
+        foreach ($oldIV->world_skills as $ws) {
+            $newIV->world_skills()->attach($ws->id);
+        }
+        foreach ($oldIV->corporate_requirements as $cr) {
+            $newIV->corporate_requirements()->attach($cr->id);
+        }
         foreach ($oldIV->prof_standarts as $ps)
         {
             $newIV->prof_standarts()->attach($ps->id);
@@ -496,107 +509,18 @@ class DppController extends Controller
             $newNSI->push();
         }
 
-        foreach ($oldIV->typology_parts as $tp)
-        {
-            $newTP = $tp->replicate();
-            $newTP->ish_version_id = $newIV->id;
-            $newTP->dpp_id = $newDpp->id;
-            $newTP->push();
-        }
+        // Импортировать компетенции, навыки, умения, знания и вопросы через метод import_competences
+        $zunController = new ZunVersionController();
+        $zunController->import_competences($newDpp, $dpp);
 
-        $oldZUN = ZunVersion::find($dpp->zun_version_id);
-        $ozv = $oldZUN->id;
-        $newZUN = $oldZUN->replicate();
-        $newZUN->dpp_id = $newDpp->id; $newZUN->push();
-        $newDpp->zun_version_id = $newZUN->id;
-        $newDpp->save();
-        $zv = $newZUN->id;
+        // Импортировать задачи из старой ДПП
+        $omController = new OmVersionController();
+        $omController->import_tasks($newDpp, $dpp);
 
-        $competences = Competence::where('zun_version_id','=',$ozv)->get();
-        foreach ($competences as $competence)
-        {
-            $new_co = $competence->replicate(); $new_co->dpp_id = $newDpp->id;
-            $new_co->zun_version_id = $zv; $new_co->push();
-            $skills = Skill::where('competence_id','=',$competence->id)->orderBy('position','asc')->get();
-            foreach ($skills as $skill)
-            {
-                $new_sk = $skill->replicate(); $new_sk->dpp_id = $newDpp->id;
-                $new_sk->zun_version_id = $zv; $new_sk->competence_id = $new_co->id; $new_sk->push();
-                $abilities = Ability::where('skill_id','=',$skill->id)->orderBy('position','asc')->get();
-                foreach ($abilities as $ability)
-                {
-                    $new_ab = $ability->replicate(); $new_ab->dpp_id = $newDpp->id;
-                    $new_ab->zun_version_id = $zv; $new_ab->skill_id = $new_sk->id; $new_ab->push();
-
-                    $knowledges = Knowledge::where('ability_id','=',$ability->id)->orderBy('position','asc')->get();
-                    foreach ($knowledges as $knowledge)
-                    {
-                        $new_kn = $knowledge->replicate(); $new_kn->dpp_id = $newDpp->id;
-                        $new_kn->zun_version_id = $zv; $new_kn->ability_id = $new_ab->id; $new_kn->push();
-                    }
-                }
-            }
-            $abilities = Ability::where('competence_id','=',$competence->id)->orderBy('position','asc')->get();
-            foreach ($abilities as $ability)
-            {
-                $new_ab = $ability->replicate(); $new_ab->dpp_id = $newDpp->id;
-                $new_ab->zun_version_id = $zv; $new_ab->competence_id = $new_co->id; $new_ab->push();
-
-                $knowledges = Knowledge::where('ability_id','=',$ability->id)->orderBy('position','asc')->get();
-                foreach ($knowledges as $knowledge)
-                {
-                    $new_kn = $knowledge->replicate(); $new_kn->dpp_id = $newDpp->id;
-                    $new_kn->zun_version_id = $zv; $new_kn->ability_id = $new_ab->id; $new_kn->push();
-                }
-            }
-        }
-        $skills = Skill::where('competence_id','=',null)->where('zun_version_id','=',$ozv)->orderBy('position','asc')->get();
-        foreach ($skills as $skill)
-        {
-            $new_sk = $skill->replicate(); $new_sk->dpp_id = $newDpp->id;
-            $new_sk->zun_version_id = $zv; $new_sk->push();
-
-            $abilities = Ability::where('skill_id','=',$skill->id)->get();
-            foreach ($abilities as $ability)
-            {
-                $new_ab = $ability->replicate(); $new_ab->dpp_id = $newDpp->id;
-                $new_ab->zun_version_id = $zv; $new_ab->skill_id = $new_sk->id; $new_ab->push();
-                $knowledges = Knowledge::where('ability_id','=',$ability->id)->get();
-                foreach ($knowledges as $knowledge)
-                {
-                    $new_kn = $skill->replicate(); $new_kn->dpp_id = $newDpp->id;
-                    $new_kn->zun_version_id = $zv; $new_kn->ability_id = $new_ab->id; $new_kn->push();
-                }
-            }
-        }
-        $abilities = Ability::where('competence_id','=',null)->where('skill_id','=',null)->where('zun_version_id','=',$ozv)->orderBy('position','asc')->get();
-        foreach ($abilities as $ability)
-        {
-            $new_ab = $ability->replicate(); $new_ab->dpp_id = $newDpp->id;
-            $new_ab->zun_version_id = $zv; $new_ab->push();
-
-            $knowledges = Knowledge::where('ability_id','=',$ability->id)->get();
-            foreach ($knowledges as $knowledge)
-            {
-                $new_kn = $skill->replicate(); $new_kn->dpp_id = $newDpp->id;
-                $new_kn->zun_version_id = $zv; $new_kn->ability_id = $new_ab->id; $new_ab->push();
-            }
-        }
-        $th_knowledges = Knowledge::where('zun_version_id',$ozv)->where('is_through',true)->orderBy('position','asc')->get();
-        foreach ($th_knowledges as $knowledge)
-        {
-            $new_kn = $knowledge->replicate(); $new_kn->dpp_id = $newDpp->id;
-            $new_kn->zun_version_id = $zv; $new_kn->push();
-
-            //foreach ($knowledge->dtps as $dtp) { $dtp->knowledges()->attach($new_kn->id, array('position' => $dtp->knowledges()->count())); }
-        }
+        // Применить структуру типологических частей из старой ДПП
+        $zunController->apply_structure($newDpp, $dpp);
 
         $newDpp->current_stage_id = $newDpp->stages()->first()->id;
-        $newDpp->ish_version_id = $newIV->id;
-        $newDpp->zun_version_id = $newZUN->id;
-        $newDpp->om_version_id = null;
-        $newDpp->ct_version_id = null;
-        $newDpp->st_version_id = null;
         $newDpp->save();
 
         return $newDpp->id;
