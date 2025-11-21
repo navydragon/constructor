@@ -494,6 +494,9 @@ class DppController extends Controller
             $newIV = $newDpp->ish_version;
 
             // Копировать связи many-to-many (справочные данные)
+            foreach ($oldIV->prof_levels as $pl) {
+                $newIV->prof_levels()->attach($pl->id);
+            }
             foreach ($oldIV->ektses as $ekts) {
                 $newIV->ektses()->attach($ekts->id);
             }
