@@ -859,8 +859,11 @@ class DppController extends Controller
 
             // 4. Удаление StructureVersion и связанных данных
             foreach ($dpp->st_versions as $sv) {
-                // Удаляем StructureSection (каскадно удалит вложенные секции и Lection через boot метод)
-                foreach ($sv->get_sections() as $section) {
+                // Получаем ВСЕ StructureSection для данного st_version_id (включая вложенные темы)
+                $allSections = StructureSection::where('st_version_id', $sv->id)->get();
+                
+                // Удаляем все StructureSection (boot метод каскадно удалит вложенные секции и Lection)
+                foreach ($allSections as $section) {
                     // Отвязываем many-to-many связи
                     $section->knowledges()->detach();
                     $section->abilities()->detach();
