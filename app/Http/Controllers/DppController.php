@@ -624,15 +624,90 @@ class DppController extends Controller
 
             // 2. Удаление ZunVersion и связанных данных
             foreach ($dpp->zun_versions as $zv) {
-                // Удаляем Knowledge (с отвязкой many-to-many)
-                foreach ($zv->knowledges as $knowledge) {
+                // Сначала удаляем все Competence с forceDelete (включая soft deleted)
+                // Это важно, так как Competence использует SoftDeletes и может блокировать удаление ZunVersion
+                $competences = Competence::withTrashed()->where('zun_version_id', $zv->id)->get();
+                foreach ($competences as $competence) {
+                    // Удаляем связанные Skills внутри Competence
+                    foreach ($competence->skills()->withTrashed()->get() as $skill) {
+                        $skill->nsis()->detach();
+                        $skill->sections()->detach();
+                        foreach ($skill->task_subjects as $taskSubject) {
+                            foreach ($taskSubject->objects as $taskObject) {
+                                $taskObject->delete();
+                            }
+                            $taskSubject->delete();
+                        }
+                        // Удаляем связанные Abilities внутри Skill
+                        foreach ($skill->abilities()->withTrashed()->get() as $ability) {
+                            $ability->nsis()->detach();
+                            $ability->sections()->detach();
+                            foreach ($ability->task_subjects as $taskSubject) {
+                                foreach ($taskSubject->objects as $taskObject) {
+                                    $taskObject->delete();
+                                }
+                                $taskSubject->delete();
+                            }
+                            // Удаляем Knowledge внутри Ability
+                            foreach ($ability->knowledges()->withTrashed()->get() as $knowledge) {
+                                $knowledge->links()->detach();
+                                $knowledge->get_dtps()->detach();
+                                $knowledge->sections()->detach();
+                                $knowledge->nsis()->detach();
+                                foreach ($knowledge->questions as $question) {
+                                    $question->single_choice_answers()->delete();
+                                    $question->multi_choice_answers()->delete();
+                                    $question->free_choice_answers()->delete();
+                                    $question->sequence_choice_answers()->delete();
+                                    $question->accordance_choice_answers()->delete();
+                                    $question->delete();
+                                }
+                                $knowledge->forceDelete();
+                            }
+                            $ability->forceDelete();
+                        }
+                        $skill->forceDelete();
+                    }
+                    // Удаляем связанные Abilities внутри Competence (не через Skill)
+                    foreach ($competence->abilities()->withTrashed()->get() as $ability) {
+                        $ability->nsis()->detach();
+                        $ability->sections()->detach();
+                        foreach ($ability->task_subjects as $taskSubject) {
+                            foreach ($taskSubject->objects as $taskObject) {
+                                $taskObject->delete();
+                            }
+                            $taskSubject->delete();
+                        }
+                        // Удаляем Knowledge внутри Ability
+                        foreach ($ability->knowledges()->withTrashed()->get() as $knowledge) {
+                            $knowledge->links()->detach();
+                            $knowledge->get_dtps()->detach();
+                            $knowledge->sections()->detach();
+                            $knowledge->nsis()->detach();
+                            foreach ($knowledge->questions as $question) {
+                                $question->single_choice_answers()->delete();
+                                $question->multi_choice_answers()->delete();
+                                $question->free_choice_answers()->delete();
+                                $question->sequence_choice_answers()->delete();
+                                $question->accordance_choice_answers()->delete();
+                                $question->delete();
+                            }
+                            $knowledge->forceDelete();
+                        }
+                        $ability->forceDelete();
+                    }
+                    // Физически удаляем Competence из базы данных
+                    $competence->forceDelete();
+                }
+
+                // Удаляем остальные элементы верхнего уровня (не связанные с Competence)
+                // Knowledge верхнего уровня
+                foreach (Knowledge::withTrashed()->where('zun_version_id', $zv->id)->whereNull('ability_id')->get() as $knowledge) {
                     $knowledge->links()->detach();
                     $knowledge->get_dtps()->detach();
                     $knowledge->sections()->detach();
                     $knowledge->nsis()->detach();
-                    // Удаляем связанные Questions (через knowledge_id)
                     foreach ($knowledge->questions as $question) {
-                        // Удаляем ответы на вопросы
                         $question->single_choice_answers()->delete();
                         $question->multi_choice_answers()->delete();
                         $question->free_choice_answers()->delete();
@@ -640,40 +715,74 @@ class DppController extends Controller
                         $question->accordance_choice_answers()->delete();
                         $question->delete();
                     }
-                    $knowledge->delete();
+                    $knowledge->forceDelete();
                 }
 
-                // Удаляем Ability (с отвязкой many-to-many)
-                foreach ($zv->abilities as $ability) {
+                // Ability верхнего уровня (не связанные с Competence или Skill)
+                foreach (Ability::withTrashed()->where('zun_version_id', $zv->id)->whereNull('competence_id')->whereNull('skill_id')->get() as $ability) {
                     $ability->nsis()->detach();
                     $ability->sections()->detach();
-                    // Удаляем связанные TaskSubject и TaskObject
                     foreach ($ability->task_subjects as $taskSubject) {
                         foreach ($taskSubject->objects as $taskObject) {
                             $taskObject->delete();
                         }
                         $taskSubject->delete();
                     }
-                    $ability->delete();
+                    foreach ($ability->knowledges()->withTrashed()->get() as $knowledge) {
+                        $knowledge->links()->detach();
+                        $knowledge->get_dtps()->detach();
+                        $knowledge->sections()->detach();
+                        $knowledge->nsis()->detach();
+                        foreach ($knowledge->questions as $question) {
+                            $question->single_choice_answers()->delete();
+                            $question->multi_choice_answers()->delete();
+                            $question->free_choice_answers()->delete();
+                            $question->sequence_choice_answers()->delete();
+                            $question->accordance_choice_answers()->delete();
+                            $question->delete();
+                        }
+                        $knowledge->forceDelete();
+                    }
+                    $ability->forceDelete();
                 }
 
-                // Удаляем Skill (с отвязкой many-to-many)
-                foreach ($zv->skills as $skill) {
+                // Skill верхнего уровня (не связанные с Competence)
+                foreach (Skill::withTrashed()->where('zun_version_id', $zv->id)->whereNull('competence_id')->get() as $skill) {
                     $skill->nsis()->detach();
                     $skill->sections()->detach();
-                    // Удаляем связанные TaskSubject и TaskObject
                     foreach ($skill->task_subjects as $taskSubject) {
                         foreach ($taskSubject->objects as $taskObject) {
                             $taskObject->delete();
                         }
                         $taskSubject->delete();
                     }
-                    $skill->delete();
-                }
-
-                // Удаляем Competence
-                foreach ($zv->competences as $competence) {
-                    $competence->delete();
+                    foreach ($skill->abilities()->withTrashed()->get() as $ability) {
+                        $ability->nsis()->detach();
+                        $ability->sections()->detach();
+                        foreach ($ability->task_subjects as $taskSubject) {
+                            foreach ($taskSubject->objects as $taskObject) {
+                                $taskObject->delete();
+                            }
+                            $taskSubject->delete();
+                        }
+                        foreach ($ability->knowledges()->withTrashed()->get() as $knowledge) {
+                            $knowledge->links()->detach();
+                            $knowledge->get_dtps()->detach();
+                            $knowledge->sections()->detach();
+                            $knowledge->nsis()->detach();
+                            foreach ($knowledge->questions as $question) {
+                                $question->single_choice_answers()->delete();
+                                $question->multi_choice_answers()->delete();
+                                $question->free_choice_answers()->delete();
+                                $question->sequence_choice_answers()->delete();
+                                $question->accordance_choice_answers()->delete();
+                                $question->delete();
+                            }
+                            $knowledge->forceDelete();
+                        }
+                        $ability->forceDelete();
+                    }
+                    $skill->forceDelete();
                 }
 
                 // Удаляем ZunVersion
