@@ -581,6 +581,15 @@ class DppController extends Controller
         return DB::transaction(function() use ($dpp) {
             $dppId = $dpp->id;
 
+            // Сначала обнуляем все ссылки в Dpp, чтобы избежать ошибок foreign key constraint
+            $dpp->ish_version_id = null;
+            $dpp->zun_version_id = null;
+            $dpp->om_version_id = null;
+            $dpp->st_version_id = null;
+            $dpp->ct_version_id = null;
+            $dpp->current_stage_id = null;
+            $dpp->save();
+
             // 1. Удаление IshVersion и связанных данных
             foreach ($dpp->ish_versions as $iv) {
                 // Отвязываем все many-to-many связи
@@ -942,16 +951,8 @@ class DppController extends Controller
                 $participant->delete();
             }
 
-            // 7. Очищаем ссылки в Dpp
-            $dpp->ish_version_id = null;
-            $dpp->zun_version_id = null;
-            $dpp->om_version_id = null;
-            $dpp->st_version_id = null;
-            $dpp->ct_version_id = null;
-            $dpp->current_stage_id = null;
-            $dpp->save();
-
-            // 8. Удаляем Dpp (forceDelete для полного удаления, так как используется SoftDeletes)
+            // 7. Удаляем Dpp (forceDelete для полного удаления, так как используется SoftDeletes)
+            // Ссылки уже обнулены в начале функции
             $dpp->forceDelete();
 
             return $dppId;
