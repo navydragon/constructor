@@ -445,85 +445,79 @@ class DppController extends Controller
 
     public function copy($dpp)
     {
+        return DB::transaction(function() use ($dpp) {
+            $dpp = Dpp::find($dpp);
+            $newDpp = $dpp->replicate();
+            $newDpp->name = '[копия] '.$newDpp->name;
+            
+            // Сохранить без событий, чтобы не создавались автоматические версии
+            Dpp::withoutEvents(function() use ($newDpp) {
+                $newDpp->push();
+            });
+            
+            // Создать стадии и версии вручную
+            $newDpp->createStages();
+            $newDpp->create_iv();
+            $newDpp->create_zun();
+            $newDpp->create_om();
+            $newDpp->create_st();
+            $newDpp->create_ct();
+            $newDpp->add_base_mtos();
 
-        $dpp = Dpp::find($dpp);
-        $newDpp = $dpp->replicate();
-        $newDpp->name = '[копия] '.$newDpp->name;
-        
-        // Сохранить без событий, чтобы не создавались автоматические версии
-        Dpp::withoutEvents(function() use ($newDpp) {
-            $newDpp->push();
+            // Копировать только участников (стадии уже созданы выше)
+            foreach ($dpp->participants as $participant) {
+                $newParticipant = $participant->replicate();
+                $newParticipant->dpp_id = $newDpp->id;
+                $newParticipant->push();
+            }
+
+
+            // Копировать связи many-to-many (справочные данные)
+            foreach ($oldIV->ektses as $ekts) {
+                $newIV->ektses()->attach($ekts->id);
+            }
+            foreach ($oldIV->ekses as $eks) {
+                $newIV->ekses()->attach($eks->id);
+            }
+            foreach ($oldIV->world_skills as $ws) {
+                $newIV->world_skills()->attach($ws->id);
+            }
+            foreach ($oldIV->corporate_requirements as $cr) {
+                $newIV->corporate_requirements()->attach($cr->id);
+            }
+            foreach ($oldIV->prof_standarts as $ps)
+            {
+                $newIV->prof_standarts()->attach($ps->id);
+            }
+            foreach ($oldIV->fgoses as $fg)
+            {
+                $newIV->fgoses()->attach($fg->id);
+            }
+
+
+            foreach ($oldIV->nsis as $nsi)
+            {
+                $newNSI = $nsi->replicate();
+                $newNSI->ish_version_id = $newIV->id;
+                $newNSI->push();
+            }
+
+            // Импортировать компетенции, навыки, умения, знания и вопросы через метод import_competences
+            $zunController = new ZunVersionController();
+            $zunController->import_competences($newDpp, $dpp);
+
+            // Импортировать задачи из старой ДПП
+            $omController = new OmVersionController();
+            $omController->import_tasks($newDpp, $dpp);
+
+            // Применить структуру типологических частей из старой ДПП
+            $zunController->apply_structure($newDpp, $dpp);
+
+            $newDpp->current_stage_id = $newDpp->stages()->first()->id;
+            $newDpp->save();
+
+            return $newDpp->id;
         });
-        
-        // Создать стадии и версии вручную
-        $newDpp->createStages();
-        $newDpp->create_iv();
-        $newDpp->create_zun();
-        $newDpp->create_om();
-        $newDpp->create_st();
-        $newDpp->create_ct();
-        $newDpp->add_base_mtos();
-
-        // Копировать только участников (стадии уже созданы выше)
-        foreach ($dpp->participants as $participant) {
-            $newParticipant = $participant->replicate();
-            $newParticipant->dpp_id = $newDpp->id;
-            $newParticipant->push();
-        }
-
-        // Заполнить IshVersion данными из старой версии
-        $oldIV = IshVersion::find($dpp->ish_version_id);
-        $newIV = $newDpp->ish_version;
-        $oldAttributes = $oldIV->getAttributes();
-        unset($oldAttributes['id'], $oldAttributes['dpp_id'], $oldAttributes['created_at'], $oldAttributes['updated_at']);
-        $newIV->fill($oldAttributes);
-        $newIV->save();
-
-        // Копировать связи many-to-many (справочные данные)
-        foreach ($oldIV->ektses as $ekts) {
-            $newIV->ektses()->attach($ekts->id);
-        }
-        foreach ($oldIV->ekses as $eks) {
-            $newIV->ekses()->attach($eks->id);
-        }
-        foreach ($oldIV->world_skills as $ws) {
-            $newIV->world_skills()->attach($ws->id);
-        }
-        foreach ($oldIV->corporate_requirements as $cr) {
-            $newIV->corporate_requirements()->attach($cr->id);
-        }
-        foreach ($oldIV->prof_standarts as $ps)
-        {
-            $newIV->prof_standarts()->attach($ps->id);
-        }
-        foreach ($oldIV->fgoses as $fg)
-        {
-            $newIV->fgoses()->attach($fg->id);
-        }
-
-
-        foreach ($oldIV->nsis as $nsi)
-        {
-            $newNSI = $nsi->replicate();
-            $newNSI->ish_version_id = $newIV->id;
-            $newNSI->push();
-        }
-
-        // Импортировать компетенции, навыки, умения, знания и вопросы через метод import_competences
-        $zunController = new ZunVersionController();
-        $zunController->import_competences($newDpp, $dpp);
-
-        // Импортировать задачи из старой ДПП
-        $omController = new OmVersionController();
-        $omController->import_tasks($newDpp, $dpp);
-
-        // Применить структуру типологических частей из старой ДПП
-        $zunController->apply_structure($newDpp, $dpp);
-
-        $newDpp->current_stage_id = $newDpp->stages()->first()->id;
-        $newDpp->save();
-
-        return $newDpp->id;
     }
 
     public function destroy2(Dpp $dpp)
