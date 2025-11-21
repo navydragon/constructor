@@ -81,6 +81,7 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   /* КОПИРОВАНИЕ ДПП */
   Route::post('/dpps/{dpp}/copy','DppController@copy');
   Route::post('/dpps/{dpp}/destroy','DppController@destroy');
+  Route::post('/dpps/{dpp}/force-delete','DppController@forceDeleteDpp');
 
     /* ИМПОРТЫ */
     //Route::post('/ish_version_data/{dpp}/ish_data/import/{old_dpp}','IshVersionController@import_ish');

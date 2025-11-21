@@ -19,9 +19,27 @@ use App\ZunVersion;
 use App\IshVersion;
 use App\OmVersion;
 use App\QuestionType;
+use App\Question;
 use App\StructureVersion;
 use App\StructureSection;
 use App\ContentVersion;
+use App\Content;
+use App\Mto;
+use App\Nsi;
+use App\Designer;
+use App\QualificationRequirement;
+use App\ProfessionalObject;
+use App\Lection;
+use App\LectionPart;
+use App\AdditionalFile;
+use App\TaskStep;
+use App\TaskSubject;
+use App\TaskObject;
+use App\TaskSpecification;
+use App\TaskQuestion;
+use App\TaskAdditionalFile;
+use App\DppTypologyPart;
+use Illuminate\Support\Facades\File;
 use App\Http\Requests\DppRequest;
 use App\Http\Controllers\ZunVersionController;
 use App\Http\Controllers\OmVersionController;
@@ -550,6 +568,285 @@ class DppController extends Controller
         $dpp->ish_versions()->delete();
         $dpp->zun_versions()->delete();
         Dpp::destroy($dpp->id);
+    }
+
+    /**
+     * Полное каскадное удаление Dpp со всеми связанными данными
+     *
+     * @param Dpp $dpp
+     * @return int ID удаленного Dpp
+     */
+    public function forceDeleteDpp(Dpp $dpp)
+    {
+        return DB::transaction(function() use ($dpp) {
+            $dppId = $dpp->id;
+
+            // 1. Удаление IshVersion и связанных данных
+            foreach ($dpp->ish_versions as $iv) {
+                // Отвязываем все many-to-many связи
+                $iv->prof_levels()->detach();
+                $iv->ektses()->detach();
+                $iv->ekses()->detach();
+                $iv->world_skills()->detach();
+                $iv->prof_standarts()->detach();
+                $iv->corporate_requirements()->detach();
+                $iv->fgoses()->detach();
+                $iv->dolg_kvals()->detach();
+
+                // Удаляем QualificationRequirement
+                foreach ($iv->qualification_requirements as $qr) {
+                    $qr->delete();
+                }
+
+                // Удаляем ProfessionalObject
+                foreach ($iv->professional_objects as $po) {
+                    $po->delete();
+                }
+
+                // Удаляем DppTypologyPart (каскадно удалит StructureSection через boot метод)
+                foreach ($iv->typology_parts as $tp) {
+                    $tp->delete();
+                }
+
+                // Удаляем Nsi записи
+                foreach ($iv->nsis as $nsi) {
+                    // Отвязываем many-to-many связи Nsi перед удалением
+                    $nsi->skills()->detach();
+                    $nsi->abilities()->detach();
+                    $nsi->knowledges()->detach();
+                    $nsi->tasks()->detach();
+                    $nsi->delete();
+                }
+
+                // Удаляем IshVersion
+                $iv->delete();
+            }
+
+            // 2. Удаление ZunVersion и связанных данных
+            foreach ($dpp->zun_versions as $zv) {
+                // Удаляем Knowledge (с отвязкой many-to-many)
+                foreach ($zv->knowledges as $knowledge) {
+                    $knowledge->links()->detach();
+                    $knowledge->get_dtps()->detach();
+                    $knowledge->sections()->detach();
+                    $knowledge->nsis()->detach();
+                    // Удаляем связанные Questions (через knowledge_id)
+                    foreach ($knowledge->questions as $question) {
+                        // Удаляем ответы на вопросы
+                        $question->single_choice_answers()->delete();
+                        $question->multi_choice_answers()->delete();
+                        $question->free_choice_answers()->delete();
+                        $question->sequence_choice_answers()->delete();
+                        $question->accordance_choice_answers()->delete();
+                        $question->delete();
+                    }
+                    $knowledge->delete();
+                }
+
+                // Удаляем Ability (с отвязкой many-to-many)
+                foreach ($zv->abilities as $ability) {
+                    $ability->nsis()->detach();
+                    $ability->sections()->detach();
+                    // Удаляем связанные TaskSubject и TaskObject
+                    foreach ($ability->task_subjects as $taskSubject) {
+                        foreach ($taskSubject->objects as $taskObject) {
+                            $taskObject->delete();
+                        }
+                        $taskSubject->delete();
+                    }
+                    $ability->delete();
+                }
+
+                // Удаляем Skill (с отвязкой many-to-many)
+                foreach ($zv->skills as $skill) {
+                    $skill->nsis()->detach();
+                    $skill->sections()->detach();
+                    // Удаляем связанные TaskSubject и TaskObject
+                    foreach ($skill->task_subjects as $taskSubject) {
+                        foreach ($taskSubject->objects as $taskObject) {
+                            $taskObject->delete();
+                        }
+                        $taskSubject->delete();
+                    }
+                    $skill->delete();
+                }
+
+                // Удаляем Competence
+                foreach ($zv->competences as $competence) {
+                    $competence->delete();
+                }
+
+                // Удаляем ZunVersion
+                $zv->delete();
+            }
+
+            // 3. Удаление OmVersion и связанных данных
+            foreach ($dpp->om_versions as $ov) {
+                // Удаляем Question (не связанные с Knowledge, так как они уже удалены)
+                foreach ($ov->questions as $question) {
+                    // Удаляем ответы на вопросы
+                    $question->single_choice_answers()->delete();
+                    $question->multi_choice_answers()->delete();
+                    $question->free_choice_answers()->delete();
+                    $question->sequence_choice_answers()->delete();
+                    $question->accordance_choice_answers()->delete();
+                    $question->delete();
+                }
+
+                // Удаляем Task (с каскадным удалением подчиненных)
+                foreach ($ov->tasks as $task) {
+                    // Отвязываем many-to-many связи
+                    $task->mtos()->detach();
+                    $task->nsis()->detach();
+
+                    // Удаляем TaskStep
+                    foreach ($task->steps as $step) {
+                        $step->delete();
+                    }
+
+                    // Удаляем TaskQuestion
+                    foreach ($task->questions as $taskQuestion) {
+                        $taskQuestion->delete();
+                    }
+
+                    // Удаляем TaskSpecification
+                    if ($task->specification) {
+                        $task->specification->delete();
+                    }
+
+                    // Удаляем TaskAdditionalFile
+                    foreach ($task->additional_files as $additionalFile) {
+                        $additionalFile->delete();
+                    }
+
+                    // Удаляем TaskSubject и TaskObject (через boot метод Task)
+                    foreach ($task->subjects as $taskSubject) {
+                        foreach ($taskSubject->objects as $taskObject) {
+                            $taskObject->delete();
+                        }
+                        $taskSubject->delete();
+                    }
+
+                    // Удаляем TaskObject напрямую (если есть)
+                    foreach ($task->objects as $taskObject) {
+                        $taskObject->delete();
+                    }
+
+                    $task->delete();
+                }
+
+                // Удаляем OmVersion
+                $ov->delete();
+            }
+
+            // 4. Удаление StructureVersion и связанных данных
+            foreach ($dpp->st_versions as $sv) {
+                // Удаляем StructureSection (каскадно удалит вложенные секции и Lection через boot метод)
+                foreach ($sv->get_sections() as $section) {
+                    // Отвязываем many-to-many связи
+                    $section->knowledges()->detach();
+                    $section->abilities()->detach();
+                    $section->skills()->detach();
+
+                    // Удаляем Lection (если есть)
+                    foreach ($section->contents as $lection) {
+                        // Отвязываем many-to-many связи
+                        $lection->nsis()->detach();
+
+                        // Удаляем LectionPart (Content)
+                        foreach ($lection->parts as $part) {
+                            $part->delete();
+                        }
+
+                        // Удаляем AdditionalFile
+                        foreach ($lection->additional_files as $additionalFile) {
+                            $additionalFile->delete();
+                        }
+
+                        // Удаляем файлы лекций из storage
+                        $lectionPath = storage_path('app/lections/' . $lection->id);
+                        if (File::exists($lectionPath)) {
+                            File::deleteDirectory($lectionPath);
+                        }
+
+                        $lection->delete();
+                    }
+
+                    $section->delete();
+                }
+
+                // Удаляем StructureVersion
+                $sv->delete();
+            }
+
+            // 5. Удаление ContentVersion и связанных данных
+            foreach ($dpp->ct_versions as $cv) {
+                // Lection уже удалены через StructureSection, но проверим на всякий случай
+                // (если есть Lection напрямую связанные с ContentVersion)
+                $lections = Lection::where('ct_version_id', $cv->id)->get();
+                foreach ($lections as $lection) {
+                    // Отвязываем many-to-many связи
+                    $lection->nsis()->detach();
+
+                    // Удаляем LectionPart (Content)
+                    foreach ($lection->parts as $part) {
+                        $part->delete();
+                    }
+
+                    // Удаляем AdditionalFile
+                    foreach ($lection->additional_files as $additionalFile) {
+                        $additionalFile->delete();
+                    }
+
+                    // Удаляем файлы лекций из storage
+                    $lectionPath = storage_path('app/lections/' . $lection->id);
+                    if (File::exists($lectionPath)) {
+                        File::deleteDirectory($lectionPath);
+                    }
+
+                    $lection->delete();
+                }
+
+                // Удаляем ContentVersion
+                $cv->delete();
+            }
+
+            // 6. Удаление остальных прямых связей Dpp
+            // Удаляем Mto (с отвязкой task_mtos)
+            foreach ($dpp->mtos as $mto) {
+                $mto->tasks()->detach();
+                $mto->delete();
+            }
+
+            // Удаляем Designer
+            foreach ($dpp->designers as $designer) {
+                $designer->delete();
+            }
+
+            // Удаляем DppStage
+            foreach ($dpp->stages as $stage) {
+                $stage->delete();
+            }
+
+            // Удаляем DppUserRole
+            foreach ($dpp->participants as $participant) {
+                $participant->delete();
+            }
+
+            // 7. Очищаем ссылки в Dpp
+            $dpp->ish_version_id = null;
+            $dpp->zun_version_id = null;
+            $dpp->om_version_id = null;
+            $dpp->st_version_id = null;
+            $dpp->ct_version_id = null;
+            $dpp->current_stage_id = null;
+            $dpp->save();
+
+            // 8. Удаляем Dpp (forceDelete для полного удаления, так как используется SoftDeletes)
+            $dpp->forceDelete();
+
+            return $dppId;
+        });
     }
 
     public function get_signatory(Dpp $dpp) {
