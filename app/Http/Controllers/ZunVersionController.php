@@ -2185,6 +2185,11 @@ class ZunVersionController extends Controller
                             $new_theme->attestation_hours_o = $old_theme->attestation_hours_o;
                             $new_theme->attestation_hours_z = $old_theme->attestation_hours_z;
                             
+                            // Копировать форму аттестации
+                            if ($old_theme->attestation_form !== null) {
+                                $new_theme->attestation_form = $old_theme->attestation_form;
+                            }
+                            
                             $new_theme->total_hours = $old_theme->total_hours;
                             $new_theme->save();
                             
@@ -2214,12 +2219,68 @@ class ZunVersionController extends Controller
                                     $new_section->attestation_hours_o = $old_section->attestation_hours_o;
                                     $new_section->attestation_hours_z = $old_section->attestation_hours_z;
                                     
+                                    // Копировать форму аттестации
+                                    if ($old_section->attestation_form !== null) {
+                                        $new_section->attestation_form = $old_section->attestation_form;
+                                    }
+                                    
                                     $new_section->total_hours = $old_section->total_hours;
                                     $new_section->save();
                                 }
                             }
                         }
                     }
+                }
+            }
+        }
+        
+        // Копировать часы для разделов без тем (например, "Итоговая аттестация", "Производственная практика")
+        $old_sv = $old_dpp->st_version_id;
+        $new_sv = $dpp->st_version_id;
+        
+        if ($old_sv && $new_sv) {
+            // Получаем все разделы без знаний (parent_id === null и knowledge_id === null)
+            $old_sections_without_themes = StructureSection::where('st_version_id', $old_sv)
+                ->where('parent_id', null)
+                ->whereNull('knowledge_id')
+                ->get();
+            
+            foreach ($old_sections_without_themes as $old_section) {
+                // Ищем соответствующий раздел в новой структуре по имени
+                $new_section = StructureSection::where('st_version_id', $new_sv)
+                    ->where('parent_id', null)
+                    ->whereNull('knowledge_id')
+                    ->where('name', $old_section->name)
+                    ->first();
+                
+                if ($new_section) {
+                    // Копировать все часы для разделов
+                    $new_section->lection_hours = $old_section->lection_hours;
+                    $new_section->practice_hours = $old_section->practice_hours;
+                    $new_section->self_hours = $old_section->self_hours;
+                    $new_section->lab_hours = $old_section->lab_hours;
+                    $new_section->consult_hours = $old_section->consult_hours;
+                    $new_section->attestation_hours = $old_section->attestation_hours;
+                    
+                    // Копировать часы для очной/заочной формы
+                    $new_section->lection_hours_o = $old_section->lection_hours_o;
+                    $new_section->lection_hours_z = $old_section->lection_hours_z;
+                    $new_section->practice_hours_o = $old_section->practice_hours_o;
+                    $new_section->practice_hours_z = $old_section->practice_hours_z;
+                    $new_section->lab_hours_o = $old_section->lab_hours_o;
+                    $new_section->lab_hours_z = $old_section->lab_hours_z;
+                    $new_section->consult_hours_o = $old_section->consult_hours_o;
+                    $new_section->consult_hours_z = $old_section->consult_hours_z;
+                    $new_section->attestation_hours_o = $old_section->attestation_hours_o;
+                    $new_section->attestation_hours_z = $old_section->attestation_hours_z;
+                    
+                    // Копировать форму аттестации
+                    if ($old_section->attestation_form !== null) {
+                        $new_section->attestation_form = $old_section->attestation_form;
+                    }
+                    
+                    $new_section->total_hours = $old_section->total_hours;
+                    $new_section->save();
                 }
             }
         }
